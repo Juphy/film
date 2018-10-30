@@ -6,10 +6,20 @@ const CONF = {
     appId: 'wx12f7ee2916dde013',
 
     // 微信小程序 App Secret
-  appSecret: '844469ef019128ea533f7d08f1186543',
+    appSecret: '844469ef019128ea533f7d08f1186543',
 
     // 是否使用腾讯云代理登录小程序
-    useQcloudLogin: false,
+    useQcloudLogin: true,
+
+    qcloudAppId: 1257935615,
+
+    qcloudSecretId: 'AKIDiJk07Ej2q172mLxuthhVHwRktAJGDazG',
+
+    qcloudSecretKey: 'Y4Ulw48VtCi9Wmx1whMvcBXjy8APi22y',
+
+    serverHost: 'https://www.applet.top',
+    tunnelServerUrl: 'http://tunnel.ws.qcloud.la',
+    tunnelSignatureKey: '27fb7d1c161b7ca52d73cce0f1d833f9f5b5ec89',
 
     /**
      * MySQL 配置，用来存储 session 和用户信息
@@ -17,11 +27,11 @@ const CONF = {
      * 开发环境下，MySQL 的初始密码为您的微信小程序 appid
      */
     mysql: {
-        host: 'localhost',
+        host: '10.110.1.90',
         port: 3306,
-        user: 'root',
+        user: 'php',
         db: 'cAuth',
-        pass: 'wx12f7ee2916dde013',
+        pass: 'MySQL57.huayingjuhe.com',
         char: 'utf8mb4'
     },
 
