@@ -1,5 +1,4 @@
-server/node_modules/
-server/config.js
+config.*
 # Windows
 [Dd]esktop.ini
 Thumbs.db
