@@ -3,7 +3,8 @@
  */
 
 // 此处主机域名修改成腾讯云解决方案分配的域名
-var host = 'https://c6xoaf6b.qcloud.la';
+// var host = 'https://c6xoaf6b.qcloud.la';
+var host = 'https://applet.wenquanpage.com';
 
 var config = {
 

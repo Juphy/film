@@ -17,9 +17,9 @@ const CONF = {
 
     qcloudSecretKey: 'Y4Ulw48VtCi9Wmx1whMvcBXjy8APi22y',
 
-    serverHost: 'https://www.applet.top',
-    tunnelServerUrl: 'http://tunnel.ws.qcloud.la',
-    tunnelSignatureKey: '27fb7d1c161b7ca52d73cce0f1d833f9f5b5ec89',
+    // serverHost: 'https://www.applet.top',
+    // tunnelServerUrl: 'http://tunnel.ws.qcloud.la',
+    // tunnelSignatureKey: '27fb7d1c161b7ca52d73cce0f1d833f9f5b5ec89',
 
     /**
      * MySQL 配置，用来存储 session 和用户信息
@@ -31,7 +31,7 @@ const CONF = {
         port: 3306,
         user: 'root',
         db: 'cAuth',
-        pass: '123456',
+        pass: 'wx12f7ee2916dde013',
         char: 'utf8mb4'
     },
 
