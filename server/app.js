@@ -1,12 +1,15 @@
 const Koa = require('koa')
 const app = new Koa()
 const debug = require('debug')('koa-weapp-demo')
-const response = require('./middlewares/response')
+const middlewares = require('./middlewares')
 const bodyParser = require('koa-bodyparser')
 const config = require('./config')
 
 // 使用响应处理中间件
-app.use(response)
+app.use(middlewares.response)
+
+// 处理get和post请求参数
+app.use(middlewares.request)
 
 // 解析请求体
 app.use(bodyParser())

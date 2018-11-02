@@ -32,4 +32,24 @@ router.get('/message', controllers.message.get)
 // POST 用来处理微信转发过来的客服消息
 router.post('/message', controllers.message.post)
 
+const { tables, methods } = require('./config');
+
+let routes = tables.reduce((obj, key) => {
+  const o = require(`../controllers/${key}`);
+  const arr = Object.keys(o).reduce((total, each) => {
+    let item = { path: `/${key}_${each}`, service: key, action: each };
+    total.push(item);
+    return total;
+  }, []);
+  obj = obj.concat(arr);
+  return obj;
+}, []);
+
+routes.forEach(item => {
+  const service = require(`../controllers/${item.service}`);
+  methods.forEach(method => {
+    router[method](item.path, service[item.action]);
+  });
+});
+
 module.exports = router
