@@ -1,0 +1,1 @@
+const { winner } = require('../lib/model');

@@ -1,0 +1,1 @@
+const { prize } = require('../lib/model');

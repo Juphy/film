@@ -1,6 +1,11 @@
 const config = {
   tables: [
     'manager',
+    'activite',
+    'address',
+    'prize',
+    'report',
+    'winner',
   ],
   methods: [
     'get',

@@ -228,7 +228,7 @@ const users = sequelize.define('cSessionInfo',{
   create_time: { type: Sequelize.DATE },
   last_modify: { type: Sequelize.DATE },
   address_id:{type: Sequelize.INTEGER},
-  
+
 },{
     timestamps: false,
     freezeTableName: true
@@ -268,9 +268,9 @@ winners.sync()
 module.exports = {
   'manager': managers,
   'address':address,
-  'msgs': msgs,
-  'prizes': prizes,
-  'reports': reports,
-  'users': users,
-  'winners': winners
+  'msg': msgs,
+  'prize': prizes,
+  'report': reports,
+  'user': users,
+  'winner': winners
 };

@@ -1,0 +1,1 @@
+const { activite } = require('../lib/model');

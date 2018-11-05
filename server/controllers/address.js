@@ -1,0 +1,1 @@
+const { address } = require('../lib/model');
