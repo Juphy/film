@@ -9,7 +9,7 @@ const managers = sequelize.define('applet_managers', {
   name: {
     type: Sequelize.STRING
   },
-  nickName: {
+  nick_name: {
     type: Sequelize.STRING
   },
   phone: {
@@ -18,7 +18,7 @@ const managers = sequelize.define('applet_managers', {
   password: {
     type: Sequelize.STRING
   },
-  createTime: {
+  create_time: {
     type: Sequelize.DATE
   },
   invalid: {
@@ -40,37 +40,37 @@ const activities = sequelize.define('applet_activities',{
   playbill:{
     type: Sequelize.STRING
   },
-  movieId:{
+  movie_id:{
     type: Sequelize.INTEGER
   },
-  movieName:{
+  movie_name:{
     type: Sequelize.STRING
   },
-  startDay:{
+  start_day:{
     type: Sequelize.DATE
   },
-  endDay:{
+  end_day:{
     type: Sequelize.DATE
   },
   description:{
     type: Sequelize.STRING
   },
-  prizeDescription:{
+  prize_description:{
     type: Sequelize.JSON
   },
-  otherDescription:{
+  other_description:{
     type: Sequelize.JSON
   },
   status:{
     type: Sequelize.INTEGER
   },
-  managerId:{
+  manager_id:{
     type: Sequelize.INTEGER
   },
-  managerName:{
+  manager_name:{
     type: Sequelize.STRING
   },
-  createTime:{
+  create_time:{
     type: Sequelize.DATE
   },
   invalid:{
@@ -87,7 +87,7 @@ activities.sync();
 
 
 const address = sequelize.define('applet_address',{
-  openid:{
+  open_id:{
     type: Sequelize.STRING
   },
   province:{
@@ -124,25 +124,25 @@ const msgs = sequelize.define('applet_msgs',{
   link:{
     type: Sequelize.STRING
   },
-  openids:{
+  open_ids:{
     type: Sequelize.JSON
   },
-  managerId:{
+  manager_id:{
     type: Sequelize.INTEGER
   },
-  managerName:{
+  manager_name:{
     type: Sequelize.STRING
   },
-  createTime:{
+  create_time:{
     type: Sequelize.DATE
   },
-  sendTime:{
+  send_time:{
     type: Sequelize.DATE
   },
   status:{
     type: Sequelize.INTEGER
   },
-  readStatus:{
+  read_status:{
     type: Sequelize.INTEGER
   },
   invalid:{
@@ -168,13 +168,13 @@ const prizes = sequelize.define('applet_prizes',{
   num:{
     type: Sequelize.INTEGER
   },
-  managerId:{
+  manager_id:{
     type: Sequelize.INTEGER
   },
-  managerName:{
+  manager_name:{
     type: Sequelize.STRING
   },
-  createTime:{
+  create_time:{
     type: Sequelize.DATE
   },
   invalid:{
@@ -190,18 +190,18 @@ prizes.sync();
 
 const reports = sequelize.define('applet_reports',{
 
-  openid:{  type: Sequelize.STRING  },
+  open_id:{  type: Sequelize.STRING  },
   cinemaCode:{  type: Sequelize.INTEGER },
-  cinemaName:{  type: Sequelize.STRING  },
+  cinema_name:{  type: Sequelize.STRING  },
   city:{  type: Sequelize.INTEGER },
-  cityName:{  type: Sequelize.STRING  },
+  city_name:{  type: Sequelize.STRING  },
   chain:{ type: Sequelize.INTEGER },
-  chainName:{ type: Sequelize.STRING  },
+  chain_name:{ type: Sequelize.STRING  },
   content:{ type: Sequelize.JSON  },
   remark:{  type: Sequelize.STRING  },
-  showDay:{ type: Sequelize.DATE  },
-  managerId:{ type: Sequelize.INTEGER  },
-  managerName:{ type: Sequelize.STRING },
+  show_day:{ type: Sequelize.DATE  },
+  manager_id:{ type: Sequelize.INTEGER  },
+  manager_name:{ type: Sequelize.STRING },
   status:{  type: Sequelize.INTEGER },
   invalid:{ type: Sequelize.INTEGER }
 }, {
@@ -213,21 +213,22 @@ reports.sync();
 
 
 
-const users = sequelize.define('applet_users',{
+const users = sequelize.define('cSessionInfo',{
 
-  openid: { type: Sequelize.STRING },
-  nickName: { type: Sequelize.STRING },
+  open_id: { type: Sequelize.STRING },
+  nick_name: { type: Sequelize.STRING },
   gender: { type: Sequelize.INTEGER },
   country: { type: Sequelize.STRING },
   province: { type: Sequelize.STRING },
   city: { type: Sequelize.STRING },
   language: { type: Sequelize.STRING },
   phone: { type: Sequelize.INTEGER },
-  avatarUrl: { type: Sequelize.STRING },
+  avatar_url: { type: Sequelize.STRING },
   invalid: { type: Sequelize.INTEGER },
-  createTime: { type: Sequelize.DATE },
-  lastModify: { type: Sequelize.DATE },
-  addressId:{type: Sequelize.INTEGER},
+  create_time: { type: Sequelize.DATE },
+  last_modify: { type: Sequelize.DATE },
+  address_id:{type: Sequelize.INTEGER},
+  
 },{
     timestamps: false,
     freezeTableName: true
@@ -240,20 +241,20 @@ users.sync();
 const winners = sequelize.define('applet_winners', {
 
   openid: { type: Sequelize.STRING },
-  activiteId: { type: Sequelize.INTEGER },
+  activite_id: { type: Sequelize.INTEGER },
   prizeId: { type: Sequelize.INTEGER },
-  prizeName: { type: Sequelize.STRING },
-  prizeImage: { type: Sequelize.STRING },
+  prize_name: { type: Sequelize.STRING },
+  prize_image: { type: Sequelize.STRING },
   isSure: { type: Sequelize.INTEGER },
   status: { type: Sequelize.INTEGER },
-  needDelivery: { type: Sequelize.INTEGER },
-  deliveryCode: { type: Sequelize.STRING },
-  addressId: { type: Sequelize.INTEGER },
+  need_delivery: { type: Sequelize.INTEGER },
+  delivery_code: { type: Sequelize.STRING },
+  address_id: { type: Sequelize.INTEGER },
   address: { type: Sequelize.STRING },
-  managerId: { type: Sequelize.INTEGER },
-  managerName: { type: Sequelize.STRING },
-  isReceived: { type: Sequelize.INTEGER},
-  createTime: { type: Sequelize.DATE },
+  manager_id: { type: Sequelize.INTEGER },
+  manager_name: { type: Sequelize.STRING },
+  is_received: { type: Sequelize.INTEGER},
+  create_time: { type: Sequelize.DATE },
   invalid: { type: Sequelize.INTEGER },
 }, {
     timestamps: false,

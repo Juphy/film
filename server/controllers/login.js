@@ -1,3 +1,5 @@
+const { users } = require('../lib/model');
+
 // 登录授权接口
 module.exports = async (ctx, next) => {
     // 通过 Koa 中间件进行登录之后
