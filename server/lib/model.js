@@ -265,7 +265,7 @@ winners.sync()
 
 
 module.exports = {
-  'manager': manager,
+  'manager': managers,
   'address':address,
   'msgs': msgs,
   'prizes': prizes,
