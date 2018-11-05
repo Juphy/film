@@ -9,6 +9,5 @@ module.exports = async (ctx, next) => {
       break;
   }
   ctx.request['params'] = params;
-  console.log(params);
   await next();
 }
