@@ -8,8 +8,6 @@
     "pages/me/index",
     "pages/me/logistics/index",
     "pages/me/about/about",
-    "navigationBarTextStyle":"black"
-    "navigationBarTextStyle":"black"
     "pages/me/phone/phone",
     "pages/me/problem/problem",
     "pages/me/problem/problemDetail/detail",

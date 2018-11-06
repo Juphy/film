@@ -8,7 +8,6 @@ module.exports = async (ctx, next) => {
       params = ctx.request.body;
       break;
   }
-  ctx.body.code = 200;
   ctx.request['params'] = params;
   await next();
 }

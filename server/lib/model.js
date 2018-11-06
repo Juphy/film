@@ -1,6 +1,6 @@
 let { sequelize } = require('./mysql');
 const Sequelize = require('sequelize');
-
+const moment = require('moment');
 
 
 
@@ -19,7 +19,10 @@ const managers = sequelize.define('applet_managers', {
     type: Sequelize.STRING
   },
   create_time: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get(){
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
   },
   invalid: {
     type: Sequelize.INTEGER
@@ -47,10 +50,16 @@ const activities = sequelize.define('applet_activities',{
     type: Sequelize.STRING
   },
   start_day:{
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
+    }
   },
   end_day:{
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
+    }
   },
   description:{
     type: Sequelize.STRING
@@ -71,7 +80,10 @@ const activities = sequelize.define('applet_activities',{
     type: Sequelize.STRING
   },
   create_time:{
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
   },
   invalid:{
     type: Sequelize.INTEGER
@@ -134,10 +146,16 @@ const msgs = sequelize.define('applet_msgs',{
     type: Sequelize.STRING
   },
   create_time:{
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
   },
   send_time:{
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
   },
   status:{
     type: Sequelize.INTEGER
@@ -175,7 +193,10 @@ const prizes = sequelize.define('applet_prizes',{
     type: Sequelize.STRING
   },
   create_time:{
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
   },
   invalid:{
     type: Sequelize.INTEGER
@@ -199,7 +220,10 @@ const reports = sequelize.define('applet_reports',{
   chain_name:{ type: Sequelize.STRING  },
   content:{ type: Sequelize.JSON  },
   remark:{  type: Sequelize.STRING  },
-  show_day:{ type: Sequelize.DATE  },
+  show_day: {
+    type: Sequelize.DATE, get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
+    }  },
   manager_id:{ type: Sequelize.INTEGER  },
   manager_name:{ type: Sequelize.STRING },
   status:{  type: Sequelize.INTEGER },
@@ -225,8 +249,14 @@ const users = sequelize.define('cSessionInfo',{
   phone: { type: Sequelize.INTEGER },
   avatar_url: { type: Sequelize.STRING },
   invalid: { type: Sequelize.INTEGER },
-  create_time: { type: Sequelize.DATE },
-  last_modify: { type: Sequelize.DATE },
+  create_time: {
+    type: Sequelize.DATE, get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    } },
+  last_modify: {
+    type: Sequelize.DATE, get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    } },
   address_id:{type: Sequelize.INTEGER},
 
 },{
@@ -254,7 +284,10 @@ const winners = sequelize.define('applet_winners', {
   manager_id: { type: Sequelize.INTEGER },
   manager_name: { type: Sequelize.STRING },
   is_received: { type: Sequelize.INTEGER},
-  create_time: { type: Sequelize.DATE },
+  create_time: {
+    type: Sequelize.DATE, get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    } },
   invalid: { type: Sequelize.INTEGER },
 }, {
     timestamps: false,
