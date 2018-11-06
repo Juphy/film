@@ -1,0 +1,128 @@
+/**index.wxss**/
+
+.userinfo-home{
+  display: flex;
+  flex-direction: column;
+}
+
+.userinfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 60rpx;
+}
+
+.userinfo-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  margin-left: 60rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #333;
+  font-size: 32rpx;
+font-weight: 700;
+}
+
+.userinfo-phone {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #939393;
+}
+
+.userinfo-nickname-s {
+  margin-left: 30rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
+
+.userinfo-jl-wt {
+  margin-top: 60rpx;
+  margin-bottom: 60rpx;
+  margin-right: 60rpx;
+  margin-left: 60rpx;
+  width: 630rpx;
+  height: 140rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0rpx 0rpx 10rpx 10rpx #eaeaea;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #333;
+  
+  
+}
+
+.userinfo-jl {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-line {
+  height: 30rpx;
+  width: 2rpx;
+  background-color: #333;
+}
+
+.userinfo-jl-count {
+  margin-bottom: 30rpx;
+}
+
+
+.userinfo-list-menu{
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 24rpx;
+  font-weight: 700;
+  height: 88rpx;
+  margin-left: 60rpx;
+  margin-right: 60rpx; 
+}
+
+.userinfo-list-menu-image{
+  width: 10rpx;
+  height: 20rpx;
+  margin-left: 10rpx;
+}
+
+.userinfo-list-menu-tag{
+  flex-grow: 1;
+
+}
+.userinfo-list-menu-content{
+  font-size: 20rpx;
+  margin-right: 20rpx;
+  color: #939393;
+}
+.userinfo-list-line{
+  margin-left: 60rpx;
+  margin-right: 60rpx;
+  background-color: #eaeaea;
+  height: 3rpx;
+}
+
+.userinfo-zj-jl-count{
+  display: flex;
+  flex-direction: row;
+}
+
+.userinfo-red-point{
+  margin-top: 10rpx;
+  margin-left: 10rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 10rpx;
+  background-color: #FF0000
+}

@@ -1,0 +1,41 @@
+.partake{
+  display: flex;
+  flex-direction: column;
+  margin-right: 60rpx;
+  margin-left: 60rpx;
+  font-size: 24rpx;
+}
+
+.partake-date-picker{
+  margin-top: 80rpx;
+  
+}
+
+.partake-line{
+  background: #eaeaea;
+  height: 2rpx;
+  margin-top: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.partake-add-icon{
+  width: 93rpx;
+  height: 93rpx;
+}
+
+.partake-add{
+  width: 198rpx;
+  height: 198rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #eaeaea;
+}
+
+.partake-demo{
+  background: #eaeaea;
+  padding: 20rpx;
+  margin-bottom: 40rpx;
+
+}

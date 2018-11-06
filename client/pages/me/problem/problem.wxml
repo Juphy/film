@@ -1,0 +1,13 @@
+<view class='problemlist'>
+
+  <block wx:for="{{problemList}}" wx:key="{{index}}">
+
+    <view class='problemlist-item' bindtap='onGoProblemDetail'>
+      <text class='problemlist-title'>{{index+1}}.{{item.title}}</text>
+      <image class='problemlist-image' src='/images/mine_next_icon@3x.png' ></image>
+    </view>
+
+<view class='problemList-line'></view>
+  </block>
+
+</view>

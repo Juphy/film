@@ -1,0 +1,16 @@
+<view class='publicitylist'>
+
+  <block wx:for="{{publicityList}}">
+
+    <view class='publicitylist-item'>
+      <text class='publicitylist-item-title'>{{item.title}}</text>
+      <text class='publicitylist-item-date'>{{item.date}}</text>
+      <text class='publicitylist-item-describe'>{{item.describe}}</text>
+
+
+    </view>
+    <view class='publicitylist-line'></view>
+
+  </block>
+
+</view>

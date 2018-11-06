@@ -10,6 +10,5 @@ module.exports = async (ctx, next) => {
   }
   ctx.body.code = 200;
   ctx.request['params'] = params;
-  console.log(params);
   await next();
 }

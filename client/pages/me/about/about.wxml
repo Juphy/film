@@ -1,0 +1,6 @@
+<view class='about'>
+<image class='about-image' src='/images/mine_about_us_icon@3x.png'></image>
+<text class='about-title'>电影壹壹零</text>
+<text class='about-content'>描述</text>
+
+</view>

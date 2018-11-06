@@ -1,0 +1,56 @@
+<scroll-view scroll-x="true" style="width: 100%;white-space:nowrap;">
+  <!-- tab -->
+  <view class="tab">
+    <view class="tab-nav" style='font-size:12px'>
+      <view wx:for="{{tabnav.tabitem}}" bindtap="setTab" data-tabindex="{{index}}" style="{{index==showtab?'color:#56bdac;':''}} min-width:50%;max-width:50%;text-align:center;height: 80rpx;">{{item.text}}</view>
+      <view>
+
+        <view class="tab-line" style="width:{{100/tabnav.tabnum}}%;transform:translateX({{100*showtab}}%);">
+
+          <view class="tab-line-i"></view>
+
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>
+
+
+
+<swiper current="{{showtab}}" class="swiper-box" duration="300" style="height:{{winHeight}}px" bindchange="bindChange">
+
+  <swiper-item>
+
+    <block wx:for='{{doingActivityList}}'>
+
+      <view bindtap='onClickDetail' class='doing-activity-item'>
+        <text class='doing-activity-item-title'>{{item.title}}</text>
+        <text class='doing-activity-item-state'>{{item.state}}</text>
+
+      </view>
+
+      <view class='doing-activity-line'></view>
+
+    </block>
+
+    </swiper-item>
+
+
+  <swiper-item>
+
+    <block wx:for='{{overActivityList}}'>
+
+      <view bindtap='onClickDetail' class='doing-activity-item'>
+        <text class='doing-activity-item-title'>{{item.title}}</text>
+        <text class='doing-activity-item-state'>{{item.state}}</text>
+
+      </view>
+
+      <view class='doing-activity-line'></view>
+
+    </block>
+
+    </swiper-item>
+
+
+</swiper>
