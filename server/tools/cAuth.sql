@@ -22,6 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `cSessionInfo`;
 CREATE TABLE `cSessionInfo` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `open_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `uuid` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `skey` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -36,15 +37,16 @@ CREATE TABLE `cSessionInfo` (
   `nick_name` varchar(100) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (json_unquote(json_extract(`user_info`,'$.nickName'))) VIRTUAL,
   `province` varchar(100) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (json_unquote(json_extract(`user_info`,'$.province'))) VIRTUAL,
   `avatar_url` varchar(255) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (json_unquote(json_extract(`user_info`,'$.avatarUrl'))) VIRTUAL,
-  `phone` int(50) DEFAULT NULL COMMENT '手机号',
+  `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号',
   `address_id` int(11) DEFAULT NULL COMMENT '地址id',
   `province_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '省份名称',
   `city_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '城市名称',
   `last_modify` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `invalid` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`open_id`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `open_id` (`open_id`),
   KEY `openid` (`open_id`) USING BTREE,
   KEY `skey` (`skey`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会话管理用户信息';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会话管理用户信息';
 
 SET FOREIGN_KEY_CHECKS = 1;
