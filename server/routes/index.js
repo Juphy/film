@@ -37,7 +37,7 @@ const { tables, methods } = require('./config');
 let routes = tables.reduce((obj, key) => {
   const o = require(`../controllers/${key}`);
   const arr = Object.keys(o).reduce((total, each) => {
-    let item = { path: `/${key}_${each}`, service: key, action: each };
+    let item = { path: `/${key}/${each}`, service: key, action: each };
     total.push(item);
     return total;
   }, []);
