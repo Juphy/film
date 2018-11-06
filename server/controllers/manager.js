@@ -7,7 +7,7 @@ const add = async (ctx, next) => {
     const { name, nick_name = '', phone = null, password, account } = ctx.request.params;
     const create_time = new Date(), invalid = 0;
     if (!name || !account || !password) {
-        ctx.body = failed('缺少必填项') ;
+        ctx.body = failed('缺少必填项');
     } else {
         let res = await manager.create(
             {
@@ -23,6 +23,7 @@ const add = async (ctx, next) => {
 };
 // 管理员列表
 const list = async (ctx, next) => {
+    await next();
     let p = ctx.request.params;
     let { name = '', page = 1, page_size = 3 } = p;
     p['page'] = page;
@@ -45,9 +46,9 @@ const list = async (ctx, next) => {
 const del = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    let res = await manager.findById(id);
+    let res = manager.findById(id);
     if (res) {
-        res = manager.update({ invalid: id }, {
+        res = await manager.update({ invalid: id }, {
             where: {
                 id: id
             }
@@ -59,12 +60,12 @@ const del = async (ctx, next) => {
 };
 
 // 编辑管理员
-const edit = async (ctx) => {
+const edit = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    let res = await manager.findById(id);
+    let res = manager.findById(id);
     if (res) {
-        res = manager.update(p, {
+        res = await manager.update(p, {
             where: {
                 id: id
             }
@@ -76,10 +77,16 @@ const edit = async (ctx) => {
 };
 
 // 查询管理员信息
-const info = async (ctx) => {
+const info = async (ctx, next) => {
     const p = ctx.request.params;
-    let { id = 0 } = p;
-    ctx.body = await manager.findById(p.id);
+    console.log(p);
+    let { id } = p;
+    let res = await manager.findById(id);
+    if (res) {
+        ctx.body = success(res);
+    } else {
+        ctx.body = failed('id无效');
+    }
 };
 
 module.exports = {
