@@ -6,15 +6,16 @@ const debug = require('debug')('koa-weapp-demo')
 module.exports = async function (ctx, next) {
     try {
         // 调用下一个 middleware
-        await next()
+        await next();
         if (ctx.body.code !== 400) {
             const p = ctx.request.params;
             if ('page' in p && 'page_size' in p) {
                 const body = ctx.body['res'];
-                console.log(typeof body);
-                let obj = {};
+                let obj = {
+                    page: {},
+                    data: {}
+                };
                 obj.data = body['rows'];
-                obj.page = {};
                 obj.page['count'] = body.count;
                 obj.page['total'] = Math.ceil(body.count / p.page_size);
                 ctx.body['res'] = obj;
