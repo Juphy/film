@@ -4,27 +4,30 @@ const Op = Sequelize.Op;
 const { success, failed } = require('./base.js');
 // 添加管理员
 const add = async (ctx, next) => {
-    const { name, nick_name, phone, password } = ctx.request.params;
-    const createTime = new Date(), invalid = 0;
-    res = await manager.create(
-        {
-            name: name,
-            nickName: nick_name,
-            phone: phone,
-            password: password,
-            createTime: create_time,
-            invalid: invalid
-        });
-    ctx.body = res;
+    const { name, nick_name = '', phone = null, password, account } = ctx.request.params;
+    const create_time = new Date(), invalid = 0;
+    if (!name || !account || !password) {
+        ctx.body = failed('缺少必填项') ;
+    } else {
+        let res = await manager.create(
+            {
+                name: name,
+                nick_name: nick_name,
+                phone: phone,
+                password: password,
+                create_time: create_time,
+                invalid: invalid
+            });
+        ctx.body = success(res, '添加成功');
+    }
 };
 // 管理员列表
 const list = async (ctx, next) => {
-    let res;
     let p = ctx.request.params;
-    let { name = '', nick_name = '', page = 1, page_size = 3 } = p;
+    let { name = '', page = 1, page_size = 3 } = p;
     p['page'] = page;
     p['page_size'] = page_size;
-    res = await manager.findAndCountAll({
+    let res = await manager.findAndCountAll({
         where: {
             invalid: 0,
             name: {
@@ -40,17 +43,42 @@ const list = async (ctx, next) => {
 
 // 删除管理员
 const del = async (ctx, next) => {
-
+    let p = ctx.request.params;
+    let { id } = p;
+    let res = await manager.findById(id);
+    if (res) {
+        res = manager.update({ invalid: id }, {
+            where: {
+                id: id
+            }
+        })
+        ctx.body = success(res, '删除成功');
+    } else {
+        ctx.body = failed('id无效');
+    }
 };
 
 // 编辑管理员
 const edit = async (ctx) => {
-
+    let p = ctx.request.params;
+    let { id } = p;
+    let res = await manager.findById(id);
+    if (res) {
+        res = manager.update(p, {
+            where: {
+                id: id
+            }
+        });
+        ctx.body = success(res, '编辑成功');
+    } else {
+        ctx.body = failed('id无效');
+    }
 };
 
 // 查询管理员信息
 const info = async (ctx) => {
     const p = ctx.request.params;
+    let { id = 0 } = p;
     ctx.body = await manager.findById(p.id);
 };
 
