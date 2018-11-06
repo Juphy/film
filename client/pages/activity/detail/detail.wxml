@@ -1,0 +1,27 @@
+<view class='activity-detail'>
+
+<view class='activity-detail-foot'>
+<view class='activity-detail-foot-line'></view>
+
+<view class='activity-detail-foot-mf'>
+
+
+<view bindtap='onClickLogistics' class='activity-detail-foot-wycj'>
+<image class='activity-detail-foot-icon' src='/images/activities_detail_icon@3x.png'></image>
+<text>我要参加</text>
+</view>
+
+
+<view class='activity-detail-foot-mf-line'></view>
+
+<view class='activity-detail-foot-share'>
+<image class='activity-detail-foot-icon'  src='/images/activities_share_icon@3x.png'></image>
+<text>分享</text>
+</view>
+
+
+</view>
+
+</view>
+
+</view>

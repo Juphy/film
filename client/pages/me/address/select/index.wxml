@@ -1,0 +1,39 @@
+<view class='address-select'>
+  <scroll-view scroll-y style="height: 88vh;">
+    <block wx:for="{{addressList}}">
+
+      <view class='address-item'>
+
+        <view class='address-item-phone-name'>
+
+          <text class='address-item-name'>{{item.name}}</text>
+          <text>{{item.phone}}</text>
+
+        </view>
+
+        <view class='address-item-address'>
+
+          <block wx:if="{{item.isDefault}}">
+            <text class='address-item-default'>[默认地址]</text>
+          </block>
+
+          <text class='address-item-address-text'>{{item.address}}</text>
+
+        </view>
+
+
+
+      </view>
+      <view class='address-item-line'></view>
+    </block>
+  </scroll-view>
+
+<view class='address-select-manage-add'> 
+
+<text class='address-select-manage' bindtap='onClickManageAddress'>管理地址</text>
+<view class='address-select-manage-add-line'></view>
+<text class='address-select-manage' bindtap='onClickAddAddress'>添加新地址</text>
+</view>
+
+
+</view>

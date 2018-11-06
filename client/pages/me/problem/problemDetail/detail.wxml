@@ -1,0 +1,6 @@
+<view class='problem-detail'>
+
+<text class='problem-detail-title'>title</text>
+<text class='problem-detail-content'>content</text>
+
+</view>

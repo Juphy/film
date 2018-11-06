@@ -1,13 +1,58 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
-    "pages/addCgi/addCgi"
+    "pages/activity/index",
+    "pages/activity/detail/detail",
+    "pages/activity/partake/index",
+    "pages/addCgi/addCgi",
+    "pages/me/index",
+    "pages/me/logistics/index",
+    "pages/me/about/about",
+    "pages/me/phone/phone",
+    "pages/me/problem/problem",
+    "pages/me/problem/problemDetail/detail",
+    "pages/me/address/index",
+    "pages/me/address/edit/index",
+    "pages/me/address/select/index",
+    "pages/me/partake_record/index",
+    "pages/me/partake_record/detail/index",
+    "pages/me/award/index",
+    "pages/me/award/address/index",
+    
+    "pages/publicity/index"
   ],
-  "window":{
-    "backgroundColor":"#F6F6F6",
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "Wafer Quick Start",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#939393",
+    "selectedColor": "#000000",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "position": "bottom",
+    "list": [
+      {
+        "pagePath": "pages/activity/index",
+        "text": "任务",
+        "iconPath": "images/activity2@3x.png",
+        "selectedIconPath": "images/activity@3x.png"
+      },
+      {
+        "pagePath": "pages/publicity/index",
+        "text": "公示栏",
+        "iconPath": "images/announcement2@3x.png",
+        "selectedIconPath": "images/announcement@3x.png"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "text": "我的",
+        "iconPath": "images/mine2@3x.png",
+        "selectedIconPath": "images/mine@3x.png"
+      }
+    ]
   }
 }

@@ -1,0 +1,29 @@
+<view class='partake'>
+
+  <view class="partake-date-picker">
+    <picker mode="date" value="{{endDate}}" start="2015-09-01" end="{{endDate}}" bindchange="bindDateChange">
+      <view class="picker">
+        {{endDate}}
+      </view>
+    </picker>
+  </view>
+
+  <view class='partake-line'></view>
+  <input type='text' placeholder='填写影院名称'></input>
+  <view class='partake-line'></view>
+  <textarea class='partake-demo' placeholder='填写晒票说明'></textarea>
+
+  <view>
+
+    <block wx:for='{{partakeList}}'>
+
+      <image src='{{item.pic}}'></image>
+
+    </block>
+
+    <view class='partake-add'>
+
+      <image class='partake-add-icon' src='/images/participation_add_icon@3x.png'></image>
+    </view>
+  </view>
+</view>

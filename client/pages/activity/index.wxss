@@ -1,0 +1,53 @@
+.activitylist-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15rpx;
+  margin-top: 15rpx;
+  margin-left: 60rpx;
+  margin-right: 60rpx;
+}
+
+.activitylist-item-image {
+  background-color: #eaea;
+  width: 630rpx;
+  height: 378rpx;
+  margin-bottom: 30rpx;
+  border-radius: 18rpx;
+  
+}
+
+.activitylist-item-image-no {
+  background-color: #eaea;
+  width: 630rpx;
+  height: 378rpx;
+  margin-bottom: 30rpx;
+  border-radius: 18rpx;
+
+}
+::-webkit-scrollbar
+{
+width: 0;
+height: 0;
+color: transparent;
+}
+.activitylist-item-over {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  filter: grayscale(100%);
+  
+}
+
+.activitylist-item-image-over {
+  position: absolute;
+  z-index: 10;
+  width: 174rpx;
+  height: 100rpx;
+}
+
+.activitylist-item-name {
+  font-size: 32rpx;
+  font-weight: 700;
+}

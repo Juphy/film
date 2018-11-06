@@ -1,0 +1,68 @@
+.address-select{
+  display: flex;
+  flex-direction: column;
+}
+
+.address-item{
+  display: flex;
+  flex-direction: column;
+  height: 140rpx;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.address-item-phone-name{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10rpx;
+}
+
+.address-item-default{
+  font-size: 24rpx;
+}
+
+.address-item-address-text{
+  font-size: 24rpx;
+}
+
+.address-item-line{
+  width: 100%;
+  height: 2rpx;
+  background-color: #eaeaea;
+}
+
+.address-item-name{
+  flex-grow: 1;
+}
+
+.address-select-manage-add{
+  width: 100%;
+  height: 98rpx;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: #56bdac;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.address-select-manage{
+ flex-grow: 1;
+ text-align: center;
+ font-size: 28rpx;
+ color: #fff;
+ 
+ 
+}
+
+.address-select-manage-add-line{
+  width: 2rpx;
+  height: 30rpx;
+  background-color: #fff;
+}

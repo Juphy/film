@@ -1,0 +1,87 @@
+<view class='userinfo-home'>
+
+<!-- 用户信息 -->
+
+  <view>
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 点击登录 </button>
+    <block wx:else>
+
+      <view class='userinfo'>
+        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+        <view class='userinfo-nickname-s'>
+
+          <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        <view bindtap='onClickBindingPhone' class='userinfo-phone'>
+        <text >尚未绑定手机号</text>
+<image class='userinfo-list-menu-image' src='/images/mine_next_icon@3x.png' ></image>
+
+        </view>
+        </view>
+
+      </view>
+
+    </block>
+  </view>
+
+<!-- 数据统计 -->
+
+  <view class='userinfo-jl-wt'>
+
+    <view bindtap='onClickPartakeRecord' class='userinfo-jl'>
+      <text class='userinfo-jl-count'>0</text>
+      <text class='userinfo-jl-tag'>参与记录</text>
+    </view>
+
+    <view class='userinfo-line'></view>
+
+    <view class='userinfo-jl' bindtap='onGoProblem' >
+
+    <view class='userinfo-zj-jl-count'>
+      <text class='userinfo-jl-count'>0</text>
+      <view class='userinfo-red-point'></view>
+    </view>
+    
+      <text class='userinfo-jl-tag'>中奖记录</text>
+    </view>
+
+  </view>
+
+
+<!-- 列表选项 -->
+
+<view class='userinfo-list-menu'>
+<text class='userinfo-list-menu-tag'>收货地址</text>
+<image class='userinfo-list-menu-image' src='/images/mine_next_icon@3x.png' ></image>
+</view>
+
+<view class='userinfo-list-line'></view>
+<view bindtap='onClickLogistics' class='userinfo-list-menu'>
+<text class='userinfo-list-menu-tag'>物流信息</text>
+<image class='userinfo-list-menu-image' src='/images/mine_next_icon@3x.png' ></image>
+</view>
+
+<view class='userinfo-list-line'></view> 
+
+<view bindtap='onClickProblem' class='userinfo-list-menu' >
+<text class='userinfo-list-menu-tag'>常见问题</text>
+<image class='userinfo-list-menu-image' src='/images/mine_next_icon@3x.png' ></image>
+</view>
+
+<view class='userinfo-list-line'></view>
+<view class='userinfo-list-menu' bindtap='onCallService'>
+<text class='userinfo-list-menu-tag'>联系客服</text>
+<image class='userinfo-list-menu-image' src='/images/mine_next_icon@3x.png' ></image>
+</view>
+
+<view class='userinfo-list-line'></view>
+
+
+<view class='userinfo-list-menu' bindtap='onGoAbout'>
+<text class='userinfo-list-menu-tag'>关于我们</text>
+<image class='userinfo-list-menu-image' src='/images/mine_next_icon@3x.png' ></image>
+</view>
+
+<view class='userinfo-list-line'></view>
+
+
+</view>
