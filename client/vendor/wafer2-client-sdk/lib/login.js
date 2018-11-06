@@ -78,21 +78,26 @@ function login (opts) {
             header: header,
             method: opts.method,
             success (result) {
-                const data = result.data;
+                result = result.data;
+                const data = result.res;
 
-                if (!data || data.code !== 0 || !data.data || !data.data.skey) {
+                console.log(result)
+
+                if (!data || result.code !== 200 || !data.skey) {
                     return opts.fail(new Error(`响应错误，${JSON.stringify(data)}`))
                 }
 
-                const res = data.data
+                // const res = data.data
 
-                if (!res || !res.userinfo) {
-                    return opts.fail(new Error(`登录失败(${data.error})：${data.message}`))
+                if (!data || !data.userinfo) {
+                    return opts.fail(new Error(`登录失败(${result.msg}`))
                 }
 
                 // 成功地响应会话信息
-                Session.set(res)
-                opts.success(res.userinfo)
+                // Session.set(data)
+
+                console.log(data.userinfo)
+                opts.success(data.userinfo)
             },
             fail (err) {
                 console.error('登录失败，可能是网络错误或者服务器发生异常')

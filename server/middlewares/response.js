@@ -7,13 +7,10 @@ module.exports = async function (ctx, next) {
     try {
         // 调用下一个 middleware
         await next()
-        console.log(typeof ctx.request.params);
         if (ctx.body.code !== 400) {
             const p = ctx.request.params;
             if ('page' in p && 'page_size' in p) {
-                console.log(1111);
                 const body = ctx.body['res'];
-                console.log('1qawekjwlqkwjeqkwejqwlke', body);
                 console.log(typeof body);
                 let obj = {};
                 obj.data = body['rows'];
