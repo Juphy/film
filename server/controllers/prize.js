@@ -10,7 +10,7 @@ const add = async (ctx, next) => {
     if (!name || !image || (num <= 0)) {
         ctx.body = failed('缺少必填项');
     } else {
-        let res = await manager_id.create({
+        let res = await prize.create({
             name: name,
             image: image,
             manager_id: manager_id,
@@ -38,7 +38,7 @@ const list = async (ctx, next) => {
                 [Op.like]: '%' + manager_name + '%'
             }
         },
-        order: ['create_time'],
+        order: [['create_time', 'DESC']],
         offset: (page - 1) * page_size,
         limit: page_size * 1
     });
@@ -48,9 +48,57 @@ const list = async (ctx, next) => {
 const del = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
+    await prize.findById(id).then(res => {
+        if (res) {
+            if (res.invalid !== 0) {
+                ctx.body = failed('已删除');
+            } else {
+                res = prize.update({ invalid: id }, {
+                    where: {
+                        id: id
+                    }
+                })
+                ctx.body = success(res, '删除成功');
+            }
+        } else {
+            ctx.body = failed('id无效');
+        }
+    });
+}
+
+const edit = async (ctx, next) => {
+    let p = ctx.request.params;
+    let { id } = p;
+    await prize.findById(id).then(res => {
+        if (res) {
+            res = prize.update(p, {
+                where: {
+                    id: id
+                }
+            });
+            ctx.body = success(res, '编辑成功');
+        } else {
+            ctx.body = failed('id无效');
+        }
+    });
+}
+
+const info = async (ctx, next) => {
+    let p = ctx.request.params;
+    let { id } = p;
+    await manager.findById(id).then(res => {
+        if (res) {
+            ctx.body = success(res);
+        } else {
+            ctx.body = failed('id无效');
+        }
+    });
 }
 
 module.exports = {
     add,
-    list
+    list,
+    del,
+    edit,
+    info
 }
