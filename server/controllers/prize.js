@@ -48,22 +48,17 @@ const list = async (ctx, next) => {
 const del = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    await prize.findById(id).then(res => {
-        if (res) {
-            if (res.invalid !== 0) {
-                ctx.body = failed('已删除');
-            } else {
-                res = prize.update({ invalid: id }, {
-                    where: {
-                        id: id
-                    }
-                })
-                ctx.body = success(res, '删除成功');
-            }
+    let res = await prize.findById(id)
+    if (res) {
+        if (res.invalid !== 0) {
+            ctx.body = failed('已删除');
         } else {
-            ctx.body = failed('id无效或者缺省');
+            res = res.update({ invalid: id })
+            ctx.body = success(res, '删除成功');
         }
-    });
+    } else {
+        ctx.body = failed('id无效或者缺省');
+    }
 }
 
 const edit = async (ctx, next) => {
@@ -72,31 +67,25 @@ const edit = async (ctx, next) => {
     if (!name || !image || Number(num) <= 0) {
         ctx.body = failed('必填项缺省或者无效');
     } else {
-        await prize.findById(id).then(res => {
-            if (res) {
-                res = prize.update(p, {
-                    where: {
-                        id: id
-                    }
-                });
-                ctx.body = success(res, '编辑成功');
-            } else {
-                ctx.body = failed('id无效或者缺省');
-            }
-        });
+        let res = await prize.findById(id);
+        if (res) {
+            res = res.update(p);
+            ctx.body = success(res, '编辑成功');
+        } else {
+            ctx.body = failed('id无效或者缺省');
+        }
     }
 }
 
 const info = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    await prize.findById(id).then(res => {
-        if (res) {
-            ctx.body = success(res);
-        } else {
-            ctx.body = failed('id无效或者缺省');
-        }
-    });
+    let res = await prize.findById(id);
+    if (res) {
+        ctx.body = success(res);
+    } else {
+        ctx.body = failed('id无效或者缺省');
+    }
 }
 
 module.exports = {
