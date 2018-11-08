@@ -37,7 +37,7 @@ const video = async (ctx, next) => {
 
   ctx.req.bucketType = 'video'
   ctx.req.maxSize = 20
-  ctx.req.mimetypes = ['audio/mpeg', 'audio/mp3', 'audio/m4a']
+  ctx.req.mimetypes = ['audio/mpeg', 'audio/mp3', 'audio/m4a','video/mp4']
   const data = await uploader(ctx.req);
   ctx.body = success(data, '上传视频成功');
 
