@@ -11,6 +11,7 @@
     "author": "Jason",
     "license": "MIT",
     "dependencies": {
+        "@alicloud/sms-sdk": "^1.1.6",
         "axios": "^0.15.3",
         "knex": "^0.13.0",
         "koa": "^2.6.1",
