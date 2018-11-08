@@ -20,7 +20,7 @@ const image = async (ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
-  ctx.req.bucketType = 'image'
+  ctx.req.bucketType = 'images'
   ctx.req.maxSize = 1
   ctx.req.mimetypes = ['image/jpeg', 'image/jp2', 'image/jpm', 'image/jpx', 'image/gif', 'image/bmp', 'image/png', 'audio/mpeg']
   const data = await uploader(ctx.req);
@@ -35,7 +35,7 @@ const video = async (ctx, next) => {
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
 
-  ctx.req.bucketType = 'video'
+  ctx.req.bucketType = 'videos'
   ctx.req.maxSize = 20
   ctx.req.mimetypes = ['audio/mpeg', 'audio/mp3', 'audio/m4a','video/mp4']
   const data = await uploader(ctx.req);
@@ -44,7 +44,7 @@ const video = async (ctx, next) => {
 };
 
 const file = async (ctx, next) => {
-  ctx.req.bucketType = 'file'
+  ctx.req.bucketType = 'files'
   ctx.req.maxSize = 5
   ctx.req.mimetypes = ['application/pdf']
   const data = await uploader(ctx.req);
@@ -163,7 +163,6 @@ const uploader = async(req) => {
     
     const allowMimeTypes = req.mimetypes ?
       req.mimetypes : ['image/jpeg', 'image/jp2', 'image/jpm', 'image/jpx', 'image/gif', 'image/bmp', 'image/png', 'audio/mpeg', 'audio/mp3', 'audio/m4a', 'application/pdf']
-    console.log(allowMimeTypes)
     if (!resultType || !allowMimeTypes.includes(resultType.mime)) {
       debug('%s: 不支持类型的文件', ERRORS.ERR_UNSUPPORT_FILE_TYPE, imageFile)
       throw new Error(ERRORS.ERR_UNSUPPORT_FILE_TYPE)
