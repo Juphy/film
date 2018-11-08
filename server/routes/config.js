@@ -7,6 +7,7 @@ const config = {
     'report',
     'winner',
     'user',
+    'upload'
   ],
   methods: [
     'get',
