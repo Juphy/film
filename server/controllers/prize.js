@@ -8,7 +8,7 @@ const add = async (ctx, next) => {
     let { name, image, manager_id, manager_name, num } = p;
     const create_time = new Date(), invalid = 0;
     if (!name || !image || (num <= 0)) {
-        ctx.body = failed('缺少必填项');
+        ctx.body = failed('必填项缺省或者无效');
     } else {
         let res = await prize.create({
             name: name,
@@ -25,7 +25,7 @@ const add = async (ctx, next) => {
 
 const list = async (ctx, next) => {
     let p = ctx.request.params;
-    let { name = '', manager_name = '', page = 1, page_size = 3 } = p;
+    let { name = '', manager_name = '', page = 1, page_size = 10 } = p;
     p['page'] = page;
     p['page_size'] = page_size;
     let res = await prize.findAndCountAll({
@@ -61,36 +61,40 @@ const del = async (ctx, next) => {
                 ctx.body = success(res, '删除成功');
             }
         } else {
-            ctx.body = failed('id无效');
+            ctx.body = failed('id无效或者缺省');
         }
     });
 }
 
 const edit = async (ctx, next) => {
     let p = ctx.request.params;
-    let { id } = p;
-    await prize.findById(id).then(res => {
-        if (res) {
-            res = prize.update(p, {
-                where: {
-                    id: id
-                }
-            });
-            ctx.body = success(res, '编辑成功');
-        } else {
-            ctx.body = failed('id无效');
-        }
-    });
+    let { id, name, image, num } = p;
+    if (!name || !image || Number(num) <= 0) {
+        ctx.body = failed('必填项缺省或者无效');
+    } else {
+        await prize.findById(id).then(res => {
+            if (res) {
+                res = prize.update(p, {
+                    where: {
+                        id: id
+                    }
+                });
+                ctx.body = success(res, '编辑成功');
+            } else {
+                ctx.body = failed('id无效或者缺省');
+            }
+        });
+    }
 }
 
 const info = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    await manager.findById(id).then(res => {
+    await prize.findById(id).then(res => {
         if (res) {
             ctx.body = success(res);
         } else {
-            ctx.body = failed('id无效');
+            ctx.body = failed('id无效或者缺省');
         }
     });
 }
