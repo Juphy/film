@@ -26,32 +26,26 @@ const edit = async (ctx, next) => {
     if (!open_id || !province || !city || !_address) {
         ctx.body = failed('必填项缺省或者无效');
     } else {
-        await address.findById(id).then(res => {
-            if (res) {
-                Object.keys(p)
-                res = address.update(p, {
-                    where: {
-                        id: id
-                    }
-                });
-                ctx.body = success(res, '编辑成功');
-            } else {
-                ctx.body = failed('id无效或者缺省');
-            }
-        })
+        let res = await address.findById(id);
+        if (res) {
+            Object.keys(p)
+            res = res.update(p);
+            ctx.body = success(res, '编辑成功');
+        } else {
+            ctx.body = failed('id无效或者缺省');
+        }
     }
 }
 
 const info = async (ctx, next) => {
     const p = ctx.request.params;
     let { id } = p;
-    await address.findById(id).then(res => {
-        if (res) {
-            ctx.body = success(res);
-        } else {
-            ctx.body = failed('id无效或者缺省');
-        }
-    });
+    let res = await address.findById(id);
+    if (res) {
+        ctx.body = success(res);
+    } else {
+        ctx.body = failed('id无效或者缺省');
+    }
 }
 
 module.exports = {
