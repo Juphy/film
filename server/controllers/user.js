@@ -1,7 +1,11 @@
-const { user } = require('../lib/model');
+const { User } = require('../lib/model');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const { success, failed } = require('./base.js');
+
+
+
+
 // 添加管理员
 const info = async (ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
@@ -31,7 +35,7 @@ const bind_phone = async (ctx, next) => {
     return ctx.body = failed('验证码错误')
   }
 
-  user_info = await user.findOne({where:{open_id:open_id,invalid:0}});
+  user_info = await User.findOne({where:{open_id:open_id,invalid:0}});
 
   if(user_info){
     res = await user_info.update({phone:phone});
@@ -47,5 +51,5 @@ const bind_phone = async (ctx, next) => {
 
 module.exports = {
     info,
-    bind_phone
+    bind_phone,
 }

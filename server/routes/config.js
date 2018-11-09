@@ -9,6 +9,7 @@ const config = {
     'user',
     'upload',
     'message',
+    'login'
   ],
   methods: [
     'get',

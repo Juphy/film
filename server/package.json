@@ -13,11 +13,14 @@
     "dependencies": {
         "@alicloud/sms-sdk": "^1.1.6",
         "axios": "^0.15.3",
+        "jsonwebtoken": "^8.3.0",
         "knex": "^0.13.0",
         "koa": "^2.6.1",
         "koa-bodyparser": "^3.2.0",
+        "koa-jwt": "^3.5.1",
         "koa-log4": "^2.1.0",
         "koa-router": "^7.4.0",
+        "koa-session": "^5.10.0",
         "lodash": "^4.17.11",
         "mkdir-p": "0.0.7",
         "moment": "^2.22.2",
@@ -26,8 +29,7 @@
         "nodemon": "^1.18.5",
         "pify": "^2.3.0",
         "sequelize": "^4.41.0",
-        "wafer-node-sdk": "^1.4.5",
-        "koa-session": "^5.10.0"
+        "wafer-node-sdk": "^1.4.5"
     },
     "devDependencies": {
         "babel-eslint": "^7.1.0",

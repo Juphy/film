@@ -10,8 +10,6 @@ const config = require('../config')
 
 
 const sendSMS = async(req) => {
-
-  console.log('---phone:', req)
   
 
   // ACCESS_KEY_ID/ACCESS_KEY_SECRET 根据实际申请的账号信息进行替换

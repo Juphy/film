@@ -311,6 +311,6 @@ module.exports = {
   'msg': msgs,
   'prize': prizes,
   'report': reports,
-  'user': users,
+  'User': users,
   'winner': winners
 };
