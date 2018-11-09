@@ -13,7 +13,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 
 //后台登录
-const login = async(ctx, next) => {
+const login = async (ctx, next) => {
   let {
     account,
     password
@@ -53,7 +53,7 @@ const login = async(ctx, next) => {
 }
 
 // 添加管理员
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const {
     name,
     nick_name = '',
@@ -79,7 +79,7 @@ const add = async(ctx, next) => {
   }
 };
 // 管理员列表
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   await next();
   let p = ctx.request.params;
   let {
@@ -104,7 +104,7 @@ const list = async(ctx, next) => {
 };
 
 // 删除管理员
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -125,7 +125,7 @@ const del = async(ctx, next) => {
 };
 
 // 编辑管理员
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     name,
@@ -147,7 +147,7 @@ const edit = async(ctx, next) => {
 };
 
 // 查询管理员信息
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   const p = ctx.request.params;
   let {
     id

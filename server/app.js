@@ -9,16 +9,30 @@ const jwt = require('koa-jwt')
 // 解析请求体
 app.use(bodyParser())
 
+app.use(async (ctx, next) => {
+  console.log(ctx.request);
+  console.log(ctx.body);
+  await next();
+})
+
+app
+  .use(middlewares.errorHandle)
+
+const secret = 'jwt_secret';
+
+app.use(jwt({ secret: secret }).unless({
+  path: [/\/register/, /\/login/],
+}))
 // 处理get和post请求参数
 app.use(middlewares.request)
 
 // 使用响应处理中间件
-app.use(middlewares.response)
+// app.use(middlewares.response)
 
 // session
 app.keys = ['some secret hurr'];
 const CONFIG = {
-  key: 'koa:sess', //cookie key (default is koa:sess)
+  key: 'token', //cookie key (default is koa:sess)
   maxAge: 86400000, // cookie的过期时间 maxAge in ms (default is 1 days)
   overwrite: true, //是否可以overwrite    (默认default true)
   httpOnly: true, //cookie是否只有服务器端可以访问 httpOnly or not (default true)
@@ -32,19 +46,9 @@ app.use(session(CONFIG, app));
 const router = require('./routes')
 app.use(router.routes())
 
-app.use(async(ctx, next) => {
-  console.log(ctx.request.params);
-  console.log(ctx.body);
-})
 
-app
-  .use(middlewares.errorHandle)
 
-const secret = 'jwt_secret';
 
-app.use(jwt({ secret}).unless({
-    path: [/\/register/, /\/login/],
-  }))
 
 // 启动程序，监听端口
 app.listen(config.port, () => debug(`listening on port ${config.port}`))
