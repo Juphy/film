@@ -24,22 +24,24 @@ const sendSMS = async(req) => {
     secretAccessKey
   })
 
+  const num = Math.floor(Math.random() * 1000000 + 1);
+
   //发送短信
-  smsClient.sendSMS({
+  return smsClient.sendSMS({
 
     // 必填: 待发送手机号。 支持以逗号分隔的形式进行批量调用， 批量上限为1000个手机号码,
     // 批量调用相对于单条调用及时性稍有延迟,
     // 验证码类型的短信推荐使用单条调用的方式； 发送国际 / 港澳台消息时， 接收号码格式为： 国际区号 + 号码， 如“ 85200000000”
     PhoneNumbers: req.phone,
     // 必填: 短信签名 - 可在短信控制台中找到
-    SignName: config.SignName,
+    SignName: config.sendSms.SignName,
     // 必填: 短信模板 - 可在短信控制台中找到， 发送国际 / 港澳台消息时， 请使用国际 / 港澳台短信模版
     TemplateCode: req.template_code,
     // 可选: 模板中的变量替换JSON串,
     // 如模板内容为 "亲爱的${name},您的验证码为${code}"
     // 时。
     // TemplateParam: '{"code":"12345"}'
-    TemplateParam: req.template_param
+    TemplateParam: JSON.stringify({ 'code': num })
 
   }).then(function(res) {
     let {
@@ -50,7 +52,7 @@ const sendSMS = async(req) => {
       console.log(res)
       return {
         'status': true,
-        'res': res
+        'res': num
       }
     }
   }, function(err) {

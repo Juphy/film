@@ -50,13 +50,15 @@ const send_msg = async(ctx, next) => {
     phone
   } = ctx.request.params;
   console.log(phone)
+
   req.phone = phone
   req.template_code = 'SMS_150495613'
-  req.template_param = '{"code":"12345"}'
-  console.log(req)
+
   res = await sendSMS(req)
+
   if (res.status) {
-    ctx.body = success(res.res, '发送成功')
+    
+    ctx.body = success('', '发送成功')
   } else {
     ctx.body = failed(res.res)
   }
