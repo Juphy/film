@@ -52,7 +52,7 @@ const sendSMS = async(req) => {
       console.log(res)
       return {
         'status': true,
-        'res': num
+        'data': num
       }
     }
   }, function(err) {

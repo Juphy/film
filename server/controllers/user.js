@@ -21,7 +21,15 @@ const bind_phone = async (ctx, next) => {
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
   let p = ctx.request.params;
-  let { open_id,phone } = p;
+  let { open_id,phone,code } = p;
+
+  console.log('-----code:',code);
+  console.log('------bind_phone_code',ctx.session.bindPhoneCode)
+
+
+  if(code != ctx.session.bindPhoneCode){
+    return ctx.body = failed('验证码错误')
+  }
 
   user_info = await user.findOne({where:{open_id:open_id,invalid:0}});
 
