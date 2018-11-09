@@ -28,9 +28,9 @@ router.post('/tunnel', controllers.tunnel.post)
 
 // --- 客服消息接口 Demo --- //
 // GET  用来响应小程序后台配置时发送的验证请求
-router.get('/message', controllers.message.get)
+// router.get('/message', controllers.message.get)
 // POST 用来处理微信转发过来的客服消息
-router.post('/message', controllers.message.post)
+// router.post('/message', controllers.message.post)
 
 const { tables, methods } = require('./config');
 
