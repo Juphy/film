@@ -27,7 +27,7 @@
         "pify": "^2.3.0",
         "sequelize": "^4.41.0",
         "wafer-node-sdk": "^1.4.5",
-        "koa-session": "^5.10.0",
+        "koa-session": "^5.10.0"
     },
     "devDependencies": {
         "babel-eslint": "^7.1.0",
