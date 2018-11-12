@@ -32,7 +32,7 @@ const bind_phone = async (ctx, next) => {
 
   console.log('-----code:',code);
   console.log('------bind_phone_code', ctx.session['bindPhoneCode_' + phone])
-
+  console.log('-------session:',ctx.session)
 
   if (code != ctx.session['bindPhoneCode_' + phone]){
     return ctx.body = failed('验证码错误')
