@@ -46,8 +46,8 @@ const {
 
 const send_msg = async(ctx, next) => {
 
-  console.log(ctx)
-  
+  console.log(ctx.request.header)
+
   const req = {}
   const {
     phone
