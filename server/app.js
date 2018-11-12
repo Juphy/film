@@ -6,6 +6,9 @@ const bodyParser = require('koa-bodyparser')
 const config = require('./config')
 const session = require('koa-session')
 const jwt = require('koa-jwt')
+
+
+
 // 解析请求体
 app.use(bodyParser())
 

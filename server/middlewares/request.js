@@ -8,7 +8,7 @@ module.exports = async (ctx, next) => {
       params = ctx.request.body;
       break;
   }
-  ctx.request.header.connection = 'keep-alive'
+  
   ctx.request['params'] = params;
   await next();
 }

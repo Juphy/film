@@ -16,6 +16,7 @@ let failed = (msg = '', attr = '') => {
     }
 }
 
+
 module.exports = {
     success,
     failed

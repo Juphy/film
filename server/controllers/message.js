@@ -12,6 +12,9 @@ const {
   failed
 } = require('./base.js');
 
+const Redis = require('ioredis');
+const redis = new Redis();
+
 /**
  * 响应 GET 请求（响应微信配置时的签名检查请求）
  */
@@ -60,8 +63,10 @@ const send_msg = async(ctx, next) => {
   res = await sendSMS(req)
 
   if (res.status) {
-    ctx.session['bindPhoneCode_' + phone] = res.data
-    console.log('--------code:', ctx.session['bindPhoneCode_' + phone])
+
+    redis.set('bindPhoneCode_' + phone, res.data, 'EX', 60);
+    // ctx.session['bindPhoneCode_' + phone] = res.data
+    console.log('--------code:', res.data)
     ctx.body = success('', '发送成功')
   } else {
     ctx.body = failed('发送失败')

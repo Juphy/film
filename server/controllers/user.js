@@ -2,8 +2,10 @@ const { User } = require('../lib/model');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const { success, failed } = require('./base.js');
+// const redis = require("redis")
 
-
+const Redis = require('ioredis');
+const redis = new Redis();
 
 
 // 添加管理员
@@ -30,25 +32,30 @@ const bind_phone = async (ctx, next) => {
   let p = ctx.request.params;
   let { open_id,phone,code } = p;
 
-  console.log('-----code:',code);
-  console.log('------bind_phone_code', ctx.session['bindPhoneCode_' + phone])
-  console.log('-------session:',ctx.session)
+  const reply = await
 
-  if (code != ctx.session['bindPhoneCode_' + phone]){
-    return ctx.body = failed('验证码错误')
+  redis.get('bindPhoneCode_' + phone, function (err, reply) {
+      return reply;
+  });
+
+  if(code!= reply){
+    ctx.body = failed('验证码错误')
+    return
   }
 
-  user_info = await User.findOne({where:{open_id:open_id,invalid:0}});
+  console.log('-----true:')
+  user_info = await User.findOne({ where: { open_id: open_id, invalid: 0 } });
 
-  if(user_info){
-    res = await user_info.update({phone:phone});
+  if (user_info) {
+    res = await user_info.update({ phone: phone });
 
-    ctx.body = success(res,'绑定成功')
-  }else{
-    ctx.body = failed('用户不存在')
+    ctx.body = success(res, '绑定成功')
+  } else {
+    return ctx.body = failed('用户不存在')
   }
+
+  
 };
-
 
 
 
