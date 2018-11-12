@@ -57,8 +57,8 @@ const send_msg = async(ctx, next) => {
   res = await sendSMS(req)
 
   if (res.status) {
-    ctx.session.bindPhoneCode = res.data
-    console.log('-------code:',res.data);
+    ctx.session['bindPhoneCode_' + phone] = res.data
+    console.log('--------code:', ctx.session['bindPhoneCode_' + phone])
     ctx.body = success('', '发送成功')
   } else {
     ctx.body = failed('发送失败')
