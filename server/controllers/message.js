@@ -58,6 +58,7 @@ const send_msg = async(ctx, next) => {
 
   if (res.status) {
     ctx.session.bindPhoneCode = res.data
+    console.log('-------code:',res.data);
     ctx.body = success('', '发送成功')
   } else {
     ctx.body = failed('发送失败')
