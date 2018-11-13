@@ -86,10 +86,12 @@ const add_address = async(ctx, next) => {
     city,
     county,
     address,
+    contact,
+    phone,
     is_default
   } = ctx.request.params;
 
-  if (!open_id || !province || !city || !county || !address || !is_default) {
+  if (!open_id || !province || !city || !county || !address || !is_default || !contact || !phone) {
     return ctx.body = failed('参数错误')
   }
 
@@ -104,14 +106,18 @@ const add_address = async(ctx, next) => {
     return ctx.body = failed('用户不存在')
   }
 
-  let res = await Address.create({
+  res = await Address.create({
     province: province,
     city: city,
     open_id: open_id,
     county: county,
     address: address,
+    contact: contact,
+    phone: phone,
     invalid: 0,
-  });
+  })
+
+  console.log('------res:', res)
 
   if (is_default == 1) {
     await user_info.update({
@@ -120,6 +126,67 @@ const add_address = async(ctx, next) => {
   }
 
   ctx.body = success(res, '添加成功')
+
+
+}
+
+//编辑地址
+const edit_address = async(ctx, next) => {
+
+  let {
+    open_id,
+    province,
+    city,
+    county,
+    address,
+    contact,
+    phone,
+    is_default,
+    id
+  } = ctx.request.params;
+
+  if (!open_id || !province || !city || !county || !address || !is_default || !contact || !phone || !id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  user_info = await User.findOne({
+    where: {
+      open_id: open_id,
+      invalid: 0
+    }
+  });
+
+  if (!user_info) {
+    return ctx.body = failed('用户不存在')
+  }
+
+  _address = await Address.findById(id,{invalid:0,open_id:open_id})
+
+  if (!_address){
+    return ctx.body = failed('地址不存在')
+  }
+
+  console.log('------id', id)
+  res = await _address.update( {
+    province: province,
+    city: city,
+    open_id: open_id,
+    county: county,
+    address: address,
+    contact: contact,
+    phone: phone,
+    invalid: 0,
+  })
+
+  console.log('------res:', res)
+
+  if (is_default == 1) {
+    await user_info.update({
+      address_id: res.id
+    })
+  }
+
+  ctx.body = success(res, '编辑成功')
 
 
 }
@@ -256,6 +323,7 @@ module.exports = {
   info,
   bind_phone,
   add_address,
+  edit_address,
   del_address,
   address_list,
   set_default_address

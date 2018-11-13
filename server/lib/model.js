@@ -105,6 +105,12 @@ const address = sequelize.define('applet_address', {
   open_id: {
     type: Sequelize.STRING
   },
+  contact: {
+    type: Sequelize.STRING
+  },
+  phone: {
+    type: Sequelize.STRING
+  },
   province: {
     type: Sequelize.STRING
   },
@@ -315,5 +321,5 @@ module.exports = {
   'prize': prizes,
   'report': reports,
   'User': users,
-  'winner': winners
+  'Winner': winners
 };
