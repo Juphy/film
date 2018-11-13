@@ -177,10 +177,14 @@ const info = async (ctx, next) => {
 // }
 
 module.exports = {
-  add,
-  list,
-  del,
-  edit,
-  info,
-  login
+  adm: {
+    add,
+    list,
+    del,
+    edit,
+    info,
+  },
+  pub: {
+    login
+  }
 };

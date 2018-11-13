@@ -9,7 +9,7 @@ const xml2js = require('xml2js');
 const config = require('../config');
 
 // 添加地址
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const {
     open_id,
     province,
@@ -31,14 +31,14 @@ const add = async(ctx, next) => {
   }
 }
 // 编辑
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let {
     open_id,
     province,
     city,
     _address,
     id
-    } = ctx.request.params;
+  } = ctx.request.params;
   if (!open_id || !province || !city || !_address) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
@@ -53,10 +53,10 @@ const edit = async(ctx, next) => {
   }
 }
 
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let {
     id
-    } = ctx.request.params;
+  } = ctx.request.params;
   let res = await address.findById(id);
   if (res) {
     ctx.body = success(res);
@@ -68,7 +68,9 @@ const info = async(ctx, next) => {
 
 
 module.exports = {
-  add,
-  edit,
-  info
+  adm: {
+    add,
+    edit,
+    info
+  }
 };

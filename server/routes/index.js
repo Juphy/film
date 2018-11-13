@@ -2,10 +2,10 @@
  * ajax 服务路由集合
  */
 const router = require('koa-router')({
-     prefix: '/weapp'
+  prefix: '/weapp'
 })
 const controllers = require('../controllers')
-
+const jwt = require('koa-jwt')
 // 从 sdk 中取出中间件
 // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
 const { auth: { authorizationMiddleware, validationMiddleware } } = require('../qcloud')
@@ -37,19 +37,34 @@ const { tables, methods } = require('./config');
 let routes = tables.reduce((obj, key) => {
   const o = require(`../controllers/${key}`);
   const arr = Object.keys(o).reduce((total, each) => {
-    let item = { path: `/${key}/${each}`, service: key, action: each };
-    total.push(item);
+    Object.keys(o[each]).forEach(i => {
+      let item = { path: `/${key}/${i}`, service: key, action: i, type: each };
+      total.push(item);
+    })
     return total;
   }, []);
   obj = obj.concat(arr);
   return obj;
 }, []);
 
+const secret = 'jwt_secret';
+
 routes.forEach(item => {
   const service = require(`../controllers/${item.service}`);
   methods.forEach(method => {
-    router[method](item.path, service[item.action]);
+    if (item.type === 'pub') {
+      router[method](item.path, service[item.type][item.action]);
+    }
+    if (item.type === 'adm') {
+      router[method](item.path, jwt({ secret: secret }).unless({
+        path: [/\/register/, /\/login/]
+      }), service[item.type][item.action]);
+    }
+    if (item.type === 'app') {
+      router[method](item.path, service[item.type][item.action]);
+    }
   });
 });
+console.log(routes);
 
 module.exports = router

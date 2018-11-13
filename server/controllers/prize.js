@@ -89,9 +89,11 @@ const info = async (ctx, next) => {
 }
 
 module.exports = {
-    add,
-    list,
-    del,
-    edit,
-    info
+    adm: {
+        add,
+        list,
+        del,
+        edit,
+        info
+    }
 }
