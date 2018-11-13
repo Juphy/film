@@ -160,14 +160,17 @@ const edit_address = async(ctx, next) => {
     return ctx.body = failed('用户不存在')
   }
 
-  _address = await Address.findById(id,{invalid:0,open_id:open_id})
+  _address = await Address.findById(id, {
+    invalid: 0,
+    open_id: open_id
+  })
 
-  if (!_address){
+  if (!_address) {
     return ctx.body = failed('地址不存在')
   }
 
   console.log('------id', id)
-  res = await _address.update( {
+  res = await _address.update({
     province: province,
     city: city,
     open_id: open_id,

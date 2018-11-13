@@ -4,6 +4,7 @@ const {
 const xml2js = require('xml2js');
 const config = require('../config');
 const httpClient = require('../lib/httpClient')
+const moment = require('moment');
 
 const {
   success,
@@ -15,17 +16,35 @@ const {
 //下寄送快递订单
 const add_sf_order = async(ctx, next) => {
 
+  const {
+    winner_id
+  } = ctx.request.params;
+
+  if (!winner_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  winner_info = Winner.findById(winner_id, {
+    invalid: 0,
+    needDelivery: 1,
+    isSure: 1
+  })
+
+  if (!winner_info) {
+    return ctx.body = failed('获奖用户信息不存在或不需要递运')
+  }
+
   var obj = {
     "Request": {
       $: {
         "service": "OrderService",
         "lang": "zh-CN"
       },
-      "Head": "SLKJ2019",
+      "Head": config.sf.clientCode,
       "Body": {
-        "order": {
+        "Order": {
           $: {
-            "orderid": "JIANCHA_20181113153222",
+            "orderid": moment().format("JIANCHA_YYYYMMDDHms"),
             "express_type": 1,
             "j_province": config.sf.jProvince,
             "j_city": config.sf.jCity,
@@ -38,11 +57,11 @@ const add_sf_order = async(ctx, next) => {
             "pay_method": config.sf.payMethod,
             "custid": config.sf.custid,
             "parcel_quantity": config.sf.parcelQuantity,
-            "d_province": '北京',
-            "d_city": '朝阳区',
-            "d_contack": '温泉',
-            "d_mobile": '18210364952',
-            "d_address": '芍药居北里306号楼1单元1406室',
+            "d_province": winner_info.address.province,
+            "d_city": winner_info.address.city,
+            "d_contack": winner_info.address.contack,
+            "d_mobile": winner_info.address.phone,
+            "d_address": winner_info.address.address,
 
           },
           "AddedService": {
@@ -71,9 +90,30 @@ const add_sf_order = async(ctx, next) => {
   // let myReqXml = reqXml.replace(/SLKJ2019/ig, clientCode);
   const client = new httpClient();
   console.log("请求报文：" + xml);
-  res = await client.callSfExpressServiceByCSIM(reqUrl, xml, clientCode, checkword);
+  xml_res = await client.callSfExpressServiceByCSIM(reqUrl, xml, clientCode, checkword);
 
-  ctx.body = success(res)
+  let parser = new xml2js.Parser();
+
+  let res;
+  parser.parseString(xml_res, function(err, result) {
+    console.dir(result);
+    console.log('Done');
+    res = result
+  });
+
+  if (res.Response.Head == 'ERR') {
+    return ctx.body = failed(res.Response.ERROR[0]._)
+  }
+
+  mailno = res.Response.Body[0].OrderResponse[0].$.mailno
+  orderid = res.Response.Body[0].OrderResponse[0].$.orderid
+
+  res = await winner_info.update({
+    mailno: mailno,
+    orderid: orderid
+  })
+
+  ctx.body = success(res, '下订单成功')
 }
 
 
