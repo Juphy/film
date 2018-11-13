@@ -15,6 +15,7 @@ const {
 const Redis = require('ioredis');
 const redis = new Redis();
 
+
 /**
  * 响应 GET 请求（响应微信配置时的签名检查请求）
  */
@@ -72,6 +73,22 @@ const send_msg = async(ctx, next) => {
     ctx.body = failed('发送失败')
   }
 }
+
+let funPromise = function (time) {
+
+  return new Promise(function (resolve, reject) {
+    //Pending 进行中
+    console.log('aaaaa')
+    // resolve();// 从 pending 变为 resolved
+    setTimeout(function () {
+       
+      resolve();// 从 pending 变为 resolved
+    }, time);
+
+    console.log('cccccc')
+  })
+};
+
 
 
 
