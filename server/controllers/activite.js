@@ -118,10 +118,12 @@ const info = async (ctx, next) => {
 }
 
 module.exports = {
-    add,
-    list,
-    del,
-    edit,
-    info,
-    start_end
+    adm: {
+        add,
+        list,
+        del,
+        edit,
+        info,
+        start_end
+    }
 };
