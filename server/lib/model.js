@@ -111,6 +111,9 @@ const address = sequelize.define('applet_address', {
   city: {
     type: Sequelize.STRING
   },
+  county: {
+    type: Sequelize.STRING
+  },
   address: {
     type: Sequelize.STRING
   },
@@ -307,7 +310,7 @@ winners.sync()
 
 module.exports = {
   'manager': managers,
-  'address': address,
+  'Address': address,
   'msg': msgs,
   'prize': prizes,
   'report': reports,
