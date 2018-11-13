@@ -7,30 +7,35 @@ const config = require('./config')
 const session = require('koa-session')
 const jwt = require('koa-jwt')
 
+var cors = require('koa2-cors');
 
+// 跨域处理
+app.use(cors());
 
 // 解析请求体
-app.use(bodyParser())
+app.use(bodyParser({
+  enableTypes: ['json', 'form', 'text']
+}))
 
-// app.use(async (ctx, next) => {
-//   console.log(ctx.request);
-//   console.log(ctx.body);
-//   await next();
-// })
+app.use(async (ctx, next) => {
+  console.log(ctx.request);
+  console.log(ctx.body);
+  await next();
+})
 
-// app
-//   .use(middlewares.errorHandle)
+app
+  .use(middlewares.errorHandle)
 
-// const secret = 'jwt_secret';
+const secret = 'jwt_secret';
 
-// app.use(jwt({ secret: secret }).unless({
-//   path: [/\/register/, /\/login/],
-// }))
+app.use(jwt({ secret: secret }).unless({
+  path: [/\/register/, /\/login/],
+}))
 // 处理get和post请求参数
 app.use(middlewares.request)
 
 // 使用响应处理中间件
-// app.use(middlewares.response)
+app.use(middlewares.response)
 
 // session
 app.keys = ['some secret hurr'];

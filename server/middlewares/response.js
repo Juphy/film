@@ -7,7 +7,7 @@ module.exports = async function (ctx, next) {
     try {
         // 调用下一个 middleware
         await next();
-        if (ctx.body.code !== 400) {
+        if (ctx.body.code === 200) {
             const p = ctx.request.params;
             if ('page' in p && 'page_size' in p) {
                 const body = ctx.body['res'];

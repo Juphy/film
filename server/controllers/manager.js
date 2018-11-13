@@ -81,7 +81,6 @@ const add = async (ctx, next) => {
 };
 // 管理员列表
 const list = async (ctx, next) => {
-  await next();
   let p = ctx.request.params;
   let {
     name = '', page = 1, page_size = 10
