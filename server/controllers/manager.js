@@ -8,7 +8,8 @@ const {
   failed
 } = require('./base.js');
 const jsonwebtoken = require('jsonwebtoken');
-
+const bcrypt = require('bcrypt');
+const SALTROUNDS = 10;
 // const { secret} = require('../app.js')
 
 
@@ -33,7 +34,8 @@ const login = async (ctx, next) => {
   }
   const secret = 'jwt_secret';
   // 匹配密码是否相等
-  if (password = user.password) {
+  const check = await bcrypt.compare(password, user.password);
+  if (check) {
     ctx.status = 200
     const token = jsonwebtoken.sign({
       data: user,
@@ -58,12 +60,11 @@ const add = async (ctx, next) => {
     name,
     nick_name = '',
     phone = null,
-    password,
     account
   } = ctx.request.params;
   const create_time = new Date(),
-    invalid = 0;
-  if (!name || !account || !password) {
+    invalid = 0, password = await bcrypt.hash('12345678', SALTROUNDS);
+  if (!name || !account) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await manager.create({
@@ -75,7 +76,7 @@ const add = async (ctx, next) => {
       invalid: invalid,
       account: account
     });
-    ctx.body = success(res, '添加成功');
+    ctx.body = success(null, '添加成功');
   }
 };
 // 管理员列表
@@ -129,11 +130,10 @@ const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     name,
-    password,
     account,
     id
   } = p
-  if (!name || !password || !account) {
+  if (!name || !account) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = manager.findById(id);
@@ -161,22 +161,20 @@ const info = async (ctx, next) => {
 };
 
 // const update = async (ctx, next) => {
-//     // let res = await manager.findAll();
-//     // res.forEach(item => {
-//     //     manager.update({
-//     //         account: item.nick_name
-//     //     }, {
-//     //             where: {
-//     //                 id: item.id
-//     //             }
-//     //         })
-//     // });
-//     manager.update({ password: 12345678 }, {
-//         where: {
-//             invalid: 0
-//         }
-//     })
-//     ctx.body = success('更新数据', '更新成功');
+//   // let res = await manager.findAll();
+//   // res.forEach(item => {
+//   //     manager.update({
+//   //         account: item.nick_name
+//   //     }, {
+//   //             where: {
+//   //                 id: item.id
+//   //             }
+//   //         })
+//   // });
+//   manager.update({ password: await bcrypt.hash('12345678', SALTROUNDS) }, {
+//     where: {}
+//   });
+//   ctx.body = success('更新数据', '更新成功');
 // }
 
 module.exports = {
