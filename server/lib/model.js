@@ -285,12 +285,12 @@ users.sync();
 
 const winners = sequelize.define('applet_winners', {
 
-  openid: { type: Sequelize.STRING },
-  activite_id: { type: Sequelize.INTEGER },
-  prizeId: { type: Sequelize.INTEGER },
+  open_id: { type: Sequelize.STRING },
+  active_id: { type: Sequelize.INTEGER },
+  prize_id: { type: Sequelize.INTEGER },
   prize_name: { type: Sequelize.STRING },
   prize_image: { type: Sequelize.STRING },
-  isSure: { type: Sequelize.INTEGER },
+  is_sure: { type: Sequelize.INTEGER },
   status: { type: Sequelize.INTEGER },
   need_delivery: { type: Sequelize.INTEGER },
   mailno: { type: Sequelize.STRING },

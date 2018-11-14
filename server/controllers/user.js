@@ -323,11 +323,13 @@ const set_default_address = async(ctx, next) => {
 
 
 module.exports = {
-  info,
-  bind_phone,
-  add_address,
-  edit_address,
-  del_address,
-  address_list,
-  set_default_address
+  pub:{
+    info,
+    bind_phone,
+    add_address,
+    edit_address,
+    del_address,
+    address_list,
+    set_default_address
+  }
 }

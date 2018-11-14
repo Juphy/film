@@ -24,7 +24,7 @@ const add_sf_order = async(ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
-  winner_info = Winner.findById(winner_id, {
+  winner_info = await Winner.findById(winner_id, {
     invalid: 0,
     needDelivery: 1,
     isSure: 1
@@ -32,6 +32,10 @@ const add_sf_order = async(ctx, next) => {
 
   if (!winner_info) {
     return ctx.body = failed('获奖用户信息不存在或不需要递运')
+  }
+
+  if (winner_info.mailno) {
+    return ctx.body = failed('该顾客已产生递运订单')
   }
 
   var obj = {
@@ -59,7 +63,7 @@ const add_sf_order = async(ctx, next) => {
             "parcel_quantity": config.sf.parcelQuantity,
             "d_province": winner_info.address.province,
             "d_city": winner_info.address.city,
-            "d_contack": winner_info.address.contack,
+            "d_contact": winner_info.address.contact,
             "d_mobile": winner_info.address.phone,
             "d_address": winner_info.address.address,
 
@@ -77,10 +81,165 @@ const add_sf_order = async(ctx, next) => {
     }
   };
 
+  res = await sf_request(obj)
+
+  if (res.Response.Head == 'ERR') {
+    return ctx.body = failed(res.Response.ERROR[0]._)
+  }
+
+  mailno = res.Response.Body[0].OrderResponse[0].$.mailno
+  orderid = res.Response.Body[0].OrderResponse[0].$.orderid
+
+  res = await winner_info.update({
+    mailno: mailno,
+    orderid: orderid
+  })
+
+  ctx.body = success(res, '下订单成功')
+}
+
+
+
+//查询顺丰订单
+const search_sf_order = async(ctx, next) => {
+  const {
+    orderid
+  } = ctx.request.params;
+
+  if (!orderid) {
+    return ctx.body = failed('参数错误')
+  }
+
+  var obj = {
+    "Request": {
+      $: {
+        "service": "OrderSearchService",
+        "lang": "zh-CN"
+      },
+      "Head": config.sf.clientCode,
+      "Body": {
+        "OrderSearch": {
+          $: {
+            "orderid": orderid,
+          },
+        }
+
+      }
+    }
+  }
+
+
+  res = await sf_request(obj)
+
+  console.log(res)
+
+  if (res.Response.Head == 'ERR') {
+    return ctx.body = failed(res.Response.ERROR[0]._)
+  }
+
+  ctx.body = success(res, '下订单成功')
+
+
+}
+
+//取消订单
+const confirm_sf_order = async(ctx, next) => {
+  const {
+    orderid,
+    mailno
+  } = ctx.request.params;
+
+  if (!orderid || !mailno) {
+    return ctx.body = failed('参数错误')
+  }
+
+  var obj = {
+    "Request": {
+      $: {
+        "service": "OrderConfirmService",
+        "lang": "zh-CN"
+      },
+      "Head": config.sf.clientCode,
+      "Body": {
+        "OrderConfirm": {
+          $: {
+            "orderid": orderid,
+            "mailno": mailno
+          },
+        }
+
+      }
+    }
+  }
+
+  res = await sf_request(obj)
+
+  console.log(res)
+
+  if (res.Response.Head == 'ERR') {
+    return ctx.body = failed(res.Response.ERROR[0]._)
+  }
+
+  ctx.body = success(res, '取消订单成功')
+}
+
+
+//查询顺丰快递递运信息
+const express_sf_order = async(ctx, next) => {
+  const {
+    mailno
+  } = ctx.request.params;
+
+  if (!mailno) {
+    return ctx.body = failed('参数错误')
+  }
+
+  var obj = {
+    "Request": {
+      $: {
+        "service": "RouteService",
+        "lang": "zh-CN"
+      },
+      "Head": config.sf.clientCode,
+      "Body": {
+        "RouteRequest": {
+          $: {
+            "tracking_type": 1,
+            "method_type": 1,
+            "tracking_number": mailno
+          },
+        }
+
+      }
+    }
+  }
+
+  res = await sf_request(obj)
+
+  console.log(res)
+
+  if (res.Response.Head == 'ERR') {
+    return ctx.body = failed(res.Response.ERROR[0]._)
+  }
+
+  const routes = res.Response.Body[0].RouteResponse[0].Route
+  const arr = []
+
+  routes.forEach(function(val,index){
+    arr[index] = val.$
+  })
+
+  console.log(arr)
+
+  ctx.body = success(arr, '查询成功')
+}
+
+
+
+async function sf_request(obj) {
+
   var builder = new xml2js.Builder();
   var xml = builder.buildObject(obj);
-
-  console.log(xml)
 
 
 
@@ -101,22 +260,18 @@ const add_sf_order = async(ctx, next) => {
     res = result
   });
 
-  if (res.Response.Head == 'ERR') {
-    return ctx.body = failed(res.Response.ERROR[0]._)
-  }
-
-  mailno = res.Response.Body[0].OrderResponse[0].$.mailno
-  orderid = res.Response.Body[0].OrderResponse[0].$.orderid
-
-  res = await winner_info.update({
-    mailno: mailno,
-    orderid: orderid
-  })
-
-  ctx.body = success(res, '下订单成功')
+  return res
 }
 
 
+
+
 module.exports = {
-  add_sf_order
+  pub: {
+    add_sf_order,
+    search_sf_order,
+    confirm_sf_order,
+    express_sf_order
+  }
+
 };

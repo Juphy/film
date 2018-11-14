@@ -17,11 +17,11 @@ app.use(bodyParser({
   enableTypes: ['json', 'form', 'text']
 }))
 
-app.use(async (ctx, next) => {
-  console.log(ctx.request);
-  console.log(ctx.body);
-  await next();
-})
+// app.use(async (ctx, next) => {
+//   console.log(ctx.request);
+//   console.log(ctx.body);
+//   await next();
+// })
 
 
 

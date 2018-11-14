@@ -5,8 +5,8 @@ const config = {
     // 'address',
     // 'prize',
     // 'report',
-    // 'winner',
-    // 'user',
+    'winner',
+    'user',
     // 'upload',
     // 'message',
     // 'login'

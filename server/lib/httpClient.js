@@ -11,7 +11,7 @@ class httpClient {
       reqURL = "https://bsp-oisp.sf-express.com/bsp-oisp/sfexpressService"
     }
     //加密生成verifyCode;
-    let verifyCode = md5.update(myReqXml + checkword, 'utf8').digest('base64');
+    let verifyCode = require('crypto').createHash('md5').update(myReqXml + checkword, 'utf8').digest('base64');
     return new Promise(function(resolve, reject) {
 
       request.post(reqURL, {
