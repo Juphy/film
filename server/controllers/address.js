@@ -1,5 +1,6 @@
 const {
-  address
+  address,
+  Diqu
 } = require('../lib/model');
 const {
   success,
@@ -9,7 +10,7 @@ const xml2js = require('xml2js');
 const config = require('../config');
 
 // 添加地址
-const add = async (ctx, next) => {
+const add = async(ctx, next) => {
   const {
     open_id,
     province,
@@ -31,7 +32,7 @@ const add = async (ctx, next) => {
   }
 }
 // 编辑
-const edit = async (ctx, next) => {
+const edit = async(ctx, next) => {
   let {
     open_id,
     province,
@@ -53,7 +54,7 @@ const edit = async (ctx, next) => {
   }
 }
 
-const info = async (ctx, next) => {
+const info = async(ctx, next) => {
   let {
     id
   } = ctx.request.params;
@@ -65,12 +66,47 @@ const info = async (ctx, next) => {
   }
 }
 
+//地区列表
+const diqu = async(ctx, next) => {
+  const {
+    name = '',
+      code = ''
+  } = ctx.request.params;
+
+  let res
+  if (name) {
+    res = await Diqu.findAll({
+      where: {
+        parent: code,
+        $or: {
+          name: {
+            $like: '%' + name + '%'
+          },
+          pinyin: {
+            $like: '%' + name + '%'
+          }
+        }
+      }
+    })
+  } else {
+    res = await Diqu.findAll({
+      where: {
+        parent: code
+      }
+    })
+  }
+
+
+  ctx.body = success(res)
+}
+
 
 
 module.exports = {
-  adm: {
+  pub: {
     add,
     edit,
-    info
+    info,
+    diqu
   }
 };

@@ -313,6 +313,22 @@ const winners = sequelize.define('applet_winners', {
 
 winners.sync()
 
+const diqu = sequelize.define('applet_diqu', {
+  code: { type: Sequelize.STRING },
+  name: { type: Sequelize.STRING },
+  post_name: { type: Sequelize.STRING },
+  parent: { type: Sequelize.STRING },
+  ssxz: { type: Sequelize.INTEGER },
+  pinyin: { type: Sequelize.STRING },
+  type: { type: Sequelize.INTEGER },
+  display: { type: Sequelize.INTEGER },
+}, {
+    timestamps: false,
+    freezeTableName: true
+  });
+
+diqu.sync()
+
 
 
 module.exports = {
@@ -322,5 +338,6 @@ module.exports = {
   'prize': prizes,
   'report': reports,
   'User': users,
-  'Winner': winners
+  'Winner': winners,
+  'Diqu':diqu
 };

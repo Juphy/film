@@ -234,6 +234,39 @@ const express_sf_order = async(ctx, next) => {
   ctx.body = success(arr, '查询成功')
 }
 
+
+
+//查询中奖列表(me)
+const winner_list = async (ctx, next) => {
+  const {
+    open_id,
+    page = 1,
+    page_size = 10
+  } = ctx.request.params;
+
+  if (!page || !page_size || !open_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+
+  let res = await Winner.findAndCountAll({
+    where: {
+      invalid: 0,
+      status: 1,
+      open_id,
+    },
+    order: [
+      ['create_time', 'DESC']
+    ], // DESC 降  ASC升
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
+  });
+
+  ctx.body = success(res)
+}
+
+
+
 //查询需要寄送快递奖品列表(me)
 const express_winner_list = async(ctx, next) => {
   const {
@@ -273,6 +306,8 @@ const express_winner_list = async(ctx, next) => {
 
 
 
+
+
 async function sf_request(obj) {
 
   var builder = new xml2js.Builder();
@@ -309,7 +344,8 @@ module.exports = {
     search_sf_order,
     confirm_sf_order,
     express_sf_order,
-    express_winner_list
+    express_winner_list,
+    winner_list
   }
 
 };

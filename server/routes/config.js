@@ -2,7 +2,7 @@ const config = {
   tables: [
     'manager',
     // 'activite',
-    // 'address',
+    'address',
     // 'prize',
     // 'report',
     'winner',
