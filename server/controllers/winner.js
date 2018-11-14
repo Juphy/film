@@ -225,13 +225,43 @@ const express_sf_order = async(ctx, next) => {
   const routes = res.Response.Body[0].RouteResponse[0].Route
   const arr = []
 
-  routes.forEach(function(val,index){
+  routes.forEach(function(val, index) {
     arr[index] = val.$
   })
 
   console.log(arr)
 
   ctx.body = success(arr, '查询成功')
+}
+
+//查询需要寄送快递奖品列表(me)
+const express_winner_list = async(ctx, next) => {
+  const {
+    page = 1,
+    page_size = 10
+  } = ctx.request.params;
+
+  let res = await Winner.findAndCountAll({
+    where: {
+      invalid: 0,
+      is_sure: 1,
+      status: 1,
+      need_delivery: 1,
+      mailno: {
+        $not: null
+      },
+      orderid: {
+        $not: null
+      }
+    },
+    order: [
+      ['create_time', 'DESC']
+    ], // DESC 降  ASC升
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
+  });
+
+  ctx.body = success(res)
 }
 
 
@@ -271,7 +301,8 @@ module.exports = {
     add_sf_order,
     search_sf_order,
     confirm_sf_order,
-    express_sf_order
+    express_sf_order,
+    express_winner_list
   }
 
 };
