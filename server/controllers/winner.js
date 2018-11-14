@@ -237,9 +237,15 @@ const express_sf_order = async(ctx, next) => {
 //查询需要寄送快递奖品列表(me)
 const express_winner_list = async(ctx, next) => {
   const {
+    open_id,
     page = 1,
     page_size = 10
   } = ctx.request.params;
+
+  if (!page || !page_size || !open_id) {
+    return ctx.body = failed('参数错误')
+  }
+
 
   let res = await Winner.findAndCountAll({
     where: {
@@ -247,6 +253,7 @@ const express_winner_list = async(ctx, next) => {
       is_sure: 1,
       status: 1,
       need_delivery: 1,
+      open_id,
       mailno: {
         $not: null
       },
