@@ -1,6 +1,7 @@
 const {
   address,
-  Diqu
+  Diqu,
+  City
 } = require('../lib/model');
 const {
   success,
@@ -100,6 +101,34 @@ const diqu = async(ctx, next) => {
   ctx.body = success(res)
 }
 
+//城市列表
+const city = async(ctx, next) => {
+  const {
+    name = ''
+  } = ctx.request.params;
+
+  let res
+  if (name) {
+    res = await City.findAll({
+      where: {
+        $or: {
+          name: {
+            $like: '%' + name + '%'
+          },
+          pinyin: {
+            $like: '%' + name + '%'
+          }
+        }
+      }
+    })
+  } else {
+    res = await City.findAll()
+  }
+
+
+  ctx.body = success(res)
+}
+
 
 
 module.exports = {
@@ -107,6 +136,7 @@ module.exports = {
     add,
     edit,
     info,
-    diqu
+    diqu,
+    city
   }
 };

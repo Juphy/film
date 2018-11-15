@@ -451,6 +451,82 @@ const movie = sequelize.define('applet_movies', {
 
 movie.sync()
 
+const cities = sequelize.define('applet_cities', {
+  code: {
+    type: Sequelize.STRING
+  },
+  name: {
+    type: Sequelize.STRING
+  },
+  pinyin: {
+    type: Sequelize.STRING
+  },
+  level: {
+    type: Sequelize.STRING
+  },
+  type: {
+    type: Sequelize.INTEGER
+  },
+  grade: {
+    type: Sequelize.INTEGER
+  }
+}, {
+  timestamps: false,
+  freezeTableName: true
+})
+
+cities.sync()
+
+const cinemas = sequelize.define('applet_cinemas', {
+  hash_code: {
+    type: Sequelize.STRING
+  },
+  name: {
+    type: Sequelize.STRING
+  },
+  chain: {
+    type: Sequelize.INTEGER
+  },
+  regist_name: {
+    type: Sequelize.STRING
+  },
+  status: {
+    type: Sequelize.INTEGER
+  },
+  sheng: {
+    type: Sequelize.INTEGER
+  },
+  shi: {
+    type: Sequelize.INTEGER
+  },
+  xian: {
+    type: Sequelize.INTEGER
+  },
+  zhen: {
+    type: Sequelize.INTEGER
+  },
+  city: {
+    type: Sequelize.INTEGER
+  },
+  street: {
+    type: Sequelize.STRING
+  },
+  address: {
+    type: Sequelize.STRING
+  },
+  longiyude: {
+    type: Sequelize.DOUBLE
+  },
+  latitude: {
+    type: Sequelize.DOUBLE
+  }
+}, {
+  timestamps: false,
+  freezeTableName: true
+})
+
+cinemas.sync()
+
 
 
 module.exports = {
@@ -462,5 +538,7 @@ module.exports = {
   'User': users,
   'Winner': winners,
   'Diqu': diqu,
-  'Movie': movie
+  'Movie': movie,
+  'City': cities,
+  'Cinema': cinemas
 };
