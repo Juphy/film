@@ -10,7 +10,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 //同步影片数据
-const sync_movie = async(ctx, next) => {
+const sync_movie = async (ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -34,14 +34,16 @@ const sync_movie = async(ctx, next) => {
     }
   })
 
-  ctx.body = success(res,'同步成功');
+  ctx.body = success(res, '同步成功');
+}
 
+const search_movie = async (ctx, next) => {
+  let p = ctx.request.params;
+  let { movie_name } = p;
 
 }
 
-
-
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -72,7 +74,7 @@ const add = async(ctx, next) => {
   }
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
@@ -104,7 +106,7 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -124,7 +126,7 @@ const del = async(ctx, next) => {
   }
 }
 
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -151,7 +153,7 @@ const edit = async(ctx, next) => {
   }
 }
 
-const start_end = async(ctx, next) => {
+const start_end = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -179,7 +181,7 @@ const start_end = async(ctx, next) => {
   }
 }
 
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id

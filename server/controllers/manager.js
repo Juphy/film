@@ -1,5 +1,5 @@
 const {
-  manager
+  Manager
 } = require('../lib/model');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -18,7 +18,7 @@ const login = async (ctx, next) => {
     password
   } = ctx.request.params;
   // try {
-  const user = await manager.findOne({
+  const user = await Manager.findOne({
     where: {
       account: account,
       invalid: 0
@@ -65,7 +65,7 @@ const add = async (ctx, next) => {
   if (!name || !account) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await manager.create({
+    let res = await Manager.create({
       name: name,
       nick_name: nick_name,
       phone: phone,
@@ -85,7 +85,7 @@ const list = async (ctx, next) => {
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
-  let res = await manager.findAndCountAll({
+  let res = await Manager.findAndCountAll({
     where: {
       invalid: 0,
       name: {
@@ -110,7 +110,7 @@ const del = async (ctx, next) => {
   if (!id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await manager.findById(id);
+    let res = await Manager.findById(id);
     if (res) {
       if (res.invalid !== 0) {
         ctx.body = failed('已删除');
@@ -137,7 +137,7 @@ const edit = async (ctx, next) => {
   if (!name || !account || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = manager.findById(id);
+    let res = Manager.findById(id);
     if (res) {
       res = res.update(p);
       ctx.body = success(res, '编辑成功');
@@ -156,7 +156,7 @@ const info = async (ctx, next) => {
   if (!id) {
     ctx.body = failed('id无效或者缺省');
   } else {
-    let res = await manager.findById(id);
+    let res = await Manager.findById(id);
     if (res) {
       ctx.body = success(res);
     } else {
@@ -166,9 +166,9 @@ const info = async (ctx, next) => {
 };
 
 // const update = async (ctx, next) => {
-//   // let res = await manager.findAll();
+//   // let res = await Manager.findAll();
 //   // res.forEach(item => {
-//   //     manager.update({
+//   //     Manager.update({
 //   //         account: item.nick_name
 //   //     }, {
 //   //             where: {
@@ -176,7 +176,7 @@ const info = async (ctx, next) => {
 //   //             }
 //   //         })
 //   // });
-//   manager.update({ password: await bcrypt.hash('12345678', SALTROUNDS) }, {
+//   Manager.update({ password: await bcrypt.hash('12345678', SALTROUNDS) }, {
 //     where: {}
 //   });
 //   ctx.body = success('更新数据', '更新成功');
