@@ -1,7 +1,7 @@
 const config = {
   tables: [
     'manager',
-    // 'activite',
+    'activite',
     'address',
     // 'prize',
     // 'report',
