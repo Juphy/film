@@ -10,8 +10,6 @@ const {
 const jsonwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const SALTROUNDS = 10;
-// const { secret} = require('../app.js')
-
 
 //后台登录
 const login = async (ctx, next) => {
@@ -109,18 +107,22 @@ const del = async (ctx, next) => {
   let {
     id
   } = p;
-  let res = await manager.findById(id);
-  if (res) {
-    if (res.invalid !== 0) {
-      ctx.body = failed('已删除');
-    } else {
-      res = res.update({
-        invalid: id
-      })
-      ctx.body = success(res, '删除成功');
-    }
+  if (!id) {
+    ctx.body = failed('必填项缺省或者无效');
   } else {
-    ctx.body = failed('id无效或者缺省');
+    let res = await manager.findById(id);
+    if (res) {
+      if (res.invalid !== 0) {
+        ctx.body = failed('已删除');
+      } else {
+        res = res.update({
+          invalid: id
+        })
+        ctx.body = success(res, '删除成功');
+      }
+    } else {
+      ctx.body = failed('id无效或者缺省');
+    }
   }
 };
 
@@ -132,7 +134,7 @@ const edit = async (ctx, next) => {
     account,
     id
   } = p
-  if (!name || !account) {
+  if (!name || !account || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = manager.findById(id);
@@ -151,11 +153,15 @@ const info = async (ctx, next) => {
   let {
     id
   } = p;
-  let res = await manager.findById(id);
-  if (res) {
-    ctx.body = success(res);
-  } else {
+  if (!id) {
     ctx.body = failed('id无效或者缺省');
+  } else {
+    let res = await manager.findById(id);
+    if (res) {
+      ctx.body = success(res);
+    } else {
+      ctx.body = failed('id无效或者缺省');
+    }
   }
 };
 

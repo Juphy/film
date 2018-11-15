@@ -48,23 +48,27 @@ const list = async (ctx, next) => {
 const del = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    let res = await prize.findById(id)
-    if (res) {
-        if (res.invalid !== 0) {
-            ctx.body = failed('已删除');
-        } else {
-            res = res.update({ invalid: id })
-            ctx.body = success(res, '删除成功');
-        }
-    } else {
+    if (!id) {
         ctx.body = failed('id无效或者缺省');
+    } else {
+        let res = await prize.findById(id)
+        if (res) {
+            if (res.invalid !== 0) {
+                ctx.body = failed('已删除');
+            } else {
+                res = res.update({ invalid: id })
+                ctx.body = success(res, '删除成功');
+            }
+        } else {
+            ctx.body = failed('id无效或者缺省');
+        }
     }
 }
 
 const edit = async (ctx, next) => {
     let p = ctx.request.params;
     let { id, name, image, num } = p;
-    if (!name || !image || Number(num) <= 0) {
+    if (!name || !image || Number(num) <= 0 || !id) {
         ctx.body = failed('必填项缺省或者无效');
     } else {
         let res = await prize.findById(id);
@@ -80,11 +84,15 @@ const edit = async (ctx, next) => {
 const info = async (ctx, next) => {
     let p = ctx.request.params;
     let { id } = p;
-    let res = await prize.findById(id);
-    if (res) {
-        ctx.body = success(res);
-    } else {
+    if (!id) {
         ctx.body = failed('id无效或者缺省');
+    } else {
+        let res = await prize.findById(id);
+        if (res) {
+            ctx.body = success(res);
+        } else {
+            ctx.body = failed('id无效或者缺省');
+        }
     }
 }
 
