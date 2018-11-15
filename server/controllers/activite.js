@@ -1,5 +1,5 @@
 const {
-  activite,
+  Activity,
   Movie
 } = require('../lib/model');
 const {
@@ -40,7 +40,21 @@ const sync_movie = async (ctx, next) => {
 const search_movie = async (ctx, next) => {
   let p = ctx.request.params;
   let { movie_name } = p;
-
+  if (!movie_name) {
+    ctx.body = failed('必填项缺省或者无效')
+  } else {
+    let res = await Movie.findAll({
+      where: {
+        movie_name: {
+          [Op.like]: '%' + movie_name + '%'
+        }
+      },
+      order: [
+        ['show_day', 'DESC']
+      ]
+    });
+    ctx.body = success(res);
+  }
 }
 
 const add = async (ctx, next) => {
@@ -54,12 +68,14 @@ const add = async (ctx, next) => {
     end_day,
     description,
     prize_description,
-    other_description = []
+    other_description = [],
+    manager_id: manager_id,
+    manager_name: manager_name
   } = p;
-  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
+  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description || !manager_id || !manager_name) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await activite.create({
+    let res = await Activity.create({
       title: title,
       playbill: playbill,
       movie_id: movie_id,
@@ -68,7 +84,11 @@ const add = async (ctx, next) => {
       end_day: end_day,
       description: description,
       prize_description: prize_description,
-      other_description: other_description
+      other_description: other_description,
+      manager_id: manager_id,
+      manager_name: manager_name,
+      status: 0,
+      invalid: 0
     });
     ctx.body = success(res, '创建成功');
   }
@@ -81,7 +101,7 @@ const list = async (ctx, next) => {
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
-  let res = await activite.findAndCountAll({
+  let res = await Activity.findAndCountAll({
     where: {
       invalid: 0,
       title: {
@@ -111,7 +131,7 @@ const del = async (ctx, next) => {
   let {
     id
   } = p;
-  let res = await activite.findById(id);
+  let res = await Activity.findById(id);
   if (res) {
     if (res.invalid !== 0) {
       ctx.body = failed('已删除');
@@ -143,7 +163,7 @@ const edit = async (ctx, next) => {
   if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await activite.findById(id)
+    let res = await Activity.findById(id)
     if (res) {
       res = res.update(p);
       ctx.body = success(res, '编辑成功');
@@ -162,7 +182,7 @@ const start_end = async (ctx, next) => {
   if (status !== 1 || status !== 2) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await activite.findById(id);
+    let res = await Activity.findById(id);
     if (res) {
       const o = [, 0, 1],
         b = ['未开始', '已开始', '已结束'];
@@ -186,7 +206,7 @@ const info = async (ctx, next) => {
   let {
     id
   } = p;
-  let res = await activite.findById(id);
+  let res = await Activity.findById(id);
   if (res) {
     ctx.body = success(res);
   } else {
@@ -202,6 +222,7 @@ module.exports = {
     edit,
     info,
     start_end,
-    sync_movie
+    sync_movie,
+    search_movie
   }
 };

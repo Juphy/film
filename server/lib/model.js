@@ -41,7 +41,7 @@ managers.sync();
 
 
 
-const activities = sequelize.define('applet_activities', {
+const activities = sequelize.define('applet_activites', {
   title: {
     type: Sequelize.STRING
   },
@@ -534,5 +534,6 @@ module.exports = {
   'Diqu': diqu,
   'Movie': movie,
   'City': cities,
-  'Cinema': cinemas
+  'Cinema': cinemas,
+  'Activity': activities
 };
