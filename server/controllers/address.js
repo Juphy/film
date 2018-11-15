@@ -119,10 +119,17 @@ const city = async(ctx, next) => {
             $like: '%' + name + '%'
           }
         }
-      }
+      },
+      order: [
+        ['grade', 'ASC']
+      ]
     })
   } else {
-    res = await City.findAll()
+    res = await City.findAll({
+      order: [
+        ['grade', 'ASC']
+      ]
+    })
   }
 
 

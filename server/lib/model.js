@@ -461,12 +461,6 @@ const cities = sequelize.define('applet_cities', {
   pinyin: {
     type: Sequelize.STRING
   },
-  level: {
-    type: Sequelize.STRING
-  },
-  type: {
-    type: Sequelize.INTEGER
-  },
   grade: {
     type: Sequelize.INTEGER
   }
