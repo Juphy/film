@@ -1,5 +1,5 @@
 const {
-  activite,
+  Activity,
   Movie,
   Cinema
 } = require('../lib/model');
@@ -15,8 +15,9 @@ const redis = new Redis();
 const {
   secret
 } = require('../config')
+const jsonwebtoken = require('jsonwebtoken');
 //同步影片数据
-const sync_movie = async(ctx, next) => {
+const sync_movie = async (ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -32,7 +33,7 @@ const sync_movie = async(ctx, next) => {
     where: {
       movie_id: movie_id
     }
-  }).then(function(obj) {
+  }).then(function (obj) {
     if (obj) {
       return obj.update({
         movie_id: movie_id,
@@ -56,7 +57,7 @@ const sync_movie = async(ctx, next) => {
 }
 
 //缓存影院数据
-const cache_cinema_info = async(ctx, next) => {
+const cache_cinema_info = async (ctx, next) => {
 
   cinemas = await Cinema.findAll({
     where: {
@@ -74,7 +75,7 @@ const cache_cinema_info = async(ctx, next) => {
       }
     }
   })
-  cinemas.forEach(function(val) {
+  cinemas.forEach(function (val) {
     redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
   })
 
@@ -82,7 +83,7 @@ const cache_cinema_info = async(ctx, next) => {
 }
 
 //获取最近的影院列表
-const nearby_cinemas = async(ctx, next) => {
+const nearby_cinemas = async (ctx, next) => {
   const {
     longitude,
     latitude,
@@ -91,7 +92,7 @@ const nearby_cinemas = async(ctx, next) => {
 
   res = []
   cinemas = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
-  cinemas.forEach(function(val) {
+  cinemas.forEach(function (val) {
     arr = val.split('_')
 
     res.push({
@@ -104,12 +105,12 @@ const nearby_cinemas = async(ctx, next) => {
 }
 
 //搜索影院
-const search_cineams = async(ctx, next) => {
+const search_cineams = async (ctx, next) => {
 
   const {
     city_code = null,
-      name,
-      num = 10
+    name,
+    num = 10
   } = ctx.request.params;
 
   if (!name) {
@@ -133,7 +134,7 @@ const search_cineams = async(ctx, next) => {
   return ctx.body = success(cinemas, '查询成功')
 }
 
-const search_movie = async(ctx, next) => {
+const search_movie = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name
@@ -155,7 +156,7 @@ const search_movie = async(ctx, next) => {
   }
 }
 
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -166,11 +167,9 @@ const add = async(ctx, next) => {
     end_day,
     description,
     prize_description,
-    other_description = [],
-    manager_id: manager_id,
-    manager_name: manager_name
+    other_description = []
   } = p;
-  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description || !manager_id || !manager_name) {
+  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let token = ctx.header.authorization;
@@ -194,7 +193,7 @@ const add = async(ctx, next) => {
   }
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
@@ -226,12 +225,12 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
   } = p;
-  let res = await activite.findById(id);
+  let res = await Activity.findById(id);
   if (res) {
     if (res.invalid !== 0) {
       ctx.body = failed('已删除');
@@ -246,7 +245,7 @@ const del = async(ctx, next) => {
   }
 }
 
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -263,8 +262,12 @@ const edit = async(ctx, next) => {
   if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await activite.findById(id)
+    let res = await Activity.findById(id)
     if (res) {
+      let token = ctx.header.authorization;
+      let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
+      p['manager_id'] = payload['data']['id'];
+      p['manager_name'] = payload['data']['name'];
       res = res.update(p);
       ctx.body = success(res, '编辑成功');
     } else {
@@ -273,16 +276,16 @@ const edit = async(ctx, next) => {
   }
 }
 
-const start_end = async(ctx, next) => {
+const start_end = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
     status
   } = p;
-  if (status !== 1 || status !== 2) {
+  if ((status !== 1 && status !== 2) || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await activite.findById(id);
+    let res = await Activity.findById(id);
     if (res) {
       const o = [, 0, 1],
         b = ['未开始', '已开始', '已结束'];
@@ -301,12 +304,12 @@ const start_end = async(ctx, next) => {
   }
 }
 
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
   } = p;
-  let res = await activite.findById(id);
+  let res = await Activity.findById(id);
   if (res) {
     ctx.body = success(res);
   } else {
@@ -315,13 +318,15 @@ const info = async(ctx, next) => {
 }
 
 module.exports = {
-  pub: {
+  adm: {
     add,
     list,
     del,
     edit,
     info,
-    start_end,
+    start_end
+  },
+  pub: {
     sync_movie,
     cache_cinema_info,
     nearby_cinemas,

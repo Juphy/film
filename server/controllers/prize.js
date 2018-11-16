@@ -2,19 +2,23 @@ const { Prize } = require('../lib/model');
 const { success, failed } = require('./base.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const jsonwebtoken = require('jsonwebtoken');
+const { secret } = require('../config');
 
 const add = async (ctx, next) => {
     let p = ctx.request.params;
-    let { name, image, manager_id, manager_name, num } = p;
+    let { name, image, num } = p;
     const create_time = new Date(), invalid = 0;
     if (!name || !image || (num <= 0)) {
         ctx.body = failed('必填项缺省或者无效');
     } else {
+        let token = ctx.header.authorization;
+        let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
         let res = await Prize.create({
             name: name,
             image: image,
-            manager_id: manager_id,
-            manager_name: manager_name,
+            manager_id: payload['data']['id'],
+            manager_name: payload['data']['name'],
             num: num,
             create_time: create_time,
             invalid: invalid
