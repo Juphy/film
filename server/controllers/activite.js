@@ -195,7 +195,8 @@ const add = async (ctx, next) => {
       manager_id: payload['data']['id'],
       manager_name: payload['data']['name'],
       status: 0,
-      invalid: 0
+      invalid: 0,
+      create_time: new Date()
     });
     ctx.body = success(res, '创建成功');
   }

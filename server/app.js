@@ -7,7 +7,7 @@ const config = require('./config')
 const session = require('koa-session')
 const jwt = require('koa-jwt')
 
-var cors = require('koa2-cors');
+var cors = require('@koa/cors');
 
 // 跨域处理
 app.use(cors());
@@ -18,7 +18,7 @@ app.use(bodyParser({
 }))
 
 app.use(async (ctx, next) => {
-  console.log('------ip:',ctx.headers['x-forwarded-for'] ||
+  console.log('------ip:', ctx.headers['x-forwarded-for'] ||
     ctx.socket.remoteAddress ||
     ctx.connection.socket.remoteAddress);
   await next();

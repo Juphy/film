@@ -12,6 +12,7 @@
     "license": "MIT",
     "dependencies": {
         "@alicloud/sms-sdk": "^1.1.6",
+        "@koa/cors": "^2.2.2",
         "axios": "^0.15.3",
         "bcrypt": "^3.0.2",
         "ioredis": "^4.2.0",
@@ -23,7 +24,6 @@
         "koa-log4": "^2.1.0",
         "koa-router": "^7.4.0",
         "koa-session": "^5.10.0",
-        "koa2-cors": "^2.0.6",
         "lodash": "^4.17.11",
         "mkdir-p": "0.0.7",
         "moment": "^2.22.2",
