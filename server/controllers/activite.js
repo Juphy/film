@@ -1,6 +1,7 @@
 const {
   activite,
-  Movie
+  Movie,
+  Cinema
 } = require('../lib/model');
 const {
   success,
@@ -8,6 +9,9 @@ const {
 } = require('./base.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+
+const Redis = require('ioredis');
+const redis = new Redis();
 
 //同步影片数据
 const sync_movie = async(ctx, next) => {
@@ -22,6 +26,8 @@ const sync_movie = async(ctx, next) => {
     return ctx.body = failed('必填项缺省或者无效');
   }
 
+
+
   res = await Movie.findOrCreate({
     where: {
       movie_id: movie_id
@@ -34,9 +40,87 @@ const sync_movie = async(ctx, next) => {
     }
   })
 
-  ctx.body = success(res,'同步成功');
+  ctx.body = success(res, '同步成功');
 
 
+}
+
+//缓存影院数据
+const cache_cinema_info = async(ctx, next) => {
+
+  cinemas = await Cinema.findAll({
+    where: {
+      longitude: {
+        $ne: null
+      },
+      latitude: {
+        $ne: null
+      },
+      hash_code: {
+        $ne: null
+      },
+      name: {
+        $ne: null
+      }
+    }
+  })
+  cinemas.forEach(function(val) {
+    redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
+  })
+
+  ctx.body = success('', '缓存成功')
+}
+
+//获取最近的影院列表
+const nearby_cinemas = async(ctx, next) => {
+  const {
+    longitude,
+    latitude,
+    num = 10
+  } = ctx.request.params;
+
+  res = []
+  cinemas = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
+  cinemas.forEach(function(val) {
+    arr = val.split('_')
+
+    res.push({
+      'id': parseInt(arr[0]),
+      'hash_code': arr[1],
+      'name': arr[2]
+    })
+  })
+  ctx.body = success(res, '查询成功')
+}
+
+//搜索影院
+const search_cineams = async(ctx, next) => {
+
+  const {
+    city_code = null,
+      name,
+      num = 10
+  } = ctx.request.params;
+
+  if (!name) {
+    return ctx.body = failed('参数错误')
+  }
+  const we = {}
+  if (city_code) {
+    we['city'] = city_code
+  }
+  we['name'] = {
+    $like: '%' + name + '%'
+  }
+
+
+
+  cinemas = await Cinema.findAll({
+    where: we,
+    limit: num
+  })
+
+  return ctx.body = success(cinemas, '查询成功')
 }
 
 
@@ -200,6 +284,9 @@ module.exports = {
     edit,
     info,
     start_end,
-    sync_movie
+    sync_movie,
+    cache_cinema_info,
+    nearby_cinemas,
+    search_cineams
   }
 };

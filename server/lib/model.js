@@ -508,7 +508,7 @@ const cinemas = sequelize.define('applet_cinemas', {
   address: {
     type: Sequelize.STRING
   },
-  longiyude: {
+  longitude: {
     type: Sequelize.DOUBLE
   },
   latitude: {
