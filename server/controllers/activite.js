@@ -123,9 +123,32 @@ const search_cineams = async(ctx, next) => {
   return ctx.body = success(cinemas, '查询成功')
 }
 
-
-
+const search_movie = async (ctx, next) => {
+  let p = ctx.request.params;
 const add = async(ctx, next) => {
+  let { movie_name } = p;
+  if (!movie_name) {
+    ctx.body = failed('必填项缺省或者无效')
+  } else {
+    let res = await Movie.findAll({
+      where: {
+        movie_name: {
+          [Op.like]: '%' + movie_name + '%'
+        }
+      },
+    other_description = []
+    other_description = []
+  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
+    other_description = []
+      order: [
+        ['show_day', 'DESC']
+      ]
+    });
+    ctx.body = success(res);
+  }
+}
+
+const add = async (ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -136,12 +159,14 @@ const add = async(ctx, next) => {
     end_day,
     description,
     prize_description,
-    other_description = []
+    other_description = [],
+    manager_id: manager_id,
+    manager_name: manager_name
   } = p;
-  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
+  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description || !manager_id || !manager_name) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await activite.create({
+    let res = await Activity.create({
       title: title,
       playbill: playbill,
       movie_id: movie_id,
@@ -150,20 +175,24 @@ const add = async(ctx, next) => {
       end_day: end_day,
       description: description,
       prize_description: prize_description,
-      other_description: other_description
+      other_description: other_description,
+      manager_id: manager_id,
+      manager_name: manager_name,
+      status: 0,
+      invalid: 0
     });
     ctx.body = success(res, '创建成功');
   }
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
-  let res = await activite.findAndCountAll({
+  let res = await Activity.findAndCountAll({
     where: {
       invalid: 0,
       title: {
@@ -288,5 +317,6 @@ module.exports = {
     cache_cinema_info,
     nearby_cinemas,
     search_cineams
+    search_movie
   }
 };

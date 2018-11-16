@@ -3,7 +3,7 @@ const config = {
     'manager',
     'activite',
     'address',
-    // 'prize',
+    'prize',
     // 'report',
     'winner',
     'user',

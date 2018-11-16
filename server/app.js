@@ -24,13 +24,6 @@ app.use(async (ctx, next) => {
   await next();
 })
 
-
-
-// const secret = 'jwt_secret';
-
-// app.use(jwt({ secret: secret }).unless({
-//   path: [/\/register/, /\/login/],
-// }))
 // 处理get和post请求参数
 app.use(middlewares.request)
 

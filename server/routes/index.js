@@ -65,6 +65,5 @@ routes.forEach(item => {
     }
   });
 });
-console.log(routes);
 
 module.exports = router

@@ -1,5 +1,5 @@
 const {
-  address,
+  Address,
   Diqu,
   City
 } = require('../lib/model');
@@ -11,7 +11,7 @@ const xml2js = require('xml2js');
 const config = require('../config');
 
 // 添加地址
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const {
     open_id,
     province,
@@ -22,7 +22,7 @@ const add = async(ctx, next) => {
   if (!open_id || !province || !city || !_address) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await address.create({
+    let res = await Address.create({
       open_id: open_id,
       province: province,
       city: city,
@@ -33,7 +33,7 @@ const add = async(ctx, next) => {
   }
 }
 // 编辑
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let {
     open_id,
     province,
@@ -44,7 +44,7 @@ const edit = async(ctx, next) => {
   if (!open_id || !province || !city || !_address) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await address.findById(id);
+    let res = await Address.findById(id);
     if (res) {
       Object.keys(p)
       res = res.update(p);
@@ -55,11 +55,11 @@ const edit = async(ctx, next) => {
   }
 }
 
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let {
     id
   } = ctx.request.params;
-  let res = await address.findById(id);
+  let res = await Address.findById(id);
   if (res) {
     ctx.body = success(res);
   } else {
@@ -68,10 +68,10 @@ const info = async(ctx, next) => {
 }
 
 //地区列表
-const diqu = async(ctx, next) => {
+const diqu = async (ctx, next) => {
   const {
     name = '',
-      code = ''
+    code = ''
   } = ctx.request.params;
 
   let res
@@ -102,7 +102,7 @@ const diqu = async(ctx, next) => {
 }
 
 //城市列表
-const city = async(ctx, next) => {
+const city = async (ctx, next) => {
   const {
     name = ''
   } = ctx.request.params;

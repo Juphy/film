@@ -1,1 +1,1 @@
-const { report } = require('../lib/model');
+const { Report } = require('../lib/model');

@@ -1,4 +1,4 @@
-const { prize } = require('../lib/model');
+const { Prize } = require('../lib/model');
 const { success, failed } = require('./base.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -10,7 +10,7 @@ const add = async (ctx, next) => {
     if (!name || !image || (num <= 0)) {
         ctx.body = failed('必填项缺省或者无效');
     } else {
-        let res = await prize.create({
+        let res = await Prize.create({
             name: name,
             image: image,
             manager_id: manager_id,
@@ -28,7 +28,7 @@ const list = async (ctx, next) => {
     let { name = '', manager_name = '', page = 1, page_size = 10 } = p;
     p['page'] = page;
     p['page_size'] = page_size;
-    let res = await prize.findAndCountAll({
+    let res = await Prize.findAndCountAll({
         where: {
             invalid: 0,
             name: {
@@ -51,7 +51,7 @@ const del = async (ctx, next) => {
     if (!id) {
         ctx.body = failed('id无效或者缺省');
     } else {
-        let res = await prize.findById(id)
+        let res = await Prize.findById(id)
         if (res) {
             if (res.invalid !== 0) {
                 ctx.body = failed('已删除');
@@ -71,7 +71,7 @@ const edit = async (ctx, next) => {
     if (!name || !image || Number(num) <= 0 || !id) {
         ctx.body = failed('必填项缺省或者无效');
     } else {
-        let res = await prize.findById(id);
+        let res = await Prize.findById(id);
         if (res) {
             res = res.update(p);
             ctx.body = success(res, '编辑成功');
@@ -87,7 +87,7 @@ const info = async (ctx, next) => {
     if (!id) {
         ctx.body = failed('id无效或者缺省');
     } else {
-        let res = await prize.findById(id);
+        let res = await Prize.findById(id);
         if (res) {
             ctx.body = success(res);
         } else {
