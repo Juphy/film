@@ -41,7 +41,7 @@ const sync_movie = async(ctx, next) => {
         playbills: playbills
       })
     } else {
-      return obj.insert({
+      return Movie.create({
         movie_id: movie_id,
         movie_name: movie_name,
         show_day: show_day,
@@ -74,9 +74,17 @@ const cache_cinema_info = async(ctx, next) => {
       }
     }
   })
-  cinemas.forEach(function(val) {
-    redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
+
+  await new Promise(function(resolve) {
+    setTimeout(function() {
+      cinemas.forEach(function(val) {
+        redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
+      })
+      resolve()
+    }, 30 * 1000)
+
   })
+
 
   ctx.body = success('', '缓存成功')
 }
