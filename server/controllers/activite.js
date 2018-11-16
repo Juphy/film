@@ -12,9 +12,11 @@ const Op = Sequelize.Op;
 
 const Redis = require('ioredis');
 const redis = new Redis();
-const { secret } = require('../config')
+const {
+  secret
+} = require('../config')
 //同步影片数据
-const sync_movie = async (ctx, next) => {
+const sync_movie = async(ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -26,17 +28,25 @@ const sync_movie = async (ctx, next) => {
     return ctx.body = failed('必填项缺省或者无效');
   }
 
-
-
-  res = await Movie.findOrCreate({
+  res = await Movie.findOne({
     where: {
       movie_id: movie_id
-    },
-    defaults: {
-      movie_id: movie_id,
-      movie_name: movie_name,
-      show_day: show_day,
-      playbills: playbills
+    }
+  }).then(function(obj) {
+    if (obj) {
+      return obj.update({
+        movie_id: movie_id,
+        movie_name: movie_name,
+        show_day: show_day,
+        playbills: playbills
+      })
+    } else {
+      return obj.insert({
+        movie_id: movie_id,
+        movie_name: movie_name,
+        show_day: show_day,
+        playbills: playbills
+      })
     }
   })
 
@@ -46,7 +56,7 @@ const sync_movie = async (ctx, next) => {
 }
 
 //缓存影院数据
-const cache_cinema_info = async (ctx, next) => {
+const cache_cinema_info = async(ctx, next) => {
 
   cinemas = await Cinema.findAll({
     where: {
@@ -64,7 +74,7 @@ const cache_cinema_info = async (ctx, next) => {
       }
     }
   })
-  cinemas.forEach(function (val) {
+  cinemas.forEach(function(val) {
     redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
   })
 
@@ -72,7 +82,7 @@ const cache_cinema_info = async (ctx, next) => {
 }
 
 //获取最近的影院列表
-const nearby_cinemas = async (ctx, next) => {
+const nearby_cinemas = async(ctx, next) => {
   const {
     longitude,
     latitude,
@@ -81,7 +91,7 @@ const nearby_cinemas = async (ctx, next) => {
 
   res = []
   cinemas = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
-  cinemas.forEach(function (val) {
+  cinemas.forEach(function(val) {
     arr = val.split('_')
 
     res.push({
@@ -94,12 +104,12 @@ const nearby_cinemas = async (ctx, next) => {
 }
 
 //搜索影院
-const search_cineams = async (ctx, next) => {
+const search_cineams = async(ctx, next) => {
 
   const {
     city_code = null,
-    name,
-    num = 10
+      name,
+      num = 10
   } = ctx.request.params;
 
   if (!name) {
@@ -123,9 +133,11 @@ const search_cineams = async (ctx, next) => {
   return ctx.body = success(cinemas, '查询成功')
 }
 
-const search_movie = async (ctx, next) => {
+const search_movie = async(ctx, next) => {
   let p = ctx.request.params;
-  let { movie_name } = p;
+  let {
+    movie_name
+  } = p;
   if (!movie_name) {
     ctx.body = failed('必填项缺省或者无效')
   } else {
@@ -143,7 +155,7 @@ const search_movie = async (ctx, next) => {
   }
 }
 
-const add = async (ctx, next) => {
+const add = async(ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -182,7 +194,7 @@ const add = async (ctx, next) => {
   }
 }
 
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
@@ -214,7 +226,7 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async (ctx, next) => {
+const del = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -234,7 +246,7 @@ const del = async (ctx, next) => {
   }
 }
 
-const edit = async (ctx, next) => {
+const edit = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -261,7 +273,7 @@ const edit = async (ctx, next) => {
   }
 }
 
-const start_end = async (ctx, next) => {
+const start_end = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -289,7 +301,7 @@ const start_end = async (ctx, next) => {
   }
 }
 
-const info = async (ctx, next) => {
+const info = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
