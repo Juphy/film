@@ -311,7 +311,7 @@ module.exports = {
     sync_movie,
     cache_cinema_info,
     nearby_cinemas,
-    search_cineams
+    search_cineams,
     search_movie
   }
 };
