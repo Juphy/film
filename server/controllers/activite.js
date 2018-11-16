@@ -12,9 +12,9 @@ const Op = Sequelize.Op;
 
 const Redis = require('ioredis');
 const redis = new Redis();
-
+const { secret } = require('../config')
 //同步影片数据
-const sync_movie = async(ctx, next) => {
+const sync_movie = async (ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -46,7 +46,7 @@ const sync_movie = async(ctx, next) => {
 }
 
 //缓存影院数据
-const cache_cinema_info = async(ctx, next) => {
+const cache_cinema_info = async (ctx, next) => {
 
   cinemas = await Cinema.findAll({
     where: {
@@ -64,7 +64,7 @@ const cache_cinema_info = async(ctx, next) => {
       }
     }
   })
-  cinemas.forEach(function(val) {
+  cinemas.forEach(function (val) {
     redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
   })
 
@@ -72,7 +72,7 @@ const cache_cinema_info = async(ctx, next) => {
 }
 
 //获取最近的影院列表
-const nearby_cinemas = async(ctx, next) => {
+const nearby_cinemas = async (ctx, next) => {
   const {
     longitude,
     latitude,
@@ -81,7 +81,7 @@ const nearby_cinemas = async(ctx, next) => {
 
   res = []
   cinemas = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
-  cinemas.forEach(function(val) {
+  cinemas.forEach(function (val) {
     arr = val.split('_')
 
     res.push({
@@ -94,12 +94,12 @@ const nearby_cinemas = async(ctx, next) => {
 }
 
 //搜索影院
-const search_cineams = async(ctx, next) => {
+const search_cineams = async (ctx, next) => {
 
   const {
     city_code = null,
-      name,
-      num = 10
+    name,
+    num = 10
   } = ctx.request.params;
 
   if (!name) {
@@ -161,6 +161,8 @@ const add = async (ctx, next) => {
   if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description || !manager_id || !manager_name) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
+    let token = ctx.header.authorization;
+    let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
     let res = await Activity.create({
       title: title,
       playbill: playbill,
@@ -171,8 +173,8 @@ const add = async (ctx, next) => {
       description: description,
       prize_description: prize_description,
       other_description: other_description,
-      manager_id: manager_id,
-      manager_name: manager_name,
+      manager_id: payload['data']['id'],
+      manager_name: payload['data']['name'],
       status: 0,
       invalid: 0
     });
@@ -212,7 +214,7 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -232,7 +234,7 @@ const del = async(ctx, next) => {
   }
 }
 
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -259,7 +261,7 @@ const edit = async(ctx, next) => {
   }
 }
 
-const start_end = async(ctx, next) => {
+const start_end = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -287,7 +289,7 @@ const start_end = async(ctx, next) => {
   }
 }
 
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id

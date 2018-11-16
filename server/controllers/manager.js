@@ -9,7 +9,7 @@ const {
 } = require('./base.js');
 const jsonwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const SALTROUNDS = 10;
+const { secret, SALTROUNDS } = require('../config');
 
 //后台登录
 const login = async (ctx, next) => {
@@ -30,7 +30,6 @@ const login = async (ctx, next) => {
     ctx.body = failed('账户错误')
     return;
   }
-  const secret = 'jwt_secret';
   // 匹配密码是否相等
   const check = await bcrypt.compare(password, user.password);
   if (check) {
@@ -147,7 +146,7 @@ const edit = async (ctx, next) => {
   }
 };
 
-// 查询管理员信息
+// id查询管理员信息
 const info = async (ctx, next) => {
   const p = ctx.request.params;
   let {
@@ -164,6 +163,14 @@ const info = async (ctx, next) => {
     }
   }
 };
+
+// 查询当前登录人信息
+const info_my_account = async (ctx, next) => {
+  const secret = 'jwt_secret';
+  let token = ctx.header.authorization;
+  let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
+  ctx.body = success(payload);
+}
 
 // const update = async (ctx, next) => {
 //   // let res = await Manager.findAll();
@@ -189,6 +196,7 @@ module.exports = {
     del,
     edit,
     info,
+    info_my_account
   },
   pub: {
     login
