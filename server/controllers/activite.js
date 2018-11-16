@@ -125,7 +125,6 @@ const search_cineams = async(ctx, next) => {
 
 const search_movie = async (ctx, next) => {
   let p = ctx.request.params;
-const add = async(ctx, next) => {
   let { movie_name } = p;
   if (!movie_name) {
     ctx.body = failed('必填项缺省或者无效')
@@ -136,10 +135,6 @@ const add = async(ctx, next) => {
           [Op.like]: '%' + movie_name + '%'
         }
       },
-    other_description = []
-    other_description = []
-  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
-    other_description = []
       order: [
         ['show_day', 'DESC']
       ]
