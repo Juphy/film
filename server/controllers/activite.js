@@ -76,9 +76,9 @@ const cache_cinema_info = async (ctx, next) => {
     }
   })
 
-  await new Promise(function(resolve) {
-    setTimeout(function() {
-      cinemas.forEach(function(val) {
+  await new Promise(function (resolve) {
+    setTimeout(function () {
+      cinemas.forEach(function (val) {
         redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
       }, 60 * 1000)
       resolve()
@@ -209,22 +209,27 @@ const list = async (ctx, next) => {
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
-  let res = await Activity.findAndCountAll({
-    where: {
-      invalid: 0,
-      title: {
-        [Op.like]: '%' + title + '%'
-      },
-      movie_name: {
-        [Op.like]: '%' + movie_name + '%'
-      },
-      start_day: {
-        [Op.gte]: new Date(start_day)
-      },
-      end_day: {
-        [Op.lte]: new Date(end_day)
-      }
+  let we = {
+    invalid: 0,
+    title: {
+      [Op.like]: '%' + title + '%'
     },
+    movie_name: {
+      [Op.like]: '%' + movie_name + '%'
+    },
+  };
+  if (start_day) {
+    we['start_day'] = {
+      [Op.gte]: new Date(start_day)
+    }
+  }
+  if (end_day) {
+    we['end_day'] = {
+      [Op.lte]: new Date(end_day)
+    }
+  }
+  let res = await Activity.findAndCountAll({
+    where: we,
     order: [
       ['create_time', 'DESC']
     ],
