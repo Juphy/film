@@ -82,7 +82,7 @@ const cache_cinema_info = async (ctx, next) => {
         redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
       })
       resolve()
-    }, 30 * 1000)
+    }, 60 * 1000)
 
   })
 
