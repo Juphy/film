@@ -182,29 +182,19 @@ const add = async (ctx, next) => {
   } else {
     let token = ctx.header.authorization;
     let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
-    let res = await Activity.create({
-      title: title,
-      playbill: playbill,
-      movie_id: movie_id,
-      movie_name: movie_name,
-      start_day: start_day,
-      end_day: end_day,
-      description: description,
-      prize_description: prize_description,
-      other_description: other_description,
-      manager_id: payload['data']['id'],
-      manager_name: payload['data']['name'],
-      status: 0,
-      invalid: 0,
-      create_time: new Date()
-    });
+    p['manager_id'] = payload['data']['id'];
+    p['manager_name'] = payload['data']['name'];
+    p['status'] = 0;
+    p['invalid'] = 0;
+    p['create_time'] = new Date();
+    let res = await Activity.create(p);
     ctx.body = success(res, '创建成功');
   }
 }
 
 const list = async (ctx, next) => {
   let p = ctx.request.params;
-  let {
+  let { status,
     title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
   } = p;
   p['page'] = page;
@@ -217,6 +207,7 @@ const list = async (ctx, next) => {
     movie_name: {
       [Op.like]: '%' + movie_name + '%'
     },
+    status: status
   };
   if (start_day) {
     we['start_day'] = {
@@ -244,18 +235,22 @@ const del = async (ctx, next) => {
   let {
     id
   } = p;
-  let res = await Activity.findById(id);
-  if (res) {
-    if (res.invalid !== 0) {
-      ctx.body = failed('已删除');
-    } else {
-      res = res.update({
-        invalid: id
-      });
-      ctx.body = sucess(res, '删除成功');
-    }
+  if (!id) {
+    ctx.body = failed('id无效或者缺省');
   } else {
-    ctx.body = failed('id无效或者缺省')
+    let res = await Activity.findById(id);
+    if (res) {
+      if (res.invalid !== 0) {
+        ctx.body = failed('已删除');
+      } else {
+        res = res.update({
+          invalid: id
+        });
+        ctx.body = sucess(res, '删除成功');
+      }
+    } else {
+      ctx.body = failed('id无效或者缺省')
+    }
   }
 }
 
@@ -296,7 +291,7 @@ const start_end = async (ctx, next) => {
     id,
     status
   } = p;
-  if ((status !== 1 && status !== 2) || !id) {
+  if (!(status == 1 || status == 2) || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Activity.findById(id);
@@ -323,11 +318,15 @@ const info = async (ctx, next) => {
   let {
     id
   } = p;
-  let res = await Activity.findById(id);
-  if (res) {
-    ctx.body = success(res);
-  } else {
+  if (!id) {
     ctx.body = failed('id无效或者缺省');
+  } else {
+    let res = await Activity.findById(id);
+    if (res) {
+      ctx.body = success(res);
+    } else {
+      ctx.body = failed('id无效或者缺省');
+    }
   }
 }
 
