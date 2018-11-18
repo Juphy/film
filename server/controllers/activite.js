@@ -222,7 +222,9 @@ const list = async (ctx, next) => {
   let res = await Activity.findAndCountAll({
     where: we,
     order: [
-      ['create_time', 'DESC']
+      ['create_time', 'DESC'],
+      ['start_day','DESC'],
+      ['status','ASC']
     ],
     offset: (page - 1) * page_size,
     limit: page_size * 1
