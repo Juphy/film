@@ -8,7 +8,7 @@ const config = {
     'winner',
     'user',
     // 'upload',
-    // 'message',
+    'message',
     // 'login'
   ],
   methods: [

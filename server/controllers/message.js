@@ -19,34 +19,34 @@ const redis = new Redis();
 /**
  * 响应 GET 请求（响应微信配置时的签名检查请求）
  */
-// async function get(ctx, next) {
-//   const {
-//     signature,
-//     timestamp,
-//     nonce,
-//     echostr
-//   } = ctx.query
-//   if (checkSignature(signature, timestamp, nonce)) ctx.body = echostr
-//   else ctx.body = 'ERR_WHEN_CHECK_SIGNATURE'
-// }
+async function get(ctx, next) {
+  const {
+    signature,
+    timestamp,
+    nonce,
+    echostr
+  } = ctx.query
+  if (checkSignature(signature, timestamp, nonce)) ctx.body = echostr
+  else ctx.body = 'ERR_WHEN_CHECK_SIGNATURE'
+}
 
-// async function post(ctx, next) {
-//   // 检查签名，确认是微信发出的请求
-//   const {
-//     signature,
-//     timestamp,
-//     nonce
-//   } = ctx.query
-//   if (!checkSignature(signature, timestamp, nonce)) ctx.body = 'ERR_WHEN_CHECK_SIGNATURE'
+async function post(ctx, next) {
+  // 检查签名，确认是微信发出的请求
+  const {
+    signature,
+    timestamp,
+    nonce
+  } = ctx.query
+  if (!checkSignature(signature, timestamp, nonce)) ctx.body = 'ERR_WHEN_CHECK_SIGNATURE'
 
-//   /**
-//    * 解析微信发送过来的请求体
-//    * 可查看微信文档：https://mp.weixin.qq.com/debug/wxadoc/dev/api/custommsg/receive.html#接收消息和事件
-//    */
-//   const body = ctx.request.body
+  /**
+   * 解析微信发送过来的请求体
+   * 可查看微信文档：https://mp.weixin.qq.com/debug/wxadoc/dev/api/custommsg/receive.html#接收消息和事件
+   */
+  const body = ctx.request.body
 
-//   ctx.body = 'success'
-// }
+  ctx.body = 'success'
+}
 
 const send_msg = async(ctx, next) => {
 
@@ -74,15 +74,15 @@ const send_msg = async(ctx, next) => {
   }
 }
 
-let funPromise = function (time) {
+let funPromise = function(time) {
 
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     //Pending 进行中
     console.log('aaaaa')
     // resolve();// 从 pending 变为 resolved
-    setTimeout(function () {
-       
-      resolve();// 从 pending 变为 resolved
+    setTimeout(function() {
+
+      resolve(); // 从 pending 变为 resolved
     }, time);
 
     console.log('cccccc')
@@ -93,7 +93,9 @@ let funPromise = function (time) {
 
 
 module.exports = {
-  // post,
-  // get,
-  send_msg
+  post,
+  get,
+  pub: {
+    send_msg
+  }
 }
