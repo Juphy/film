@@ -1,6 +1,7 @@
 const {
   Report,
-  Activity
+  Activity,
+  Winner
 } = require('../lib/model');
 const {
   success,
@@ -12,7 +13,10 @@ const redis = new Redis();
 const moment = require('moment');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-
+const {
+  secret
+} = require('../config')
+const jsonwebtoken = require('jsonwebtoken');
 
 
 //上传票根
@@ -88,6 +92,7 @@ const upload = async (ctx, next) => {
 
 }
 
+// 上报数据列表
 const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
@@ -123,6 +128,7 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
+// 单一审核
 const review = async (ctx, next) => {
   let p = ctx.request.params;
   let { id, status } = p;
@@ -139,11 +145,71 @@ const review = async (ctx, next) => {
   }
 }
 
+// 批量审核
+const reviews = async (ctx, next) => {
+  let p = ctx.request.params;
+  let { ids = [], status } = p;
+  if (!(status == 1 || status == 2) || !ids.length) {
+    ctx.body = failed('必填项缺省或者无效');
+  } else {
+    let res = await Report.update({
+      status: status
+    }, {
+        where: {
+          id: {
+            [Op.in]: ids
+          }
+        }
+      });
+    ctx.body = success(res);
+  }
+}
+
+// 中奖，产生中将者名单
+const winning = async (ctx, next) => {
+  let p = ctx.request.params;
+  let { id } = p;
+  if (!id) {
+    ctx.body = failed('id必填项缺省或者无效');
+  } else {
+    let res = await Report.update(
+      {
+        is_winner: 1
+      }, { where: { id: id } });
+    if (res) {
+      let token = ctx.header.authorization;
+      let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
+      res = await Winner.create({
+        open_id: res['open_id'],
+        activite_id: res['activite_id'],
+        prize_id: res['prize_id'],
+        prize_name: res['prize_name'],
+        status: 0,
+        need_delivery: 0,
+        mailno: '',
+        manager_id: payload['data']['id'],
+        manager_name: payload['data']['name'],
+        invalid: 0,
+        create_time: new Date(),
+        is_sure: 0,
+        is_received: 0,
+        address: '',
+        orderid: '',
+        report_id: res['id']
+      });
+      ctx.body(res, '产生中奖者成功');
+    } else {
+      ctx.body = failed('id无效')
+    }
+  }
+}
 
 module.exports = {
   pub: {
     upload,
     list,
-    review
+    review,
+    reviews,
+    winning
   }
 }

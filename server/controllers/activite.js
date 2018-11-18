@@ -143,6 +143,7 @@ const search_cineams = async (ctx, next) => {
   return ctx.body = success(cinemas, '查询成功')
 }
 
+// 搜索影片
 const search_movie = async (ctx, next) => {
   let p = ctx.request.params;
   let {
@@ -165,6 +166,7 @@ const search_movie = async (ctx, next) => {
   }
 }
 
+// 添加活动
 const add = async (ctx, next) => {
   const p = ctx.request.params;
   const {
@@ -239,6 +241,7 @@ const app_list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
+// 后台活动列表
 const list = async (ctx, next) => {
   let p = ctx.request.params;
   let { status = '',
@@ -302,6 +305,7 @@ const del = async (ctx, next) => {
   }
 }
 
+// 编辑活动
 const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
@@ -337,6 +341,7 @@ const edit = async (ctx, next) => {
   }
 }
 
+// 开始和结束活动
 const start_end = async (ctx, next) => {
   let p = ctx.request.params;
   let {
@@ -381,6 +386,7 @@ const app_info = async (ctx, next) => {
   }
 }
 
+// 活动详细
 const info = async (ctx, next) => {
   let p = ctx.request.params;
   let {
