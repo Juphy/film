@@ -17,7 +17,7 @@ const {
 } = require('../config')
 const jsonwebtoken = require('jsonwebtoken');
 //同步影片数据
-const sync_movie = async(ctx, next) => {
+const sync_movie = async (ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -33,7 +33,7 @@ const sync_movie = async(ctx, next) => {
     where: {
       movie_id: movie_id
     }
-  }).then(function(obj) {
+  }).then(function (obj) {
     if (obj) {
       return obj.update({
         movie_id: movie_id,
@@ -57,7 +57,7 @@ const sync_movie = async(ctx, next) => {
 }
 
 //缓存影院数据
-const cache_cinema_info = async(ctx, next) => {
+const cache_cinema_info = async (ctx, next) => {
 
   cinemas = await Cinema.findAll({
     where: {
@@ -76,9 +76,9 @@ const cache_cinema_info = async(ctx, next) => {
     }
   })
 
-  await new Promise(function(resolve) {
-    setTimeout(function() {
-      cinemas.forEach(function(val) {
+  await new Promise(function (resolve) {
+    setTimeout(function () {
+      cinemas.forEach(function (val) {
         redis.set(val.hash_code, JSON.stringify(val))
         redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
       }, 60 * 1000)
@@ -92,7 +92,7 @@ const cache_cinema_info = async(ctx, next) => {
 }
 
 //获取最近的影院列表
-const nearby_cinemas = async(ctx, next) => {
+const nearby_cinemas = async (ctx, next) => {
   const {
     longitude,
     latitude,
@@ -101,7 +101,7 @@ const nearby_cinemas = async(ctx, next) => {
 
   res = []
   cinemas = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
-  cinemas.forEach(function(val) {
+  cinemas.forEach(function (val) {
     arr = val.split('_')
 
     res.push({
@@ -114,12 +114,12 @@ const nearby_cinemas = async(ctx, next) => {
 }
 
 //搜索影院
-const search_cineams = async(ctx, next) => {
+const search_cineams = async (ctx, next) => {
 
   const {
     city_code = null,
-      name,
-      num = 10
+    name,
+    num = 10
   } = ctx.request.params;
 
   if (!name) {
@@ -143,7 +143,7 @@ const search_cineams = async(ctx, next) => {
   return ctx.body = success(cinemas, '查询成功')
 }
 
-const search_movie = async(ctx, next) => {
+const search_movie = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name
@@ -165,7 +165,7 @@ const search_movie = async(ctx, next) => {
   }
 }
 
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -193,7 +193,7 @@ const add = async(ctx, next) => {
   }
 }
 
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     status,
@@ -239,16 +239,10 @@ const app_list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
-  let {
-    status,
-    title = '',
-    movie_name = '',
-    start_day,
-    end_day,
-    page = 1,
-    page_size = 10
+  let { status = '',
+    title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -259,9 +253,11 @@ const list = async(ctx, next) => {
     },
     movie_name: {
       [Op.like]: '%' + movie_name + '%'
-    },
-    status: status
+    }
   };
+  if (status !== '') {
+    we['status'] = status;
+  }
   if (start_day) {
     we['start_day'] = {
       [Op.gte]: new Date(start_day)
@@ -275,17 +271,14 @@ const list = async(ctx, next) => {
   let res = await Activity.findAndCountAll({
     where: we,
     order: [
-      ['create_time', 'DESC'],
-      ['start_day', 'DESC'],
-      ['status', 'ASC']
+      ['create_time', 'DESC']
     ],
     offset: (page - 1) * page_size,
     limit: page_size * 1
   });
   ctx.body = success(res);
 }
-
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -309,7 +302,7 @@ const del = async(ctx, next) => {
   }
 }
 
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -340,7 +333,7 @@ const edit = async(ctx, next) => {
   }
 }
 
-const start_end = async(ctx, next) => {
+const start_end = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -368,7 +361,7 @@ const start_end = async(ctx, next) => {
   }
 }
 
-const app_info = async(ctx, next) => {
+const app_info = async (ctx, next) => {
   let {
     id
   } = ctx.request.params;
@@ -384,7 +377,7 @@ const app_info = async(ctx, next) => {
   }
 }
 
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id

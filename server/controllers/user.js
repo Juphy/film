@@ -15,7 +15,7 @@ const redis = new Redis();
 
 
 // 添加管理员
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
@@ -28,7 +28,7 @@ const info = async(ctx, next) => {
 };
 
 // 绑定手机号
-const bind_phone = async(ctx, next) => {
+const bind_phone = async (ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
@@ -41,9 +41,9 @@ const bind_phone = async(ctx, next) => {
 
   const reply = await
 
-  redis.get('bindPhoneCode_' + phone, function(err, reply) {
-    return reply;
-  });
+    redis.get('bindPhoneCode_' + phone, function (err, reply) {
+      return reply;
+    });
 
   if (!reply) {
     ctx.body = failed('验证码失效')
@@ -78,7 +78,7 @@ const bind_phone = async(ctx, next) => {
 };
 
 //添加地址
-const add_address = async(ctx, next) => {
+const add_address = async (ctx, next) => {
 
   let {
     open_id,
@@ -131,7 +131,7 @@ const add_address = async(ctx, next) => {
 }
 
 //编辑地址
-const edit_address = async(ctx, next) => {
+const edit_address = async (ctx, next) => {
 
   let {
     open_id,
@@ -194,7 +194,7 @@ const edit_address = async(ctx, next) => {
 
 }
 
-const del_address = async(ctx, next) => {
+const del_address = async (ctx, next) => {
   let {
     open_id,
     address_id
@@ -237,7 +237,7 @@ const del_address = async(ctx, next) => {
   ctx.body = success('删除成功')
 }
 
-const address_list = async(ctx, next) => {
+const address_list = async (ctx, next) => {
   let {
     open_id
   } = ctx.request.params;
@@ -263,7 +263,7 @@ const address_list = async(ctx, next) => {
     }
   })
 
-  address_list.forEach(function(item) {
+  address_list.forEach(function (item) {
     if (item.id == user_info.address_id) {
       item.setDataValue('default', 1)
     } else {
@@ -275,7 +275,7 @@ const address_list = async(ctx, next) => {
 
 }
 
-const set_default_address = async(ctx, next) => {
+const set_default_address = async (ctx, next) => {
   let {
     open_id,
     address_id
@@ -316,6 +316,31 @@ const set_default_address = async(ctx, next) => {
 
 }
 
+const list = async (ctx, next) => {
+  let p = ctx.request.params;
+  let { nick_name = '', phone, page = 1, page_size = 10 } = p;
+  p['page'] = page;
+  p['page_size'] = page_size;
+  let res = await User.findAndCountAll({
+    include: [
+      {
+        association: Address.findAll(),
+        where: { address_id: Sequelize.col('Address.id') }
+      }
+    ],
+    where: {
+      invalid: 0,
+      nick_name: { [Op.like]: '%' + nick_name + '%' },
+      phone: { [Op.like]: '%' + phone + '%' }
+    },
+    order: [
+      ['create_time', 'DESC']
+    ],
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
+  });
+  ctx.body = success(res);
+}
 
 
 
@@ -323,13 +348,14 @@ const set_default_address = async(ctx, next) => {
 
 
 module.exports = {
-  pub:{
+  pub: {
     info,
     bind_phone,
     add_address,
     edit_address,
     del_address,
     address_list,
-    set_default_address
+    set_default_address,
+    list
   }
 }
