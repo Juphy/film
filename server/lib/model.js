@@ -33,9 +33,9 @@ const managers = sequelize.define('applet_managers', {
     type: Sequelize.STRING
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 managers.sync();
 
@@ -95,9 +95,9 @@ const activities = sequelize.define('applet_activites', {
   }
 
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 activities.sync();
 
@@ -129,9 +129,9 @@ const address = sequelize.define('applet_address', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 address.sync();
 
@@ -181,9 +181,9 @@ const msgs = sequelize.define('applet_msgs', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 msgs.sync();
 
@@ -216,9 +216,9 @@ const prizes = sequelize.define('applet_prizes', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 prizes.sync();
 
@@ -274,12 +274,15 @@ const reports = sequelize.define('applet_reports', {
     type: Sequelize.INTEGER
   },
   create_time: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
+    }
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 reports.sync();
 
@@ -334,9 +337,9 @@ const users = sequelize.define('cSessionInfo', {
   },
 
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 users.sync();
 
@@ -399,9 +402,9 @@ const winners = sequelize.define('applet_winners', {
     type: Sequelize.INTEGER
   },
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 winners.sync()
 
@@ -431,9 +434,9 @@ const diqu = sequelize.define('applet_diqu', {
     type: Sequelize.INTEGER
   },
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 diqu.sync()
 
@@ -451,9 +454,9 @@ const movie = sequelize.define('applet_movies', {
     type: Sequelize.JSON
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 movie.sync()
 
@@ -471,9 +474,9 @@ const cities = sequelize.define('applet_cities', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-})
+    timestamps: false,
+    freezeTableName: true
+  })
 
 cities.sync()
 
@@ -521,9 +524,9 @@ const cinemas = sequelize.define('applet_cinemas', {
     type: Sequelize.DOUBLE
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-})
+    timestamps: false,
+    freezeTableName: true
+  })
 
 cinemas.sync()
 
