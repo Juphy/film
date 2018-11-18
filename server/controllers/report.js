@@ -57,7 +57,8 @@ const upload = async(ctx, next) => {
     open_id: open_id,
     show_day: show_day,
     cinema_code: cinema_code,
-    invalid: 0
+    invalid: 0,
+    activite_id
   })
 
   if (report_info) {
