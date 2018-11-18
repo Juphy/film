@@ -322,12 +322,12 @@ const list = async (ctx, next) => {
   p['page'] = page;
   p['page_size'] = page_size;
   let res = await User.findAndCountAll({
-    include: [
-      {
-        association: Address.findAll(),
-        where: { address_id: Sequelize.col('Address.id') }
-      }
-    ],
+    // include: [
+    //   {
+    //     association: Address.findAll(),
+    //     where: { address_id: Sequelize.col('Address.id') }
+    //   }
+    // ],
     where: {
       invalid: 0,
       nick_name: { [Op.like]: '%' + nick_name + '%' },

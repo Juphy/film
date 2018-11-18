@@ -321,12 +321,16 @@ const edit = async (ctx, next) => {
   } else {
     let res = await Activity.findById(id)
     if (res) {
-      let token = ctx.header.authorization;
-      let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
-      p['manager_id'] = payload['data']['id'];
-      p['manager_name'] = payload['data']['name'];
-      res = res.update(p);
-      ctx.body = success(res, '编辑成功');
+      if (res['status'] === 1) {
+        ctx.body = failed('活动已开始，无法编辑');
+      } else {
+        let token = ctx.header.authorization;
+        let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
+        p['manager_id'] = payload['data']['id'];
+        p['manager_name'] = payload['data']['name'];
+        res = res.update(p);
+        ctx.body = success(res, '编辑成功');
+      }
     } else {
       ctx.body = failed('id无效或者缺省');
     }
