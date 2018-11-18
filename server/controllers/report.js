@@ -1,5 +1,6 @@
 const {
-  Report
+  Report,
+  Activity
 } = require('../lib/model');
 const {
   success,
@@ -17,12 +18,28 @@ const upload = async(ctx, next) => {
     show_day,
     cinema_code,
     remark = '',
-    content
+    content,
+    activite_id
   } = ctx.request.params
 
-  // if(!open_id || !show_day || !cinema_code || !remark || !content){
-  //   return ctx.body = failed('参数错误')
-  // }
+  if(!open_id || !show_day || !cinema_code || !activite_id || !content){
+    return ctx.body = failed('参数错误')
+  }
+
+  activite_info = await Activity.findById(activite_id,{invalid:0})
+
+  if(!activite_info){
+    return ctx.body = failed('活动不存在')
+  }
+
+  if(activite_info.status==0){
+    return ctx.body = failed('活动未开始')
+  }
+
+  if(activite_info.status ==2){
+    return ctx.body = failed('活动已结束')
+  }
+
 
 
   cinema_info = await redis.get(cinema_code)
