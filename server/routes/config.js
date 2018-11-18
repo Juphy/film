@@ -4,7 +4,7 @@ const config = {
     'activite',
     'address',
     'prize',
-    // 'report',
+    'report',
     'winner',
     'user',
     // 'upload',

@@ -228,7 +228,7 @@ const reports = sequelize.define('applet_reports', {
   open_id: {
     type: Sequelize.STRING
   },
-  cinemaCode: {
+  cinema_code: {
     type: Sequelize.INTEGER
   },
   cinema_name: {
@@ -237,14 +237,8 @@ const reports = sequelize.define('applet_reports', {
   city: {
     type: Sequelize.INTEGER
   },
-  city_name: {
-    type: Sequelize.STRING
-  },
   chain: {
     type: Sequelize.INTEGER
-  },
-  chain_name: {
-    type: Sequelize.STRING
   },
   content: {
     type: Sequelize.JSON

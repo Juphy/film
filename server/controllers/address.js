@@ -10,6 +10,12 @@ const {
 const xml2js = require('xml2js');
 const config = require('../config');
 
+const Redis = require('ioredis');
+const redis = new Redis();
+
+
+
+
 // 添加地址
 const add = async (ctx, next) => {
   const {
