@@ -128,23 +128,6 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-// 单一审核
-const review = async (ctx, next) => {
-  let p = ctx.request.params;
-  let { id, status } = p;
-  if (!(status == 1 || status == 2) || !id) {
-    ctx.body = failed('必填项缺省或者无效');
-  } else {
-    let res = await Report.findById(id);
-    if (res) {
-      res = res.update({ status: status });
-      ctx.body = success('审核成功');
-    } else {
-      ctx.body = failed('id无效');
-    }
-  }
-}
-
 // 批量审核
 const reviews = async (ctx, next) => {
   let p = ctx.request.params;
@@ -179,24 +162,24 @@ const winning = async (ctx, next) => {
     if (res) {
       let token = ctx.header.authorization;
       let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
-      res = await Winner.create({
-        open_id: res['open_id'],
-        activite_id: res['activite_id'],
-        prize_id: res['prize_id'],
-        prize_name: res['prize_name'],
-        status: 0,
-        need_delivery: 0,
-        mailno: '',
-        manager_id: payload['data']['id'],
-        manager_name: payload['data']['name'],
-        invalid: 0,
-        create_time: new Date(),
-        is_sure: 0,
-        is_received: 0,
-        address: '',
-        orderid: '',
-        report_id: res['id']
-      });
+      let
+        res = await Winner.create({
+          open_id: res['open_id'],
+          activite_id: res['activite_id'],
+          prize_name: '',
+          status: 0,
+          need_delivery: 0,
+          mailno: '',
+          manager_id: payload['data']['id'],
+          manager_name: payload['data']['name'],
+          invalid: 0,
+          create_time: new Date(),
+          is_sure: 0,
+          is_received: 0,
+          address: '',
+          orderid: '',
+          report_id: res['id']
+        });
       ctx.body(res, '产生中奖者成功');
     } else {
       ctx.body = failed('id无效')
@@ -208,7 +191,6 @@ module.exports = {
   pub: {
     upload,
     list,
-    review,
     reviews,
     winning
   }
