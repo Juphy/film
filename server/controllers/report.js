@@ -86,8 +86,9 @@ const upload = async(ctx, next) => {
     content: content,
     remark: remark,
     activite_id: activite_id,
-    activite_name: activite_info.title,
+    title: activite_info.title,
     movie_name: activite_info.movie_name,
+    movie_id:activite_info.movie_id,
     create_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })
 
