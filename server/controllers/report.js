@@ -165,7 +165,7 @@ const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    activite_name = '',
+    title = '',
     show_day,
     status = '',
     page = 1,
@@ -178,8 +178,8 @@ const list = async (ctx, next) => {
     movie_name: {
       [Op.like]: '%' + movie_name + '%'
     },
-    activite_name: {
-      [Op.like]: '%' + activite_name + '%'
+    title: {
+      [Op.like]: '%' + title + '%'
     }
   };
   if (status !== '') {
@@ -189,10 +189,6 @@ const list = async (ctx, next) => {
     we['show_day'] = new Date(show_day);
   }
   let res = await Report.findAndCountAll({
-    include: [{
-      model: User,
-      attributes: ['nick_name', 'address_id']
-    }],
     where: we,
     order: [
       ['create_time', 'DESC']
@@ -243,9 +239,13 @@ const winning = async (ctx, next) => {
       if (res.is_winner) {
         ctx.body = failed('已中奖，请勿重复操作');
       } else {
+        let token = ctx.header.authorization;
+        let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
         await res.update({
           status: 1,
-          is_winner: 1
+          is_winner: 1,
+          manager_id: payload['data']['id'],
+          manager_name: payload['data']['name']
         });
         ctx.body = success(res, '产生中奖者成功');
       }

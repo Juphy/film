@@ -107,7 +107,7 @@ const del = async (ctx, next) => {
     id
   } = p;
   if (!id) {
-    ctx.body = failed('必填项缺省或者无效');
+    ctx.body = failed('id缺省或者无效');
   } else {
     let res = await Manager.findById(id);
     if (res) {
