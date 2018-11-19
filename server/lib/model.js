@@ -21,7 +21,7 @@ const managers = sequelize.define('applet_managers', {
     type: Sequelize.STRING
   },
   create_time: {
-    type: Sequelize.DATES,
+    type: Sequelize.DATE,
     get() {
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
