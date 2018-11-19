@@ -1,7 +1,9 @@
 const {
   Report,
   Activity,
-  Winner
+  Winner,
+  User,
+  Address
 } = require('../lib/model');
 const {
   success,
@@ -20,7 +22,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 
 //上传票根
-const upload = async(ctx, next) => {
+const upload = async (ctx, next) => {
   const {
     open_id,
     show_day,
@@ -94,7 +96,7 @@ const upload = async(ctx, next) => {
 
 
 //参与记录
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     open_id,
@@ -130,7 +132,7 @@ const app_list = async(ctx, next) => {
 
 
 //上传票根信息
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let {
     open_id,
     report_id
@@ -140,27 +142,27 @@ const info = async(ctx, next) => {
     return failed('参数错误')
   }
 
-  report_info = await Report.findById(report_id,{invalid:0,open_id:open_id})
+  report_info = await Report.findById(report_id, { invalid: 0, open_id: open_id })
 
-  if(!report_info){
+  if (!report_info) {
     return ctx.body = failed('信息不存在')
   }
 
-  ctx.body = success(report_info,'查询成功')
+  ctx.body = success(report_info, '查询成功')
 
 }
 
 
 // 上报数据列表
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-      activite_name = '',
-      show_day,
-      status = '',
-      page = 1,
-      page_size = 10
+    activite_name = '',
+    show_day,
+    status = '',
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -168,6 +170,9 @@ const list = async(ctx, next) => {
     invalid: 0,
     movie_name: {
       [Op.like]: '%' + movie_name + '%'
+    },
+    activite_name: {
+      [Op.like]: '%' + activite_name + '%'
     }
   };
   if (status !== '') {
@@ -177,6 +182,12 @@ const list = async(ctx, next) => {
     we['show_day'] = new Date(show_day);
   }
   let res = await Report.findAndCountAll({
+    include: [
+      {
+        model: User,
+        attributes: ['nick_name', 'address_id']
+      }
+    ],
     where: we,
     order: [
       ['create_time', 'DESC']
@@ -188,7 +199,7 @@ const list = async(ctx, next) => {
 }
 
 // 批量审核
-const reviews = async(ctx, next) => {
+const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -196,21 +207,22 @@ const reviews = async(ctx, next) => {
   if (!(status == 1 || status == 2) || !ids.length) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
+    console.log(p);
     let res = await Report.update({
       status: status
     }, {
-      where: {
-        id: {
-          [Op.in]: ids
+        where: {
+          id: {
+            [Op.in]: ids
+          }
         }
-      }
-    });
+      });
     ctx.body = success(res);
   }
 }
 
 // 中奖，产生中将者名单
-const winning = async(ctx, next) => {
+const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -218,35 +230,31 @@ const winning = async(ctx, next) => {
   if (!id) {
     ctx.body = failed('id必填项缺省或者无效');
   } else {
-    let res = await Report.update({
-      is_winner: 1
-    }, {
-      where: {
-        id: id
-      }
-    });
+    let res = await Report.findById(id);
     if (res) {
+      await res.update({ status: 1, is_winner: 1 });
       let token = ctx.header.authorization;
       let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
-      let
-        res = await Winner.create({
-          open_id: res['open_id'],
-          activite_id: res['activite_id'],
-          prize_name: '',
-          status: 0,
-          need_delivery: 0,
-          mailno: '',
-          manager_id: payload['data']['id'],
-          manager_name: payload['data']['name'],
-          invalid: 0,
-          create_time: new Date(),
-          is_sure: 0,
-          is_received: 0,
-          address: '',
-          orderid: '',
-          report_id: res['id']
-        });
-      ctx.body(res, '产生中奖者成功');
+      let address = await Address.findOne({ where: { open_id: res['open_id'] } });
+      await Winner.create({
+        open_id: res['open_id'],
+        active_id: res['activite_id'],
+        prize_name: '',
+        status: 0,
+        need_delivery: 0,
+        mailno: '',
+        manager_id: payload['data']['id'],
+        manager_name: payload['data']['name'],
+        invalid: 0,
+        create_time: new Date(),
+        is_sure: 0,
+        is_received: 0,
+        address_id: address['id'],
+        address: address,
+        orderid: '',
+        report_id: res['id']
+      });
+      ctx.body = success(res, '产生中奖者成功');
     } else {
       ctx.body = failed('id无效')
     }
