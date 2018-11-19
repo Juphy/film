@@ -553,6 +553,13 @@ reports.belongsTo(activities, {
   foreignKey: 'activite_id',
   targetKey: 'id'
 });
+
+users.belongsTo(address, {
+  foreignKey: 'address_id',
+  targetKey: 'id',
+  as: 'address'
+});
+
 module.exports = {
   'Manager': managers,
   'Address': address,

@@ -146,6 +146,24 @@ const edit = async (ctx, next) => {
   }
 };
 
+const reset_password = async (ctx, next) => {
+  const p = ctx.request.params;
+  let { id } = p;
+  if (!id) {
+    ctx.body = failed('id无效或者缺省');
+  } else {
+    let res = await Manager.findById(id);
+    if (res) {
+      res = res.update({
+        password: await bcrypt.hash('12345678', SALTROUNDS)
+      });
+      ctx.body(res, '密码重置成功')
+    } else {
+      ctx.body = failed('id无效');
+    }
+  }
+}
+
 // id查询管理员信息
 const info = async (ctx, next) => {
   const p = ctx.request.params;
@@ -199,6 +217,7 @@ module.exports = {
     info_my_account
   },
   pub: {
-    login
+    login,
+    reset_password
   }
 };
