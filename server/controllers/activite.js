@@ -8,6 +8,10 @@ const {
   failed
 } = require('./base.js');
 const Sequelize = require('sequelize');
+
+const {
+  sequelize
+} = require('../lib/mysql.js')
 const Op = Sequelize.Op;
 
 const Redis = require('ioredis');
@@ -91,21 +95,20 @@ const cache_cinema_info = async(ctx, next) => {
   ctx.body = success('', '缓存成功')
 }
 
-const test = async(ctx, next) => {
+//同步影院信息后刷编码，需多次执行
+const mix_cinema_code = async(ctx, next) => {
 
-  cinemas = await Cinema.findAll()
-  cinemas.forEach(async function(cinema){
-    cinema = await Cinema.findById(cinema.id);
-
-    console.log(cinema.hash_code)
-    if (cinema.hash_code.length == 8) {
-      res = cinema.update({
+  cinemas = await sequelize.query("select * from applet_cinemas where length(`hash_code`) =8", {
+    type: Sequelize.QueryTypes.SELECT
+  }).then(function(res) {
+    res.forEach(function(cinema) {
+      cinema.update({
         hash_code: require('crypto').createHash('md5').update(cinema.hash_code + 'huayingjuhe', 'utf8').digest('base64')
       })
-    }
+    })
   })
 
-  ctx.body = success(res)
+  ctx.body = success('','加密成功')
 }
 
 //获取最近的影院列表
@@ -430,12 +433,12 @@ module.exports = {
   },
   pub: {
     sync_movie,
+    mix_cinema_code,
     cache_cinema_info,
     nearby_cinemas,
     search_cineams,
     search_movie,
     app_list,
-    app_info,
-    test
+    app_info
   }
 };
