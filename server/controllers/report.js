@@ -22,7 +22,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 
 //上传票根
-const upload = async (ctx, next) => {
+const upload = async(ctx, next) => {
   const {
     open_id,
     show_day,
@@ -63,11 +63,13 @@ const upload = async (ctx, next) => {
   cinema_info = JSON.parse(cinema_info)
 
   report_info = await Report.find({
-    open_id: open_id,
-    show_day: show_day,
-    cinema_code: cinema_code,
-    invalid: 0,
-    activite_id
+    where: {
+      open_id: open_id,
+      show_day: show_day,
+      cinema_code: cinema_code,
+      invalid: 0,
+      activite_id
+    }
   })
 
   if (report_info) {
@@ -96,7 +98,7 @@ const upload = async (ctx, next) => {
 
 
 //参与记录
-const app_list = async (ctx, next) => {
+const app_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     open_id,
@@ -132,7 +134,7 @@ const app_list = async (ctx, next) => {
 
 
 //上传票根信息
-const info = async (ctx, next) => {
+const info = async(ctx, next) => {
   let {
     open_id,
     report_id
@@ -142,7 +144,10 @@ const info = async (ctx, next) => {
     return failed('参数错误')
   }
 
-  report_info = await Report.findById(report_id, { invalid: 0, open_id: open_id })
+  report_info = await Report.findById(report_id, {
+    invalid: 0,
+    open_id: open_id
+  })
 
   if (!report_info) {
     return ctx.body = failed('信息不存在')
@@ -154,15 +159,15 @@ const info = async (ctx, next) => {
 
 
 // 上报数据列表
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    activite_name = '',
-    show_day,
-    status = '',
-    page = 1,
-    page_size = 10
+      activite_name = '',
+      show_day,
+      status = '',
+      page = 1,
+      page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -182,12 +187,10 @@ const list = async (ctx, next) => {
     we['show_day'] = new Date(show_day);
   }
   let res = await Report.findAndCountAll({
-    include: [
-      {
-        model: User,
-        attributes: ['nick_name', 'address_id']
-      }
-    ],
+    include: [{
+      model: User,
+      attributes: ['nick_name', 'address_id']
+    }],
     where: we,
     order: [
       ['create_time', 'DESC']
@@ -199,7 +202,7 @@ const list = async (ctx, next) => {
 }
 
 // 批量审核
-const reviews = async (ctx, next) => {
+const reviews = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -211,18 +214,18 @@ const reviews = async (ctx, next) => {
     let res = await Report.update({
       status: status
     }, {
-        where: {
-          id: {
-            [Op.in]: ids
-          }
+      where: {
+        id: {
+          [Op.in]: ids
         }
-      });
+      }
+    });
     ctx.body = success(res);
   }
 }
 
 // 中奖，产生中将者名单
-const winning = async (ctx, next) => {
+const winning = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -232,10 +235,17 @@ const winning = async (ctx, next) => {
   } else {
     let res = await Report.findById(id);
     if (res) {
-      await res.update({ status: 1, is_winner: 1 });
+      await res.update({
+        status: 1,
+        is_winner: 1
+      });
       let token = ctx.header.authorization;
       let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
-      let address = await Address.findOne({ where: { open_id: res['open_id'] } });
+      let address = await Address.findOne({
+        where: {
+          open_id: res['open_id']
+        }
+      });
       await Winner.create({
         open_id: res['open_id'],
         active_id: res['activite_id'],
