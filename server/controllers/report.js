@@ -20,7 +20,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 
 //上传票根
-const upload = async (ctx, next) => {
+const upload = async(ctx, next) => {
   const {
     open_id,
     show_day,
@@ -92,16 +92,61 @@ const upload = async (ctx, next) => {
 
 }
 
+
+//参与记录
+const app_list = async(ctx, next) => {
+  let p = ctx.request.params;
+  let {
+    open_id,
+    status,
+    page = 1,
+    page_size = 10
+  } = p;
+  p['page'] = page;
+  p['page_size'] = page_size;
+
+  // if (!open_id || !status) {
+  //   return ctx.body = failed('参数错误')
+  // }
+
+  // let res = await Report.findAndCountAll({
+  //   where: {open_id},
+  //   order: [
+  //     ['create_time', 'DESC']
+  //   ],
+  //   offset: (page - 1) * page_size,
+  //   limit: page_size * 1
+  // });
+
+  Report.belongsTo(Activity, {
+    foreignKey: 'id',
+    targetKey: 'activite_id',
+    constraints: false,
+    as: 'activite'
+  })
+
+  let res = await Report.findAll({
+    include: [{
+      model: Activity
+    }]
+  })
+  ctx.body = success(res);
+
+
+
+}
+
+
 // 上报数据列表
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    activite_name = '',
-    show_day,
-    status = '',
-    page = 1,
-    page_size = 10
+      activite_name = '',
+      show_day,
+      status = '',
+      page = 1,
+      page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -129,36 +174,43 @@ const list = async (ctx, next) => {
 }
 
 // 批量审核
-const reviews = async (ctx, next) => {
+const reviews = async(ctx, next) => {
   let p = ctx.request.params;
-  let { ids = [], status } = p;
+  let {
+    ids = [], status
+  } = p;
   if (!(status == 1 || status == 2) || !ids.length) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Report.update({
       status: status
     }, {
-        where: {
-          id: {
-            [Op.in]: ids
-          }
+      where: {
+        id: {
+          [Op.in]: ids
         }
-      });
+      }
+    });
     ctx.body = success(res);
   }
 }
 
 // 中奖，产生中将者名单
-const winning = async (ctx, next) => {
+const winning = async(ctx, next) => {
   let p = ctx.request.params;
-  let { id } = p;
+  let {
+    id
+  } = p;
   if (!id) {
     ctx.body = failed('id必填项缺省或者无效');
   } else {
-    let res = await Report.update(
-      {
-        is_winner: 1
-      }, { where: { id: id } });
+    let res = await Report.update({
+      is_winner: 1
+    }, {
+      where: {
+        id: id
+      }
+    });
     if (res) {
       let token = ctx.header.authorization;
       let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
@@ -192,6 +244,7 @@ module.exports = {
     upload,
     list,
     reviews,
-    winning
+    winning,
+    app_list
   }
 }
