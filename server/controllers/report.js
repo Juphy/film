@@ -78,6 +78,7 @@ const upload = async(ctx, next) => {
 
   res = await Report.create({
     open_id: open_id,
+    nick_name: 'run', //ctx.state.data.nick_name,
     cinema_code: cinema_code,
     cinema_name: cinema_info.name,
     chain: cinema_info.chain,
@@ -88,7 +89,7 @@ const upload = async(ctx, next) => {
     activite_id: activite_id,
     title: activite_info.title,
     movie_name: activite_info.movie_name,
-    movie_id:activite_info.movie_id,
+    movie_id: activite_info.movie_id,
     create_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })
 

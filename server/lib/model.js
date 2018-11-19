@@ -228,6 +228,9 @@ const reports = sequelize.define('applet_reports', {
   open_id: {
     type: Sequelize.STRING
   },
+  nick_name: {
+    type: Sequelize.STRING
+  },
   activite_id: {
     type: Sequelize.INTEGER
   },
