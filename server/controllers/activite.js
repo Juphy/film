@@ -91,6 +91,23 @@ const cache_cinema_info = async(ctx, next) => {
   ctx.body = success('', '缓存成功')
 }
 
+const test = async(ctx, next) => {
+
+  cinemas = await Cinema.findAll()
+  cinemas.forEach(async function(cinema){
+    cinema = await Cinema.findById(cinema.id);
+
+    console.log(cinema.hash_code)
+    if (cinema.hash_code.length == 8) {
+      res = cinema.update({
+        hash_code: require('crypto').createHash('md5').update(cinema.hash_code + 'huayingjuhe', 'utf8').digest('base64')
+      })
+    }
+  })
+
+  ctx.body = success(res)
+}
+
 //获取最近的影院列表
 const nearby_cinemas = async(ctx, next) => {
   const {
@@ -378,7 +395,7 @@ const app_info = async(ctx, next) => {
 
   let res = await Activity.findById(id);
   if (res) {
-    ctx.body = success(res,'查询成功');
+    ctx.body = success(res, '查询成功');
   } else {
     ctx.body = failed('id无效或者缺省');
   }
@@ -418,6 +435,7 @@ module.exports = {
     search_cineams,
     search_movie,
     app_list,
-    app_info
+    app_info,
+    test
   }
 };

@@ -177,6 +177,18 @@ const msgs = sequelize.define('applet_msgs', {
   read_status: {
     type: Sequelize.INTEGER
   },
+  activite_id: {
+    type: Sequelize.INTEGER
+  },
+  movie_name: {
+    type: Sequelize.STRING
+  },
+  type: {
+    type: Sequelize.INTEGER
+  },
+  note_receivers: {
+    type: Sequelize.JSON
+  },
   invalid: {
     type: Sequelize.INTEGER
   }
@@ -256,7 +268,7 @@ const reports = sequelize.define('applet_reports', {
     type: Sequelize.STRING
   },
   show_day: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     get() {
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
@@ -284,7 +296,7 @@ const reports = sequelize.define('applet_reports', {
   }
 }, {
   timestamps: false,
-  freezeTableName: true
+  freezeTableName: true,
 });
 
 reports.sync();
@@ -320,9 +332,6 @@ const users = sequelize.define('cSessionInfo', {
   avatar_url: {
     type: Sequelize.STRING
   },
-  invalid: {
-    type: Sequelize.INTEGER
-  },
   create_time: {
     type: Sequelize.DATE,
     get() {
@@ -336,6 +345,15 @@ const users = sequelize.define('cSessionInfo', {
     }
   },
   address_id: {
+    type: Sequelize.INTEGER
+  },
+  token: {
+    type: Sequelize.STRING
+  },
+  form_token: {
+    type: Sequelize.STRING
+  },
+  invalid: {
     type: Sequelize.INTEGER
   },
 
@@ -536,8 +554,14 @@ const cinemas = sequelize.define('applet_cinemas', {
 
 cinemas.sync()
 
-reports.belongsTo(users, { foreignKey: 'open_id', targetKey: 'open_id' });
-reports.belongsTo(activities, { foreignKey: 'activite_id', targetKey: 'id' });
+reports.belongsTo(users, {
+  foreignKey: 'open_id',
+  targetKey: 'open_id'
+});
+reports.belongsTo(activities, {
+  foreignKey: 'activite_id',
+  targetKey: 'id'
+});
 module.exports = {
   'Manager': managers,
   'Address': address,

@@ -60,13 +60,19 @@ const upload = async(ctx, next) => {
 
   cinema_info = JSON.parse(cinema_info)
 
+  console.log('show_day:',show_day)
+
   report_info = await Report.find({
-    open_id: open_id,
-    show_day: show_day,
-    cinema_code: cinema_code,
-    invalid: 0,
-    activite_id
+    where: {
+      open_id: open_id,
+      show_day: show_day,
+      cinema_code: cinema_code,
+      invalid: 0,
+      activite_id
+    }
   })
+
+  console.log('----report_info:', report_info)
 
   if (report_info) {
     return ctx.body = failed('重复上传')
@@ -140,13 +146,16 @@ const info = async(ctx, next) => {
     return failed('参数错误')
   }
 
-  report_info = await Report.findById(report_id,{invalid:0,open_id:open_id})
+  report_info = await Report.findById(report_id, {
+    invalid: 0,
+    open_id: open_id
+  })
 
-  if(!report_info){
+  if (!report_info) {
     return ctx.body = failed('信息不存在')
   }
 
-  ctx.body = success(report_info,'查询成功')
+  ctx.body = success(report_info, '查询成功')
 
 }
 
