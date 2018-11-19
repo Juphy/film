@@ -33,9 +33,9 @@ const managers = sequelize.define('applet_managers', {
     type: Sequelize.STRING
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 managers.sync();
 
@@ -95,9 +95,9 @@ const activities = sequelize.define('applet_activites', {
   }
 
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 activities.sync();
 
@@ -129,9 +129,9 @@ const address = sequelize.define('applet_address', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 address.sync();
 
@@ -177,25 +177,13 @@ const msgs = sequelize.define('applet_msgs', {
   read_status: {
     type: Sequelize.INTEGER
   },
-  activite_id: {
-    type: Sequelize.INTEGER
-  },
-  movie_name: {
-    type: Sequelize.STRING
-  },
-  type: {
-    type: Sequelize.INTEGER
-  },
-  note_receivers: {
-    type: Sequelize.JSON
-  },
   invalid: {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 msgs.sync();
 
@@ -228,9 +216,9 @@ const prizes = sequelize.define('applet_prizes', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 prizes.sync();
 
@@ -268,7 +256,7 @@ const reports = sequelize.define('applet_reports', {
     type: Sequelize.STRING
   },
   show_day: {
-    type: Sequelize.DATEONLY,
+    type: Sequelize.DATE,
     get() {
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
@@ -295,9 +283,9 @@ const reports = sequelize.define('applet_reports', {
     }
   }
 }, {
-  timestamps: false,
-  freezeTableName: true,
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 reports.sync();
 
@@ -332,35 +320,23 @@ const users = sequelize.define('cSessionInfo', {
   avatar_url: {
     type: Sequelize.STRING
   },
+  invalid: {
+    type: Sequelize.INTEGER
+  },
   create_time: {
-    type: Sequelize.DATE,
-    get() {
-      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
-    }
+    type: Sequelize.DATE
   },
   last_modify: {
-    type: Sequelize.DATE,
-    get() {
-      return moment(this.getDataValue('last_modify')).format('YYYY-MM-DD HH:mm:ss');
-    }
+    type: Sequelize.DATE
   },
   address_id: {
     type: Sequelize.INTEGER
   },
-  token: {
-    type: Sequelize.STRING
-  },
-  form_token: {
-    type: Sequelize.STRING
-  },
-  invalid: {
-    type: Sequelize.INTEGER
-  },
 
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 users.sync();
 
@@ -426,9 +402,9 @@ const winners = sequelize.define('applet_winners', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 winners.sync()
 
@@ -458,9 +434,9 @@ const diqu = sequelize.define('applet_diqu', {
     type: Sequelize.INTEGER
   },
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 diqu.sync()
 
@@ -478,9 +454,9 @@ const movie = sequelize.define('applet_movies', {
     type: Sequelize.JSON
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 movie.sync()
 
@@ -498,9 +474,9 @@ const cities = sequelize.define('applet_cities', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-})
+    timestamps: false,
+    freezeTableName: true
+  })
 
 cities.sync()
 
@@ -548,20 +524,14 @@ const cinemas = sequelize.define('applet_cinemas', {
     type: Sequelize.DOUBLE
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-})
+    timestamps: false,
+    freezeTableName: true
+  })
 
 cinemas.sync()
 
-reports.belongsTo(users, {
-  foreignKey: 'open_id',
-  targetKey: 'open_id'
-});
-reports.belongsTo(activities, {
-  foreignKey: 'activite_id',
-  targetKey: 'id'
-});
+reports.belongsTo(users, { foreignKey: 'open_id', targetKey: 'open_id' });
+reports.belongsTo(activities, { foreignKey: 'activite_id', targetKey: 'id' });
 module.exports = {
   'Manager': managers,
   'Address': address,
