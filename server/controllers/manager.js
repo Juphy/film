@@ -157,7 +157,7 @@ const reset_password = async (ctx, next) => {
       res = res.update({
         password: await bcrypt.hash('12345678', SALTROUNDS)
       });
-      ctx.body(res, '密码重置成功')
+      ctx.body = success(res, '密码重置成功')
     } else {
       ctx.body = failed('id无效');
     }
