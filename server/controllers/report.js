@@ -105,34 +105,48 @@ const app_list = async(ctx, next) => {
   p['page'] = page;
   p['page_size'] = page_size;
 
-  // if (!open_id || !status) {
-  //   return ctx.body = failed('参数错误')
-  // }
+  if (!status || !open_id) {
+    return ctx.body = failed('参数错误')
+  }
 
-  // let res = await Report.findAndCountAll({
-  //   where: {open_id},
-  //   order: [
-  //     ['create_time', 'DESC']
-  //   ],
-  //   offset: (page - 1) * page_size,
-  //   limit: page_size * 1
-  // });
 
-  Report.belongsTo(Activity, {
-    foreignKey: 'id',
-    targetKey: 'activite_id',
-    constraints: false,
-    as: 'activite'
-  })
-
-  let res = await Report.findAll({
+  let res = await Report.findAndCountAll({
     include: [{
-      model: Activity
-    }]
+      model: Activity,
+      attributes: ['status']
+    }],
+    where: {
+      open_id: open_id,
+      status: status
+    },
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
   })
   ctx.body = success(res);
 
 
+
+}
+
+
+//上传票根信息
+const info = async(ctx, next) => {
+  let {
+    open_id,
+    report_id
+  } = ctx.request.params
+
+  if (!open_id || !report_id) {
+    return failed('参数错误')
+  }
+
+  report_info = await Report.findById(report_id,{invalid:0,open_id:open_id})
+
+  if(!report_info){
+    return ctx.body = failed('信息不存在')
+  }
+
+  ctx.body = success(report_info,'查询成功')
 
 }
 

@@ -44,7 +44,10 @@ const file = async (ctx, next) => {
 
 
 module.exports = {
-  image,
-  video,
-  file
+  pub:{
+    image,
+    video,
+    file
+  }
+  
 }

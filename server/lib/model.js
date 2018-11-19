@@ -21,7 +21,7 @@ const managers = sequelize.define('applet_managers', {
     type: Sequelize.STRING
   },
   create_time: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATES,
     get() {
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
@@ -537,7 +537,7 @@ const cinemas = sequelize.define('applet_cinemas', {
 cinemas.sync()
 
 reports.belongsTo(users, { foreignKey: 'open_id', targetKey: 'open_id' });
-
+reports.belongsTo(activities, { foreignKey: 'activite_id', targetKey: 'id' });
 module.exports = {
   'Manager': managers,
   'Address': address,
