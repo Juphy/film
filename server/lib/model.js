@@ -536,7 +536,7 @@ const cinemas = sequelize.define('applet_cinemas', {
 
 cinemas.sync()
 
-
+reports.belongsTo(users, { foreignKey: 'open_id', targetKey: 'open_id' });
 
 module.exports = {
   'Manager': managers,
