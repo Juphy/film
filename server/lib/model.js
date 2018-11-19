@@ -256,7 +256,7 @@ const reports = sequelize.define('applet_reports', {
     type: Sequelize.STRING
   },
   show_day: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     get() {
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
