@@ -396,6 +396,8 @@ const app_info = async (ctx, next) => {
     return ctx.body = failed('id无效或者缺省');
   }
 
+  let winners = []
+
   if (activite_info.status == 2) {
 
     winners = await Winner.findAll({
