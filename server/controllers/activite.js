@@ -2,7 +2,8 @@ const {
   Activity,
   Movie,
   Cinema,
-  Winner
+  Winner,
+  Report
 } = require('../lib/model');
 const {
   success,
@@ -421,7 +422,33 @@ const app_info = async(ctx, next) => {
 
 //活动开奖
 const lottery = async(ctx, next) => {
+  let {
+    winners,
+    activite_id
+  } = ctx.request.params;
+
+  if (!winners || !activite_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  activite_info = await Activity.findById(activite_id, {
+    invalid: 0,
+    status: 1
+  }) //查询活动信息
+
+  if (!activite_info) {
+    return ctx.body = failed('活动不存在或已开奖')
+  }
+
+  winners = await Report.findAll({
+    where: {
+      activite_id: activite_id,
+      invalid: 0
+    }
+  }) //查询中奖者信息
+
   
+
 }
 
 

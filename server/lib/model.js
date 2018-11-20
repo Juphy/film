@@ -56,15 +56,9 @@ const activities = sequelize.define('applet_activites', {
   },
   start_day: {
     type: Sequelize.DATEONLY,
-    get() {
-      return moment(this.getDataValue('start_day')).format('YYYY-MM-DD');
-    }
   },
   end_day: {
     type: Sequelize.DATEONLY,
-    get() {
-      return moment(this.getDataValue('end_day')).format('YYYY-MM-DD');
-    }
   },
   description: {
     type: Sequelize.STRING

@@ -120,11 +120,11 @@ const app_list = async(ctx, next) => {
   let we = {}
   if (type == 1) {
     we['end_day'] = {
-      $lte: moment().format('YYYY - MM - DD')
+      $gte: moment().format('YYYY-MM-DD')
     }
-  }else{
+  } else {
     we['end_day'] = {
-      $gt: moment().format('YYYY - MM - DD')
+      $lt: moment().format('YYYY-MM-DD')
     }
   }
 
