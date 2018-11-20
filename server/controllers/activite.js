@@ -10,6 +10,8 @@ const {
   failed
 } = require('./base.js');
 const Sequelize = require('sequelize');
+const moment = require('moment');
+
 
 const {
   sequelize
@@ -440,14 +442,50 @@ const lottery = async(ctx, next) => {
     return ctx.body = failed('活动不存在或已开奖')
   }
 
-  winners = await Report.findAll({
+  winner_list = await Report.findAll({
     where: {
       activite_id: activite_id,
       invalid: 0
     }
   }) //查询中奖者信息
 
-  
+  if (!winner_list) {
+    return ctx.body = failed('中奖者不能为空')
+  }
+
+  let wins = []
+
+  console.log('------:',winners)
+
+  winner_list.forEach(function(item) {
+
+    if (item.id in winners) {
+      let winner = {}
+      winner['prize_name'] = winners[item.id]['prize']
+      winner['open_id'] = winners[item.id]['open_id']
+      winner['need_delivery'] = winners[item.id]['need_delivery']
+      winner['activite_id'] = activite_info.id
+      winner['report_id'] = item.id
+      winner['manager_id'] = ctx.state.managerInfo['data']['id']
+      winner['manager_name'] = ctx.state.managerInfo['data']['name']
+      winner['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
+      winner['nick_name'] = item.nick_name
+      winner['title'] = activite_info.title
+      winner['movie_id'] = activite_info.movie_id
+      winner['movie_name'] = activite_info.movie_name
+      winner['avatar_url'] = item.avatar_url
+
+      wins.push(winner)
+    } else {
+      return ctx.body = failed('存在未分配奖品人员')
+    }
+
+    ctx.body = success(wins)
+
+  })
+
+
+
 
 }
 
@@ -478,7 +516,8 @@ module.exports = {
     del,
     edit,
     info,
-    start_end
+    start_end,
+    lottery
   },
   pub: {
     sync_movie,
