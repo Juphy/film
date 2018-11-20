@@ -7,9 +7,8 @@ const {
   success,
   failed
 } = require('./base.js');
-const jsonwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { secret, SALTROUNDS } = require('../config');
+const { SALTROUNDS } = require('../config');
 
 //后台登录
 const login = async (ctx, next) => {
@@ -184,10 +183,7 @@ const info = async (ctx, next) => {
 
 // 查询当前登录人信息
 const info_my_account = async (ctx, next) => {
-  const secret = 'jwt_secret';
-  let token = ctx.header.authorization;
-  let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
-  ctx.body = success(payload);
+  ctx.body = success(ctx.state.managerInfo);
 }
 
 // const update = async (ctx, next) => {
@@ -213,11 +209,11 @@ module.exports = {
     list,
     del,
     edit,
-    info,
-    info_my_account
+    info
   },
   pub: {
     login,
-    reset_password
+    reset_password,
+    info_my_account
   }
 };

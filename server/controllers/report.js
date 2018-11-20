@@ -15,14 +15,10 @@ const redis = new Redis();
 const moment = require('moment');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const {
-  secret
-} = require('../config')
-const jsonwebtoken = require('jsonwebtoken');
 
 
 //上传票根
-const upload = async(ctx, next) => {
+const upload = async (ctx, next) => {
   const {
     open_id,
     show_day,
@@ -106,7 +102,7 @@ const upload = async(ctx, next) => {
 
 
 //参与记录
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     open_id,
@@ -142,7 +138,7 @@ const app_list = async(ctx, next) => {
 
 
 //上传票根信息
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let {
     open_id,
     report_id
@@ -167,15 +163,15 @@ const info = async(ctx, next) => {
 
 
 // 上报数据列表
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-      title = '',
-      show_day,
-      status = '',
-      page = 1,
-      page_size = 10
+    title = '',
+    show_day,
+    status = '',
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -206,7 +202,7 @@ const list = async(ctx, next) => {
 }
 
 // 批量审核
-const reviews = async(ctx, next) => {
+const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -214,25 +210,23 @@ const reviews = async(ctx, next) => {
   if (!(status == 1 || status == 2) || !ids.length) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let token = ctx.header.authorization;
-    let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
     let res = await Report.update({
       status: status,
-      manager_id: payload['data']['id'],
-      manager_name: payload['data']['name']
+      manager_id: ctx.state.managerInfo['data']['id'],
+      manager_name: ctx.state.managerInfo['data']['name']
     }, {
-      where: {
-        id: {
-          [Op.in]: ids
+        where: {
+          id: {
+            [Op.in]: ids
+          }
         }
-      }
-    });
+      });
     ctx.body = success(res);
   }
 }
 
 // 中奖，标记中奖者
-const winning = async(ctx, next) => {
+const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id
@@ -245,13 +239,11 @@ const winning = async(ctx, next) => {
       if (res.is_winner) {
         ctx.body = failed('已中奖，请勿重复操作');
       } else {
-        let token = ctx.header.authorization;
-        let payload = await jsonwebtoken.decode(token.split(' ')[1], secret);
         await res.update({
           status: 1,
           is_winner: 1,
-          manager_id: payload['data']['id'],
-          manager_name: payload['data']['name']
+          manager_id: ctx.state.managerInfo['data']['id'],
+          manager_name: ctx.state.managerInfo['data']['name']
         });
         ctx.body = success(res, '产生中奖者成功');
       }
