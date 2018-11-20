@@ -149,7 +149,7 @@ const app_list = async (ctx, next) => {
 
 
 //上传票根信息
-const info = async (ctx, next) => {
+const app_info = async (ctx, next) => {
   let {
     open_id,
     report_id
@@ -274,6 +274,7 @@ module.exports = {
     list,
     reviews,
     winning,
-    app_list
+    app_list,
+    app_info
   }
 }
