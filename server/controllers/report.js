@@ -18,7 +18,7 @@ const Op = Sequelize.Op;
 
 
 //上传票根
-const upload = async (ctx, next) => {
+const upload = async(ctx, next) => {
   const {
     open_id,
     show_day,
@@ -80,7 +80,7 @@ const upload = async (ctx, next) => {
   res = await Report.create({
     open_id: open_id,
     nick_name: 'run', //ctx.state.data.nick_name,
-    avatar_url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erYcyhqyv5TNicF9jQUGYWt9hF2LZrJJ1oCWemIU5K3KAK1hR6thSmmTAQwN9xicFnGSBoIodQXctRw/132',//ctx.state.data.nick_name,
+    avatar_url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erYcyhqyv5TNicF9jQUGYWt9hF2LZrJJ1oCWemIU5K3KAK1hR6thSmmTAQwN9xicFnGSBoIodQXctRw/132', //ctx.state.data.nick_name,
     cinema_code: cinema_code,
     cinema_name: cinema_info.name,
     chain: cinema_info.chain,
@@ -102,7 +102,7 @@ const upload = async (ctx, next) => {
 
 
 //参与记录
-const app_list = async (ctx, next) => {
+const app_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     open_id,
@@ -121,11 +121,13 @@ const app_list = async (ctx, next) => {
   let res = await Report.findAndCountAll({
     include: [{
       model: Activity,
-      attributes: ['status']
+      attributes: ['status'],
+      where: {
+        status: status
+      },
     }],
     where: {
       open_id: open_id,
-      status: status
     },
     offset: (page - 1) * page_size,
     limit: page_size * 1
@@ -138,7 +140,7 @@ const app_list = async (ctx, next) => {
 
 
 //上传票根信息
-const info = async (ctx, next) => {
+const info = async(ctx, next) => {
   let {
     open_id,
     report_id
@@ -163,15 +165,15 @@ const info = async (ctx, next) => {
 
 
 // 上报数据列表
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    title = '',
-    show_day,
-    status = '',
-    page = 1,
-    page_size = 10
+      title = '',
+      show_day,
+      status = '',
+      page = 1,
+      page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -202,7 +204,7 @@ const list = async (ctx, next) => {
 }
 
 // 批量审核
-const reviews = async (ctx, next) => {
+const reviews = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -215,18 +217,18 @@ const reviews = async (ctx, next) => {
       manager_id: ctx.state.managerInfo['data']['id'],
       manager_name: ctx.state.managerInfo['data']['name']
     }, {
-        where: {
-          id: {
-            [Op.in]: ids
-          }
+      where: {
+        id: {
+          [Op.in]: ids
         }
-      });
+      }
+    });
     ctx.body = success(res);
   }
 }
 
 // 中奖，标记中奖者
-const winning = async (ctx, next) => {
+const winning = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id
