@@ -8,8 +8,8 @@ const {
   failed
 } = require('./base.js');
 const bcrypt = require('bcrypt');
-const { SALTROUNDS } = require('../config');
-
+const { SALTROUNDS, secret } = require('../config');
+const jsonwebtoken = require('jsonwebtoken');
 //后台登录
 const login = async (ctx, next) => {
   let {
