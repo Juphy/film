@@ -1,7 +1,8 @@
 const {
   Activity,
   Movie,
-  Cinema
+  Cinema,
+  Winner
 } = require('../lib/model');
 const {
   success,
@@ -108,7 +109,7 @@ const mix_cinema_code = async(ctx, next) => {
     })
   })
 
-  ctx.body = success('','加密成功')
+  ctx.body = success('', '加密成功')
 }
 
 //获取最近的影院列表
@@ -396,12 +397,26 @@ const app_info = async(ctx, next) => {
     return ctx.body = failed('参数缺失');
   }
 
-  let res = await Activity.findById(id);
-  if (res) {
-    ctx.body = success(res, '查询成功');
-  } else {
-    ctx.body = failed('id无效或者缺省');
+  let activite_info = await Activity.findById(id);
+
+
+  if (!activite_info) {
+    return ctx.body = failed('id无效或者缺省');
   }
+
+  if (activite_info.status == 2) {
+
+    winners = await Winner.findAll({
+      where: {
+        active_id: activite_info.id,
+        invalid: 0
+      }
+    })
+  }
+
+  ctx.body = success({'activite_info':activite_info,'winners':winners})
+
+
 }
 
 // 活动详细
