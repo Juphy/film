@@ -419,6 +419,11 @@ const app_info = async(ctx, next) => {
 
 }
 
+//活动开奖
+const lottery = async(ctx, next) => {
+  
+}
+
 
 
 // 活动详细

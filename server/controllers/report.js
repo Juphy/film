@@ -106,15 +106,26 @@ const app_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     open_id,
-    status,
+    type,
     page = 1,
     page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
 
-  if (!status || !open_id) {
+  if (!type || !open_id) {
     return ctx.body = failed('参数错误')
+  }
+
+  let we = {}
+  if (type == 1) {
+    we['end_day'] = {
+      $lte: moment().format('YYYY - MM - DD')
+    }
+  }else{
+    we['end_day'] = {
+      $gt: moment().format('YYYY - MM - DD')
+    }
   }
 
 
@@ -122,9 +133,7 @@ const app_list = async(ctx, next) => {
     include: [{
       model: Activity,
       attributes: ['status'],
-      where: {
-        status: status
-      },
+      where: we,
     }],
     where: {
       open_id: open_id,
