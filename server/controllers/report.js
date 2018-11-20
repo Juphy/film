@@ -18,7 +18,7 @@ const Op = Sequelize.Op;
 
 
 //上传票根
-const upload = async(ctx, next) => {
+const upload = async (ctx, next) => {
   const {
     open_id,
     show_day,
@@ -102,7 +102,7 @@ const upload = async(ctx, next) => {
 
 
 //参与记录
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     open_id,
@@ -149,7 +149,7 @@ const app_list = async(ctx, next) => {
 
 
 //上传票根信息
-const app_info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let {
     open_id,
     report_id
@@ -174,15 +174,16 @@ const app_info = async(ctx, next) => {
 
 
 // 上报数据列表
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-      title = '',
-      show_day,
-      status = '',
-      page = 1,
-      page_size = 10
+    title = '',
+    show_day,
+    status = '',
+    is_winner = '',
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -197,6 +198,9 @@ const list = async(ctx, next) => {
   };
   if (status !== '') {
     we['status'] = status;
+  }
+  if (is_winner !== '') {
+    we['is_winner'] = is_winner
   }
   if (show_day) {
     we['show_day'] = new Date(show_day);
@@ -213,7 +217,7 @@ const list = async(ctx, next) => {
 }
 
 // 批量审核
-const reviews = async(ctx, next) => {
+const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -226,18 +230,18 @@ const reviews = async(ctx, next) => {
       manager_id: ctx.state.managerInfo['data']['id'],
       manager_name: ctx.state.managerInfo['data']['name']
     }, {
-      where: {
-        id: {
-          [Op.in]: ids
+        where: {
+          id: {
+            [Op.in]: ids
+          }
         }
-      }
-    });
+      });
     ctx.body = success(res);
   }
 }
 
 // 中奖，标记中奖者
-const winning = async(ctx, next) => {
+const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id
@@ -270,7 +274,6 @@ module.exports = {
     list,
     reviews,
     winning,
-    app_list,
-    app_info
+    app_list
   }
 }
