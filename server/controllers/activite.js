@@ -67,10 +67,10 @@ const sync_movie = async(ctx, next) => {
 
 //缓存影院数据
 const cache_cinema_info = async(ctx, next) => {
-  
+
   await new Promise(function(resolve) {
     setTimeout(function() {
-      cinemas = await Cinema.findAll({
+      cinemas = Cinema.findAll({
         where: {
           longitude: {
             $ne: null
