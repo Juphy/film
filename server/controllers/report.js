@@ -211,6 +211,10 @@ const list = async (ctx, next) => {
     we['show_day'] = new Date(show_day);
   }
   let res = await Report.findAndCountAll({
+    include: [{
+      model: Activity,
+      where: { status: 1 }
+    }],
     where: we,
     order: [
       ['create_time', 'DESC']
@@ -225,38 +229,31 @@ const list = async (ctx, next) => {
 const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
-    ids = [], status, activite_id
+    ids = [], status
   } = p;
-  if (!(status == 1 || status == 2) || !ids.length || !activite_id) {
+  if (!(status == 1 || status == 2) || !ids.length) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let activite = await Activity.findById(activite_id);
-    if (activite.status === 2) {
-      ctx.body = failed('活动已结束，无法审核')
-    } else {
-      if (status === 1) {
-        if (res.some(item => item.status === 1)) {
-          ctx.body = failed('已审核通过，请勿重复操作');
-        } else {
-          res = await res.update({
-            status: 2,
-            manager_id: ctx.state.managerInfo['data']['id'],
-            manager_name: ctx.state.managerInfo['data']['name']
-          });
-          ctx.body = success(res);
-        }
-      } else if (status === 2) {
-        if (res.some(item => item.is_winner)) {
-          ctx.body = failed('请先取消中奖，再审核');
-        } else {
-          res = await res.update({
-            status: 2,
-            manager_id: ctx.state.managerInfo['data']['id'],
-            manager_name: ctx.state.managerInfo['data']['name']
-          });
-          ctx.body = success(res);
+    let res = await Report.findAll({
+      where: {
+        id: {
+          [Op.in]: ids
         }
       }
+    })
+    if (res) {
+      if (res.some(item => item.is_winner)) {
+        ctx.body = failed('请先取消中奖，再操作');
+      } else {
+        res = await res.update({
+          status: status,
+          manager_id: ctx.state.managerInfo['data']['id'],
+          manager_name: ctx.state.managerInfo['data']['name']
+        });
+        ctx.body = success(res);
+      }
+    } else {
+      ctx.body = failed('id无效');
     }
   }
 }
@@ -266,29 +263,22 @@ const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id,
-    is_winner = '',
-    activite_id
+    is_winner = ''
   } = p;
-  if (!report_id || is_winner === '' || !activite_id) {
+  if (!report_id || is_winner === '') {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-
-    let activite = await Activity.findById(activite_id);
-    if (activite.status === 2) {
-      ctx.body = failed('活动已结束，无法操作')
+    let res = await Report.findById(report_id);
+    if (res) {
+      res = await res.update({
+        status: 1,
+        is_winner: is_winner,
+        manager_id: ctx.state.managerInfo['data']['id'],
+        manager_name: ctx.state.managerInfo['data']['name']
+      });
+      ctx.body = success(res, '操作成功');
     } else {
-      let res = await Report.findById(report_id);
-      if (res) {
-        res = await res.update({
-          status: 1,
-          is_winner: is_winner,
-          manager_id: ctx.state.managerInfo['data']['id'],
-          manager_name: ctx.state.managerInfo['data']['name']
-        });
-        ctx.body = success(res, '操作成功');
-      } else {
-        ctx.body = failed('id无效');
-      }
+      ctx.body = failed('id无效');
     }
   }
 }
