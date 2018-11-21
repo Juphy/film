@@ -275,7 +275,7 @@ const winning = async (ctx, next) => {
 
     let activite = await Activity.findById(activite_id);
     if (activite.status === 2) {
-      ctx.body = failed('活动已结束')
+      ctx.body = failed('活动已结束，无法操作')
     } else {
       let res = await Report.findById(report_id);
       if (res) {
@@ -285,7 +285,7 @@ const winning = async (ctx, next) => {
           manager_id: ctx.state.managerInfo['data']['id'],
           manager_name: ctx.state.managerInfo['data']['name']
         });
-        ctx.body = success(res, '产生中奖者成功');
+        ctx.body = success(res, '操作成功');
       } else {
         ctx.body = failed('id无效');
       }
