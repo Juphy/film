@@ -95,7 +95,7 @@ const cache_cinema_info = async(ctx, next) => {
     
     geos.push(val.longitude)
     geos.push(val.latitude)
-    geos.push(val.id + '_' + val.hash_code + '_' + val.name)
+    geos.push(val.hash_code)
   })
 
   await redis.mset(mcinemas)
@@ -130,17 +130,11 @@ const nearby_cinemas = async(ctx, next) => {
   } = ctx.request.params;
 
   res = []
-  cinemas = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
-  cinemas.forEach(function(val) {
-    arr = val.split('_')
+  cinema_codes = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
 
-    res.push({
-      'id': parseInt(arr[0]),
-      'hash_code': arr[1],
-      'name': arr[2]
-    })
-  })
-  ctx.body = success(res, '查询成功')
+  cinemas = await redis.mget(cinema_codes)
+
+  ctx.body = success(cinemas, '查询成功')
 }
 
 //搜索影院
