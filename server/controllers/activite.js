@@ -83,22 +83,23 @@ const cache_cinema_info = async(ctx, next) => {
       name: {
         $ne: null
       }
-    },
-    offset: 0,
-    limit: 2000
+    }
   })
+
+  mcinemas = []
+  geos = []
 
   cinemas.forEach(async function (val) {
-    await redis.set(val.hash_code, JSON.stringify(val))
-    await redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
+    mcinemas.push(val.hash_code)
+    mcinemas.push(JSON.stringify(val))
+    
+    geos.push(val.longitude)
+    geos.push(val.latitude)
+    geos.push(val.id + '_' + val.hash_code + '_' + val.name)
   })
 
-  await new Promise(function(resolve) {
-    setTimeout(function() {
-      resolve()
-    }, 30 * 1000)
-
-  })
+  await redis.mset(mcinemas)
+  await redis.geoadd('cinemas', geos)
 
 
   ctx.body = success('', '缓存成功')
