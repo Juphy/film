@@ -82,7 +82,9 @@ const cache_cinema_info = async(ctx, next) => {
       name: {
         $ne: null
       }
-    }
+    },
+    offset:0,
+    limit:2000
   })
 
   await new Promise(function(resolve) {
