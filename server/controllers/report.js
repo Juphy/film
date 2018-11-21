@@ -225,23 +225,39 @@ const list = async (ctx, next) => {
 const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
-    ids = [], status
+    ids = [], status, activite_id
   } = p;
-  if (!(status == 1 || status == 2) || !ids.length) {
+  if (!(status == 1 || status == 2) || !ids.length || !activite_id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await Report.update({
-      status: status,
-      manager_id: ctx.state.managerInfo['data']['id'],
-      manager_name: ctx.state.managerInfo['data']['name']
-    }, {
-        where: {
-          id: {
-            [Op.in]: ids
-          }
+    let activite = await Activity.findById(activite_id);
+    if (activite.status === 2) {
+      ctx.body = failed('活动已结束，无法审核')
+    } else {
+      if (status === 1) {
+        if (res.some(item => item.status === 1)) {
+          ctx.body = failed('已审核通过，请勿重复操作');
+        } else {
+          res = await res.update({
+            status: 2,
+            manager_id: ctx.state.managerInfo['data']['id'],
+            manager_name: ctx.state.managerInfo['data']['name']
+          });
+          ctx.body = success(res);
         }
-      });
-    ctx.body = success(res);
+      } else if (status === 2) {
+        if (res.some(item => item.is_winner)) {
+          ctx.body = failed('请先取消中奖，再审核');
+        } else {
+          res = await res.update({
+            status: 2,
+            manager_id: ctx.state.managerInfo['data']['id'],
+            manager_name: ctx.state.managerInfo['data']['name']
+          });
+          ctx.body = success(res);
+        }
+      }
+    }
   }
 }
 
@@ -249,26 +265,30 @@ const reviews = async (ctx, next) => {
 const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
-    report_id
+    report_id,
+    is_winner = '',
+    activite_id
   } = p;
-  if (!report_id) {
-    ctx.body = failed('id必填项缺省或者无效');
+  if (!report_id || is_winner === '' || !activite_id) {
+    ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = await Report.findById(report_id);
-    if (res) {
-      if (res.is_winner) {
-        ctx.body = failed('已中奖，请勿重复操作');
-      } else {
-        await res.update({
+
+    let activite = await Activity.findById(activite_id);
+    if (activite.status === 2) {
+      ctx.body = failed('活动已结束')
+    } else {
+      let res = await Report.findById(report_id);
+      if (res) {
+        res = await res.update({
           status: 1,
-          is_winner: 1,
+          is_winner: is_winner,
           manager_id: ctx.state.managerInfo['data']['id'],
           manager_name: ctx.state.managerInfo['data']['name']
         });
         ctx.body = success(res, '产生中奖者成功');
+      } else {
+        ctx.body = failed('id无效');
       }
-    } else {
-      ctx.body = failed('id无效');
     }
   }
 }
