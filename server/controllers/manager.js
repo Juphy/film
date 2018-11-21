@@ -113,7 +113,7 @@ const del = async (ctx, next) => {
       if (res.invalid !== 0) {
         ctx.body = failed('已删除');
       } else {
-        res = res.update({
+        res = await res.update({
           invalid: id
         })
         ctx.body = success(res, '删除成功');

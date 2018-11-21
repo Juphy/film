@@ -240,17 +240,24 @@ const reviews = async (ctx, next) => {
           [Op.in]: ids
         }
       }
-    })
+    });
+    console.log(res);
     if (res) {
       if (res.some(item => item.is_winner)) {
         ctx.body = failed('请先取消中奖，再操作');
       } else {
-        res = await res.update({
-          status: status,
-          manager_id: ctx.state.managerInfo['data']['id'],
-          manager_name: ctx.state.managerInfo['data']['name']
+      let _res = await Report.update({
+        status: status,
+        manager_id: ctx.state.managerInfo['data']['id'],
+        manager_name: ctx.state.managerInfo['data']['name']
+      }, {
+          where: {
+            id: {
+              [Op.in]: ids
+            }
+          }
         });
-        ctx.body = success(res);
+      ctx.body = success(_res);
       }
     } else {
       ctx.body = failed('id无效');
