@@ -18,7 +18,8 @@ const {
 
 const Redis = require('ioredis');
 const redis = new Redis();
-
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 /**
  * 响应 GET 请求（响应微信配置时的签名检查请求）
