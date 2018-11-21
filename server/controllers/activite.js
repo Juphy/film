@@ -89,15 +89,16 @@ const cache_cinema_info = async(ctx, next) => {
   mcinemas = []
   geos = []
 
-  cinemas.forEach(async function (val) {
+  cinemas.forEach(async function(val) {
     mcinemas.push(val.hash_code)
     mcinemas.push(JSON.stringify(val))
-    
+
     geos.push(val.longitude)
     geos.push(val.latitude)
     geos.push(val.hash_code)
   })
 
+  await redis.flushall()
   await redis.mset(mcinemas)
   await redis.geoadd('cinemas', geos)
 
@@ -132,7 +133,13 @@ const nearby_cinemas = async(ctx, next) => {
   res = []
   cinema_codes = await redis.georadius('cinemas', longitude, latitude, 50, 'km', 'count', num)
 
-  cinemas = await redis.mget(cinema_codes)
+  cinema_list = await redis.mget(cinema_codes)
+
+  cinemas = []
+
+  cinema_list.forEach(function(val){
+    cinemas.push(JSON.parse(val))
+  })
 
   ctx.body = success(cinemas, '查询成功')
 }
@@ -495,7 +502,7 @@ const lottery = async(ctx, next) => {
       msg['manager_id'] = ctx.state.managerInfo['data']['id']
       msg['manager_name'] = ctx.state.managerInfo['data']['name']
       msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
-      msg['status'] = 1
+      msg['status'] = 0 //待发布：0，已发布：1
       msg['open_id'] = item.open_id
       msg['activite_id'] = activite_info.id
       msg['movie_id'] = activite_info.movie_id
@@ -522,7 +529,7 @@ const lottery = async(ctx, next) => {
     manager_id: ctx.state.managerInfo['data']['id'],
     manager_name: ctx.state.managerInfo['data']['name'],
     create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-    status: 1,
+    status: 0, //待发布：0，已发布：1
     activite_id: activite_info.id,
     movie_id: activite_info.movie_id,
     movie_name: activite_info.movie_name,

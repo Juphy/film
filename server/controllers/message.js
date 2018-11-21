@@ -65,7 +65,9 @@ const send_msg = async(ctx, next) => {
 
   const num = Math.floor(Math.random() * 1000000 + 1);
 
-  req.data = { 'code': num }
+  req.data = {
+    'code': num
+  }
   res = await sendSMS(req)
 
   if (res) {
@@ -78,20 +80,11 @@ const send_msg = async(ctx, next) => {
   }
 }
 
-// let funPromise = function(time) {
+//短信通知中奖者信息
+const send_winner = async(ctx, next) => {
+  
+}
 
-//   return new Promise(function(resolve, reject) {
-//     //Pending 进行中
-//     console.log('aaaaa')
-//     // resolve();// 从 pending 变为 resolved
-//     setTimeout(function() {
-
-//       resolve(); // 从 pending 变为 resolved
-//     }, time);
-
-//     console.log('cccccc')
-//   })
-// };
 
 
 
