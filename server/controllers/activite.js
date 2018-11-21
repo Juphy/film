@@ -88,9 +88,9 @@ const cache_cinema_info = async(ctx, next) => {
     limit: 2000
   })
 
-  cinemas.forEach(function (val) {
-    redis.set(val.hash_code, JSON.stringify(val))
-    redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
+  cinemas.forEach(async function (val) {
+    await redis.set(val.hash_code, JSON.stringify(val))
+    await redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
   })
 
   await new Promise(function(resolve) {
