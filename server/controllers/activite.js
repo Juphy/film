@@ -533,7 +533,7 @@ const lottery = async(ctx, next) => {
     manager_id: ctx.state.managerInfo['data']['id'],
     manager_name: ctx.state.managerInfo['data']['name'],
     create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-    status: 0, //待发布：0，已发布：1
+    status: 1, //待发布：0，已发布：1
     activite_id: activite_info.id,
     movie_id: activite_info.movie_id,
     movie_name: activite_info.movie_name,

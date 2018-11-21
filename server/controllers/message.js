@@ -20,7 +20,7 @@ const Redis = require('ioredis');
 const redis = new Redis();
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-
+const moment = require('moment');
 /**
  * 响应 GET 请求（响应微信配置时的签名检查请求）
  */
@@ -55,7 +55,7 @@ async function post(ctx, next) {
 
 
 //发送验证码
-const send_msg = async (ctx, next) => {
+const send_msg = async(ctx, next) => {
 
   console.log(ctx.request.header)
 
@@ -90,12 +90,59 @@ const send_msg = async (ctx, next) => {
 }
 
 //短信通知中奖者信息
-const send_winner = async (ctx, next) => {
+const send_winner = async(ctx, next) => {
 
+  const {
+    msg_id
+  } = ctx.request.params;
+
+  if (!msg_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  msg = await Msg.find({
+    where: {
+      id: msg_id,
+      invalid: 0,
+      type: 2,
+      phone: {
+        $ne: null
+      },
+      status: 0
+    }
+  })
+
+  if (!msg) {
+    return ctx.body = failed('消息不存在或已发出')
+  }
+  let req = {}
+  req.phone = msg.phone
+  req.template_code = 'SMS_151578868'
+  req.data = {
+    'title': msg.title
+  }
+
+  res = await sendSMS(req)
+
+  if (res) {
+    await msg.update({
+      status: 1,
+      note_status: 1,
+      send_time: moment().format('YYYY-MM-DD HH:mm:ss')
+    })
+    return ctx.body = success('', '发送成功')
+  } else {
+    await msg.update({
+      status: 1,
+      note_status: 0,
+      send_time: moment().format('YYYY-MM-DD HH:mm:ss')
+    })
+    return ctx.body = success('', '发送失败')
+  }
 }
 
 //获取用户消息（公告）
-const app_msg = async (ctx, next) => {
+const app_msg = async(ctx, next) => {
   const {
     open_id
   } = ctx.request.params;
@@ -117,9 +164,11 @@ const app_msg = async (ctx, next) => {
   ctx.body = success(msgs)
 }
 
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
-  let { title = '', page = 1, page_size = 10 } = p;
+  let {
+    title = '', page = 1, page_size = 10
+  } = p;
   p['page'] = page;
   p['page_size'] = page_size;
   let res = await Msg.findAndCountAll({
@@ -138,7 +187,7 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async (ctx, next) => {
+const del = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -171,6 +220,7 @@ module.exports = {
     send_msg,
     app_msg,
     list,
-    del
+    del,
+    send_winner
   }
 }
