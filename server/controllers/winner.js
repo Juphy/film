@@ -15,7 +15,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 //下寄送快递订单
-const add_sf_order = async (ctx, next) => {
+const add_sf_order = async(ctx, next) => {
 
   const {
     winner_id
@@ -102,7 +102,7 @@ const add_sf_order = async (ctx, next) => {
 
 
 //查询顺丰订单
-const search_sf_order = async (ctx, next) => {
+const search_sf_order = async(ctx, next) => {
   const {
     orderid
   } = ctx.request.params;
@@ -144,7 +144,7 @@ const search_sf_order = async (ctx, next) => {
 }
 
 //取消订单
-const confirm_sf_order = async (ctx, next) => {
+const confirm_sf_order = async(ctx, next) => {
   const {
     orderid,
     mailno
@@ -186,7 +186,7 @@ const confirm_sf_order = async (ctx, next) => {
 
 
 //查询顺丰快递递运信息
-const express_sf_order = async (ctx, next) => {
+const express_sf_order = async(ctx, next) => {
   const {
     mailno
   } = ctx.request.params;
@@ -226,7 +226,7 @@ const express_sf_order = async (ctx, next) => {
   const routes = res.Response.Body[0].RouteResponse[0].Route
   const arr = []
 
-  routes.forEach(function (val, index) {
+  routes.forEach(function(val, index) {
     arr[index] = val.$
   })
 
@@ -238,7 +238,7 @@ const express_sf_order = async (ctx, next) => {
 
 
 //查询中奖列表(me)
-const winner_list = async (ctx, next) => {
+const winner_list = async(ctx, next) => {
   const {
     open_id,
     page = 1,
@@ -269,7 +269,7 @@ const winner_list = async (ctx, next) => {
 
 
 //查询需要寄送快递奖品列表(me)
-const express_winner_list = async (ctx, next) => {
+const express_winner_list = async(ctx, next) => {
   const {
     open_id,
     page = 1,
@@ -327,7 +327,7 @@ async function sf_request(obj) {
   let parser = new xml2js.Parser();
 
   let res;
-  parser.parseString(xml_res, function (err, result) {
+  parser.parseString(xml_res, function(err, result) {
     console.dir(result);
     console.log('Done');
     res = result
@@ -336,7 +336,7 @@ async function sf_request(obj) {
   return res
 }
 
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     title,
@@ -361,9 +361,11 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async (ctx, next) => {
+const del = async(ctx, next) => {
   let p = ctx.request.params;
-  let { winner_id } = p;
+  let {
+    winner_id
+  } = p;
   if (!winner_id) {
     ctx.body = failed('id缺省或者无效');
   } else {
@@ -372,13 +374,53 @@ const del = async (ctx, next) => {
       if (res.invalid !== 0) {
         ctx.body = failed('已删除');
       } else {
-        res = res.update({ invalid: id });
+        res = res.update({
+          invalid: id
+        });
         ctx.body = success(res, '删除成功');
       }
     } else {
       ctx.body = failed('id无效');
     }
   }
+}
+
+
+//领奖
+const accept_prize = async(ctx, next) => {
+  let {
+    open_id,
+    winner_id,
+    receiver,
+    phone,
+    address
+  } = ctx.request.params;
+
+  winner_info = await Winner.find({
+    where: {
+      id: winner_id,
+      open_id: open_id,
+      invalid: 0
+    }
+  })
+
+  if (!winner_info) {
+    return ctx.body = failed('未找到领奖记录')
+  }
+
+  if (winner_info.is_sure == 1) {
+    return ctx.body = failed('已确认领奖')
+  }
+
+  res = await winner_info.update({
+    is_sure: 1,
+    receiver: receiver,
+    address: address,
+    phone: phone
+  })
+
+  ctx.body = success(res, '领奖成功')
+
 }
 
 
@@ -392,6 +434,7 @@ module.exports = {
     express_winner_list,
     winner_list,
     list,
-    del
+    del,
+    accept_prize
   }
 };

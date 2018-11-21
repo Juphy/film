@@ -503,18 +503,6 @@ const lottery = async(ctx, next) => {
       msg['movie_name'] = activite_info.movie_name
       msg['type'] = 2
       msg['phone'] = item.phone
-
-      // req.phone = item.phone
-      // req.template_code = 'SMS_150495613'
-
-      // res = sendSMS(req)
-
-      // if (res.status) {
-      //   msg['note_status'] = 1
-      // } else {
-      //   msg['note_status'] = 0
-      // }
-
       msgs.push(msg)
     } else {
       return ctx.body = failed('存在未分配奖品人员')

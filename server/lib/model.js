@@ -402,7 +402,10 @@ const winners = sequelize.define('applet_winners', {
     type: Sequelize.INTEGER
   },
   address: {
-    type: Sequelize.JSON
+    type: Sequelize.STRING
+  },
+  receiver: {
+    type: Sequelize.STRING
   },
   manager_id: {
     type: Sequelize.INTEGER
