@@ -8,6 +8,10 @@ const {
 } = require('../lib/sendSms.js')
 
 const {
+  Msg
+} = require('../lib/model');
+
+const {
   success,
   failed
 } = require('./base.js');
@@ -54,11 +58,15 @@ const send_msg = async(ctx, next) => {
 
   console.log(ctx.request.header)
 
-  const req = {}
   const {
     phone
   } = ctx.request.params;
-  console.log(phone)
+
+  if (!phone) {
+    return ctx.body = failed('参数错误')
+  }
+
+  const req = {}
 
   req.phone = phone
   req.template_code = 'SMS_150495613'
@@ -82,7 +90,30 @@ const send_msg = async(ctx, next) => {
 
 //短信通知中奖者信息
 const send_winner = async(ctx, next) => {
-  
+
+}
+
+//获取用户消息（公告）
+const app_msg = async(ctx, next) => {
+  const {
+    open_id
+  } = ctx.request.params;
+
+  msgs = await Msg.findAll({
+    where: {
+      invalid: 0,
+      $or: [{
+        open_id: open_id
+      }, {
+        open_id: null
+      }]
+    },
+    order: [
+      ['create_time', 'DESC']
+    ]
+  })
+
+  ctx.body = success(msgs)
 }
 
 
@@ -93,6 +124,7 @@ module.exports = {
   post,
   get,
   pub: {
-    send_msg
+    send_msg,
+    app_msg
   }
 }

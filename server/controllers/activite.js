@@ -168,7 +168,7 @@ const search_cineams = async(ctx, next) => {
 
   cinemas = await Cinema.findAll({
     where: we,
-    limit: num
+    limit: parseInt(num)
   })
 
   return ctx.body = success(cinemas, '查询成功')
