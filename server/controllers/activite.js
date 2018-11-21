@@ -68,27 +68,28 @@ const sync_movie = async(ctx, next) => {
 //缓存影院数据
 const cache_cinema_info = async(ctx, next) => {
 
+
+  cinemas = await Cinema.findAll({
+    where: {
+      longitude: {
+        $ne: null
+      },
+      latitude: {
+        $ne: null
+      },
+      hash_code: {
+        $ne: null
+      },
+      name: {
+        $ne: null
+      }
+    },
+    offset: 0,
+    limit: 2000
+  })
+
   await new Promise(function(resolve) {
     setTimeout(function() {
-      cinemas = Cinema.findAll({
-        where: {
-          longitude: {
-            $ne: null
-          },
-          latitude: {
-            $ne: null
-          },
-          hash_code: {
-            $ne: null
-          },
-          name: {
-            $ne: null
-          }
-        },
-        offset: 0,
-        limit: 2000
-      })
-
       cinemas.forEach(function(val) {
         redis.set(val.hash_code, JSON.stringify(val))
         redis.geoadd('cinemas', val.longitude, val.latitude, val.id + '_' + val.hash_code + '_' + val.name)
