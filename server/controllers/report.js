@@ -32,6 +32,10 @@ const upload = async (ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
+  //判断用户是否绑定手机
+
+
+
   activite_info = await Activity.findById(activite_id, {
     invalid: 0
   })
@@ -81,6 +85,7 @@ const upload = async (ctx, next) => {
     open_id: open_id,
     nick_name: 'run', //ctx.state.data.nick_name,
     avatar_url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erYcyhqyv5TNicF9jQUGYWt9hF2LZrJJ1oCWemIU5K3KAK1hR6thSmmTAQwN9xicFnGSBoIodQXctRw/132', //ctx.state.data.nick_name,
+    phone: '18210364952',//ctx.state.data.phone
     cinema_code: cinema_code,
     cinema_name: cinema_info.name,
     chain: cinema_info.chain,

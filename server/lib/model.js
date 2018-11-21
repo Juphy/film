@@ -144,8 +144,8 @@ const msgs = sequelize.define('applet_msgs', {
   link: {
     type: Sequelize.STRING
   },
-  open_ids: {
-    type: Sequelize.JSON
+  open_id: {
+    type: Sequelize.STRING
   },
   manager_id: {
     type: Sequelize.INTEGER
@@ -170,6 +170,24 @@ const msgs = sequelize.define('applet_msgs', {
   },
   read_status: {
     type: Sequelize.INTEGER
+  },
+  activite_id: {
+    type: Sequelize.INTEGER
+  },
+  movie_id: {
+    type: Sequelize.INTEGER
+  },
+  movie_name: {
+    type: Sequelize.STRING
+  },
+  type: {
+    type: Sequelize.INTEGER
+  },
+  note_status: {
+    type: Sequelize.INTEGER
+  },
+  phone: {
+    type: Sequelize.STRING
   },
   invalid: {
     type: Sequelize.INTEGER
@@ -278,6 +296,9 @@ const reports = sequelize.define('applet_reports', {
   },
   is_winner: {
     type: Sequelize.INTEGER
+  },
+  phone: {
+    type: Sequelize.STRING
   },
   create_time: {
     type: Sequelize.DATE,
@@ -419,7 +440,10 @@ const winners = sequelize.define('applet_winners', {
   },
   movie_name: {
     type: Sequelize.STRING
-  }
+  },
+  phone: {
+    type: Sequelize.STRING
+  },
 }, {
   timestamps: false,
   freezeTableName: true

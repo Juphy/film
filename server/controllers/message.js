@@ -48,6 +48,8 @@ async function post(ctx, next) {
   ctx.body = 'success'
 }
 
+
+//发送验证码
 const send_msg = async(ctx, next) => {
 
   console.log(ctx.request.header)
@@ -61,33 +63,35 @@ const send_msg = async(ctx, next) => {
   req.phone = phone
   req.template_code = 'SMS_150495613'
 
+  const num = Math.floor(Math.random() * 1000000 + 1);
+
+  req.data = { 'code': num }
   res = await sendSMS(req)
 
-  if (res.status) {
+  if (res) {
 
-    redis.set('bindPhoneCode_' + phone, res.data, 'EX', 60);
+    redis.set('bindPhoneCode_' + phone, num, 'EX', 60);
     // ctx.session['bindPhoneCode_' + phone] = res.data
-    console.log('--------code:', res.data)
     ctx.body = success('', '发送成功')
   } else {
     ctx.body = failed('发送失败')
   }
 }
 
-let funPromise = function(time) {
+// let funPromise = function(time) {
 
-  return new Promise(function(resolve, reject) {
-    //Pending 进行中
-    console.log('aaaaa')
-    // resolve();// 从 pending 变为 resolved
-    setTimeout(function() {
+//   return new Promise(function(resolve, reject) {
+//     //Pending 进行中
+//     console.log('aaaaa')
+//     // resolve();// 从 pending 变为 resolved
+//     setTimeout(function() {
 
-      resolve(); // 从 pending 变为 resolved
-    }, time);
+//       resolve(); // 从 pending 变为 resolved
+//     }, time);
 
-    console.log('cccccc')
-  })
-};
+//     console.log('cccccc')
+//   })
+// };
 
 
 

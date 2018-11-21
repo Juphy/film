@@ -8,7 +8,7 @@ const config = require('../config')
 
 
 
-
+//发送验证码
 const sendSMS = async(req) => {
   
 
@@ -22,7 +22,6 @@ const sendSMS = async(req) => {
     secretAccessKey
   })
 
-  const num = Math.floor(Math.random() * 1000000 + 1);
 
   //发送短信
   return smsClient.sendSMS({
@@ -39,7 +38,7 @@ const sendSMS = async(req) => {
     // 如模板内容为 "亲爱的${name},您的验证码为${code}"
     // 时。
     // TemplateParam: '{"code":"12345"}'
-    TemplateParam: JSON.stringify({ 'code': num })
+    TemplateParam: JSON.stringify(req.data)
 
   }).then(function(res) {
     let {
@@ -48,10 +47,7 @@ const sendSMS = async(req) => {
     if (Code === 'OK') {
       //处理返回参数
       console.log(res)
-      return {
-        'status': true,
-        'data': num
-      }
+      return true
     }
   }, function(err) {
     console.log(err)

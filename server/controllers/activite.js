@@ -3,7 +3,8 @@ const {
   Movie,
   Cinema,
   Winner,
-  Report
+  Report,
+  Msg
 } = require('../lib/model');
 const {
   success,
@@ -11,6 +12,10 @@ const {
 } = require('./base.js');
 const Sequelize = require('sequelize');
 const moment = require('moment');
+
+const {
+  sendSMS
+} = require('../lib/sendSms.js')
 
 
 const {
@@ -433,9 +438,12 @@ const lottery = async(ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
-  activite_info = await Activity.findById(activite_id, {
-    invalid: 0,
-    status: 1
+  activite_info = await Activity.find({
+    where: {
+      id: activite_id,
+      invalid: 0,
+      status: 1
+    }
   }) //查询活动信息
 
   if (!activite_info) {
@@ -445,7 +453,8 @@ const lottery = async(ctx, next) => {
   winner_list = await Report.findAll({
     where: {
       activite_id: activite_id,
-      invalid: 0
+      invalid: 0,
+      is_winner: 1
     }
   }) //查询中奖者信息
 
@@ -454,13 +463,16 @@ const lottery = async(ctx, next) => {
   }
 
   let wins = []
+  let msgs = []
 
-  console.log('------:',winners)
-
+  console.log('------:', winners)
+  winners = JSON.parse(winners)
   winner_list.forEach(function(item) {
 
     if (item.id in winners) {
+
       let winner = {}
+
       winner['prize_name'] = winners[item.id]['prize']
       winner['open_id'] = winners[item.id]['open_id']
       winner['need_delivery'] = winners[item.id]['need_delivery']
@@ -474,17 +486,70 @@ const lottery = async(ctx, next) => {
       winner['movie_id'] = activite_info.movie_id
       winner['movie_name'] = activite_info.movie_name
       winner['avatar_url'] = item.avatar_url
-
+      winner['phone'] = item.phone
       wins.push(winner)
+
+      let msg = {}
+      msg['title'] = activite_info['title']
+      msg['description'] = item.nick_name + '恭喜你获得' + winners[item.id]['prize']
+      msg['content'] = '中奖啦中奖啦'
+      msg['manager_id'] = ctx.state.managerInfo['data']['id']
+      msg['manager_name'] = ctx.state.managerInfo['data']['name']
+      msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
+      msg['status'] = 1
+      msg['open_id'] = item.open_id
+      msg['activite_id'] = activite_info.id
+      msg['movie_id'] = activite_info.movie_id
+      msg['movie_name'] = activite_info.movie_name
+      msg['type'] = 2
+      msg['phone'] = item.phone
+
+      // req.phone = item.phone
+      // req.template_code = 'SMS_150495613'
+
+      // res = sendSMS(req)
+
+      // if (res.status) {
+      //   msg['note_status'] = 1
+      // } else {
+      //   msg['note_status'] = 0
+      // }
+
+      msgs.push(msg)
     } else {
       return ctx.body = failed('存在未分配奖品人员')
     }
 
-    ctx.body = success(wins)
-
   })
 
+  winner_res = await Winner.bulkCreate(wins) //批量插入winner
 
+
+
+
+
+  msgs.push({
+    title: activite_info['title'],
+    description: '活动开奖啦',
+    content: '恭喜某某某们获得奖品',
+    manager_id: ctx.state.managerInfo['data']['id'],
+    manager_name: ctx.state.managerInfo['data']['name'],
+    create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+    status: 1,
+    activite_id: activite_info.id,
+    movie_id: activite_info.movie_id,
+    movie_name: activite_info.movie_name,
+    type: 1,
+  })
+
+  msg_res = await Msg.bulkCreate(msgs) //批量插入msg
+
+
+  await activite_info.update({
+    status: 2
+  })
+
+  ctx.body = success('', '插入成功')
 
 
 }
