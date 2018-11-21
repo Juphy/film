@@ -495,6 +495,7 @@ const lottery = async(ctx, next) => {
       winner['movie_name'] = activite_info.movie_name
       winner['avatar_url'] = item.avatar_url
       winner['phone'] = item.phone
+      winner['expiration_day'] = moment().add(1, 'month').format('YYYY-MM-DD')
       wins.push(winner)
       nick_names.push(item.nick_name)
 
@@ -528,7 +529,7 @@ const lottery = async(ctx, next) => {
   msgs.push({
     title: activite_info['title'],
     description: activite_info['title']+'活动开奖通知',
-    content: '中奖名单：【'+nick_names.join(',')+'】请以上中奖者收到中奖通知后，于X年X月X日前在“我的-中奖记录”中填写相关领奖信息，我们将尽快为您派发奖品，逾期未回复视为放弃本次活动奖品，将不再补发奖品，谢谢您的理解与支持。',
+    content: '中奖名单：【' + nick_names.join(',') + '】请以上中奖者收到中奖通知后，于' + moment().add(1, 'month').format('YYYY年MM月DD日')+'前在“我的-中奖记录”中填写相关领奖信息，我们将尽快为您派发奖品，逾期未回复视为放弃本次活动奖品，将不再补发奖品，谢谢您的理解与支持。',
     manager_id: ctx.state.managerInfo['data']['id'],
     manager_name: ctx.state.managerInfo['data']['name'],
     create_time: moment().format('YYYY-MM-DD HH:mm:ss'),

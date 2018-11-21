@@ -408,6 +408,10 @@ const accept_prize = async(ctx, next) => {
     return ctx.body = failed('未找到领奖记录')
   }
 
+  if (moment().format('YYYY-MM-DD') > winner_info.expiration_day) {
+    return ctx.body = failed('该领奖信息已失效')
+  }
+
   if (winner_info.is_sure == 1) {
     return ctx.body = failed('已确认领奖')
   }

@@ -447,6 +447,9 @@ const winners = sequelize.define('applet_winners', {
   phone: {
     type: Sequelize.STRING
   },
+  expiration_day: {
+    type: Sequelize.DATEONLY
+  },
 }, {
   timestamps: false,
   freezeTableName: true
