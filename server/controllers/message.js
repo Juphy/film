@@ -54,7 +54,7 @@ async function post(ctx, next) {
 
 
 //发送验证码
-const send_msg = async(ctx, next) => {
+const send_msg = async (ctx, next) => {
 
   console.log(ctx.request.header)
 
@@ -89,12 +89,12 @@ const send_msg = async(ctx, next) => {
 }
 
 //短信通知中奖者信息
-const send_winner = async(ctx, next) => {
+const send_winner = async (ctx, next) => {
 
 }
 
 //获取用户消息（公告）
-const app_msg = async(ctx, next) => {
+const app_msg = async (ctx, next) => {
   const {
     open_id
   } = ctx.request.params;
@@ -116,7 +116,50 @@ const app_msg = async(ctx, next) => {
   ctx.body = success(msgs)
 }
 
+const list = async (ctx, next) => {
+  let p = ctx.request.params;
+  let { title = '', page = 1, page_size = 10 } = p;
+  p['page'] = page;
+  p['page_size'] = page_size;
+  let res = await Msg.findAndCountAll({
+    where: {
+      invalid: 0,
+      title: {
+        [Op.like]: '%' + title + '%'
+      }
+    },
+    order: [
+      ['create_time', 'DESC']
+    ],
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
+  });
+  ctx.body = success(res);
+}
 
+const del = async (ctx, next) => {
+  let p = ctx.request.params;
+  let {
+    id
+  } = p;
+  if (!id) {
+    ctx.body = failed('id缺省或者无效')
+  } else {
+    let res = await Msg.findById(id);
+    if (res) {
+      if (res.invalid !== 0) {
+        ctx.body = failed('已删除');
+      } else {
+        res = res.update({
+          invalid: id
+        });
+        ctx.body = success(res, '删除成功')
+      }
+    } else {
+      ctx.body = failed('id无效')
+    }
+  }
+}
 
 
 
@@ -125,6 +168,8 @@ module.exports = {
   get,
   pub: {
     send_msg,
-    app_msg
+    app_msg,
+    list,
+    del
   }
 }

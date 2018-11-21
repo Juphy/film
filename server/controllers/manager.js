@@ -119,7 +119,7 @@ const del = async (ctx, next) => {
         ctx.body = success(res, '删除成功');
       }
     } else {
-      ctx.body = failed('id无效或者缺省');
+      ctx.body = failed('id无效');
     }
   }
 };
