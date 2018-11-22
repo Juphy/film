@@ -164,7 +164,6 @@ const app_list = async(ctx, next) => {
     }
   }
 
-  we['invalid'] = 0
 
 
   let res = await Report.findAndCountAll({
@@ -175,6 +174,7 @@ const app_list = async(ctx, next) => {
     }],
     where: {
       open_id: open_id,
+      invalid:0
     },
     offset: (page - 1) * page_size,
     limit: page_size * 1
