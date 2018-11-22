@@ -1,6 +1,8 @@
 const {
   User,
-  Address
+  Address,
+  Winner,
+  Report
 } = require('../lib/model');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -361,7 +363,39 @@ const list = async(ctx, next) => {
 
 //小程序端获取用户信息
 const app_info = async(ctx, next) => {
-  
+  let {
+    open_id
+  } = ctx.request.params;
+
+  const count_report = await Report.count({
+    where: {
+      open_id: open_id,
+      invalid: 0
+    }
+  })
+
+  const count_winner = await Winner.count({
+    where: {
+      open_id: open_id,
+      invalid: 0
+    }
+  })
+
+  const count_winner_sure = await Winner.count({
+    where: {
+      open_id: open_id,
+      invalid: 0,
+      is_sure: 0
+    }
+  })
+
+  ctx.body = success({
+    'phone': ctx.state.$wxInfo.userinfo.phone,
+    'count_report': count_report,
+    'count_winner': count_winner,
+    'count_winner_sure': count_winner_sure
+  })
+
 }
 
 
@@ -380,6 +414,7 @@ module.exports = {
     list
   },
   app: {
-    check_bind_phone
+    check_bind_phone,
+    app_info
   }
 }
