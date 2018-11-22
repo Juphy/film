@@ -351,6 +351,7 @@ module.exports = {
     winning,
     app_list,
     app_info,
+    app_del,
     report_winning
   }
 }
