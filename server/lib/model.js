@@ -67,7 +67,7 @@ const activities = sequelize.define('applet_activites', {
     type: Sequelize.JSON
   },
   other_description: {
-    type: Sequelize.TEXT
+    type: Sequelize.JSON
   },
   status: {
     type: Sequelize.INTEGER

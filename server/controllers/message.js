@@ -150,11 +150,7 @@ const app_msg = async(ctx, next) => {
   msgs = await Msg.findAll({
     where: {
       invalid: 0,
-      $or: [{
-        open_id: open_id
-      }, {
-        open_id: null
-      }]
+      type: 1
     },
     order: [
       ['create_time', 'DESC']
