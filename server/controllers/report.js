@@ -178,7 +178,7 @@ const app_info = async (ctx, next) => {
 }
 
 
-// 上报数据列表
+// 活动进行中，上报数据列表
 const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
@@ -246,18 +246,18 @@ const reviews = async (ctx, next) => {
       if (res.some(item => item.is_winner)) {
         ctx.body = failed('请先取消中奖，再操作');
       } else {
-      let _res = await Report.update({
-        status: status,
-        manager_id: ctx.state.managerInfo['data']['id'],
-        manager_name: ctx.state.managerInfo['data']['name']
-      }, {
-          where: {
-            id: {
-              [Op.in]: ids
+        let _res = await Report.update({
+          status: status,
+          manager_id: ctx.state.managerInfo['data']['id'],
+          manager_name: ctx.state.managerInfo['data']['name']
+        }, {
+            where: {
+              id: {
+                [Op.in]: ids
+              }
             }
-          }
-        });
-      ctx.body = success(_res);
+          });
+        ctx.body = success(_res);
       }
     } else {
       ctx.body = failed('id无效');
@@ -290,6 +290,23 @@ const winning = async (ctx, next) => {
   }
 }
 
+// 已标记为中奖的数据
+const report_winning = async (ctx, next) => {
+  let p = ctx.request.params;
+  let { id } = p;
+  if (!id) {
+    ctx.body = failed('id无效或者缺省');
+  } else {
+    let res = await Report.findAll({
+      where: {
+        activite_id: id,
+        is_winner: 1
+      }
+    });
+    ctx.body = success(res, '查询成功');
+  }
+}
+
 module.exports = {
   pub: {
     upload,
@@ -297,6 +314,7 @@ module.exports = {
     reviews,
     winning,
     app_list,
-    app_info
+    app_info,
+    report_winning
   }
 }
