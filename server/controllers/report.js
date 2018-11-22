@@ -164,6 +164,8 @@ const app_list = async(ctx, next) => {
     }
   }
 
+  we['invalid'] = 0
+
 
   let res = await Report.findAndCountAll({
     include: [{
