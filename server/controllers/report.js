@@ -213,7 +213,8 @@ const list = async (ctx, next) => {
   let res = await Report.findAndCountAll({
     include: [{
       model: Activity,
-      where: { status: 1 }
+      where: { status: 1 },
+      attributes: ['status']
     }],
     where: we,
     order: [
