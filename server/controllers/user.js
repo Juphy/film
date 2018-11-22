@@ -205,6 +205,7 @@ const edit_address = async(ctx, next) => {
 
 }
 
+//删除地址
 const del_address = async(ctx, next) => {
   let {
     open_id,
@@ -248,6 +249,7 @@ const del_address = async(ctx, next) => {
   ctx.body = success('删除成功')
 }
 
+//地址列表
 const address_list = async(ctx, next) => {
   let {
     open_id
@@ -286,6 +288,7 @@ const address_list = async(ctx, next) => {
 
 }
 
+//设置默认地址
 const set_default_address = async(ctx, next) => {
   let {
     open_id,
@@ -355,6 +358,11 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
+
+//小程序端获取用户信息
+const app_info = async(ctx, next) => {
+  
+}
 
 
 

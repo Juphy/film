@@ -477,6 +477,8 @@ const lottery = async (ctx, next) => {
   console.log('------:', winners)
   winners = JSON.parse(winners)
 
+  console.log('-------activite:',activite_info)
+
   winner_list.forEach(function (item) {
 
     if (item.id in winners) {
@@ -486,7 +488,7 @@ const lottery = async (ctx, next) => {
       winner['prize_name'] = winners[item.id]['prize']
       winner['open_id'] = winners[item.id]['open_id']
       winner['need_delivery'] = winners[item.id]['need_delivery']
-      winner['activite_id'] = activite_info.id
+      winner['active_id'] = activite_id
       winner['report_id'] = item.id
       winner['manager_id'] = ctx.state.managerInfo['data']['id']
       winner['manager_name'] = ctx.state.managerInfo['data']['name']

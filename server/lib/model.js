@@ -356,6 +356,12 @@ const users = sequelize.define('cSessionInfo', {
   address_id: {
     type: Sequelize.INTEGER
   },
+  uuid: {
+    type: Sequelize.STRING
+  },
+  from_uuid: {
+    type: Sequelize.STRING
+  }
 
 }, {
   timestamps: false,
