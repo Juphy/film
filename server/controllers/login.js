@@ -1,4 +1,4 @@
-const { users } = require('../lib/model');
+const { User } = require('../lib/model');
 const { success, failed } = require('./base.js');
 
 // 登录授权接口
@@ -9,6 +9,10 @@ module.exports = async (ctx, next) => {
     if (ctx.state.$wxInfo.loginState) {
         ctx.state.data = ctx.state.$wxInfo.userinfo
         ctx.state.data['time'] = Math.floor(Date.now() / 1000)
+        userinfo = await User.find({ open_id: ctx.state.$wxInfo.userinfo['open_id']})
+
+        ctx.state.data['userinfo']['phone'] = userinfo.phone
+        ctx.state.data['userinfo']['uuid'] = userinfo.uuid
         ctx.body = success(ctx.state.data)
         console.log(ctx.body)
     }

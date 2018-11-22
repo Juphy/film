@@ -390,7 +390,7 @@ const app_info = async(ctx, next) => {
   })
 
   ctx.body = success({
-    'phone': ctx.state.$wxInfo.userinfo.phone,
+    'phone': 18210364952,//ctx.state.$wxInfo.userinfo.phone,
     'count_report': count_report,
     'count_winner': count_winner,
     'count_winner_sure': count_winner_sure
