@@ -25,10 +25,13 @@ const add_sf_order = async(ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
-  winner_info = await Winner.findById(winner_id, {
-    invalid: 0,
-    needDelivery: 1,
-    isSure: 1
+  winner_info = await Winner.findById({
+    where: {
+      id: winner_id,
+      invalid: 0,
+      needDelivery: 1,
+      isSure: 1
+    }
   })
 
   if (!winner_info) {
@@ -241,7 +244,7 @@ const express_sf_order = async(ctx, next) => {
 const winner_list = async(ctx, next) => {
   const {
     page = 1,
-    page_size = 10
+      page_size = 10
   } = ctx.request.params;
 
   if (!page || !page_size) {
@@ -271,7 +274,7 @@ const winner_list = async(ctx, next) => {
 const express_winner_list = async(ctx, next) => {
   const {
     page = 1,
-    page_size = 10
+      page_size = 10
   } = ctx.request.params;
 
   if (!page || !page_size) {
