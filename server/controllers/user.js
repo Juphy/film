@@ -67,7 +67,7 @@ const bind_phone = async(ctx, next) => {
     return
   }
 
-  console.log('-----true:')
+  console.log('-----ctx:', ctx.state.$wxInfo.userinfo)
   user_info = await User.findOne({
     where: {
       open_id: ctx.state.$wxInfo.userinfo.userinfo.openId,
