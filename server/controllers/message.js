@@ -55,7 +55,7 @@ async function post(ctx, next) {
 
 
 //发送验证码
-const send_msg = async(ctx, next) => {
+const send_msg = async (ctx, next) => {
 
   console.log(ctx.request.header)
 
@@ -90,7 +90,7 @@ const send_msg = async(ctx, next) => {
 }
 
 //短信通知中奖者信息
-const send_winner = async(ctx, next) => {
+const send_winner = async (ctx, next) => {
 
   const {
     msg_id
@@ -142,7 +142,7 @@ const send_winner = async(ctx, next) => {
 }
 
 //获取用户消息（公告）
-const app_msg = async(ctx, next) => {
+const app_msg = async (ctx, next) => {
   const {
     open_id
   } = ctx.request.params;
@@ -160,20 +160,24 @@ const app_msg = async(ctx, next) => {
   ctx.body = success(msgs)
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
-    title = '', page = 1, page_size = 10
+    title = '', page = 1, page_size = 10, type = ''
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
+  let we = {
+    invalid: 0,
+    title: {
+      [Op.like]: '%' + title + '%'
+    }
+  };
+  if (type !== '') {
+    we['type'] = type;
+  }
   let res = await Msg.findAndCountAll({
-    where: {
-      invalid: 0,
-      title: {
-        [Op.like]: '%' + title + '%'
-      }
-    },
+    where: we,
     order: [
       ['create_time', 'DESC']
     ],
@@ -183,7 +187,7 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -218,7 +222,7 @@ module.exports = {
     del,
     send_winner
   },
-  app:{
+  app: {
     send_msg
   }
 }
