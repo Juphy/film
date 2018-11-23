@@ -397,11 +397,16 @@ const accept_goods_prize = async(ctx, next) => {
     address
   } = ctx.request.params;
 
+  if (!open_id || !winner_id || !receiver || !phone || !address) {
+    return ctx.body = failed('参数错误')
+  }
+
   winner_info = await Winner.find({
     where: {
       id: winner_id,
       open_id: open_id,
-      invalid: 0
+      invalid: 0,
+      type: 1
     }
   })
 
@@ -430,7 +435,7 @@ const accept_goods_prize = async(ctx, next) => {
 
 
 //领取money
-const accept_money_prize = async (ctx, next) => {
+const accept_money_prize = async(ctx, next) => {
   let {
     open_id,
     winner_id,
@@ -440,10 +445,15 @@ const accept_money_prize = async (ctx, next) => {
     real_name
   } = ctx.request.params;
 
+  if (!open_id || !winner_id || !bankcard || !identify_card || !phone || !real_name) {
+    return ctx.body = failed('参数错误')
+  }
+
   winner_info = await Winner.find({
     where: {
       id: winner_id,
       open_id: open_id,
+      type: 2,
       invalid: 0
     }
   })
@@ -469,6 +479,44 @@ const accept_money_prize = async (ctx, next) => {
 
   ctx.body = success(res, '领奖成功')
 
+}
+
+const accept_coupon_prize = async(ctx, body) {
+  let {
+    open_id,
+    winner_id,
+  } = ctx.request.params;
+
+  if (!open_id || !winner_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  winner_info = await Winner.find({
+    where: {
+      id: winner_id,
+      open_id: open_id,
+      type: 3,
+      invalid: 0
+    }
+  })
+
+  if (!winner_info) {
+    return ctx.body = failed('未找到领奖记录')
+  }
+
+  if (moment().format('YYYY-MM-DD') > winner_info.expiration_day) {
+    return ctx.body = failed('该领奖信息已失效')
+  }
+
+  if (winner_info.is_sure == 1) {
+    return ctx.body = failed('已确认领奖')
+  }
+
+  res = await winner.update({
+    is_sure: 1
+  })
+
+  ctx.body = success('领奖成功')
 }
 
 
