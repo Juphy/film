@@ -159,12 +159,6 @@ const msgs = sequelize.define('applet_msgs', {
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
-  send_time: {
-    type: Sequelize.DATE,
-    get() {
-      return moment(this.getDataValue('send_time')).format('YYYY-MM-DD HH:mm:ss');
-    }
-  },
   status: {
     type: Sequelize.INTEGER
   },
