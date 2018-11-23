@@ -387,8 +387,8 @@ const del = async(ctx, next) => {
 }
 
 
-//领奖
-const accept_prize = async(ctx, next) => {
+//领取实物
+const accept_goods_prize = async(ctx, next) => {
   let {
     open_id,
     winner_id,
@@ -429,6 +429,49 @@ const accept_prize = async(ctx, next) => {
 }
 
 
+//领取money
+const accept_money_prize = async (ctx, next) => {
+  let {
+    open_id,
+    winner_id,
+    bankcard,
+    identify_card,
+    phone,
+    real_name
+  } = ctx.request.params;
+
+  winner_info = await Winner.find({
+    where: {
+      id: winner_id,
+      open_id: open_id,
+      invalid: 0
+    }
+  })
+
+  if (!winner_info) {
+    return ctx.body = failed('未找到领奖记录')
+  }
+
+  if (moment().format('YYYY-MM-DD') > winner_info.expiration_day) {
+    return ctx.body = failed('该领奖信息已失效')
+  }
+
+  if (winner_info.is_sure == 1) {
+    return ctx.body = failed('已确认领奖')
+  }
+
+  res = await winner_info.update({
+    is_sure: 1,
+    real_name: real_name,
+    bankcark: bankcark,
+    identify_card: identify_card
+  })
+
+  ctx.body = success(res, '领奖成功')
+
+}
+
+
 
 module.exports = {
   pub: {
@@ -438,7 +481,8 @@ module.exports = {
     express_sf_order,
     list,
     del,
-    accept_prize
+    accept_goods_prize,
+    accept_money_prize
   },
   app: {
     express_winner_list,
