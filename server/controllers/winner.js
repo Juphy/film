@@ -530,7 +530,8 @@ module.exports = {
     list,
     del,
     accept_goods_prize,
-    accept_money_prize
+    accept_money_prize,
+    accept_coupon_prize
   },
   app: {
     express_winner_list,
