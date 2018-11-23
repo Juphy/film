@@ -26,7 +26,7 @@ const Op = Sequelize.Op;
 const Redis = require('ioredis');
 const redis = new Redis();
 //同步影片数据
-const sync_movie = async(ctx, next) => {
+const sync_movie = async (ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -42,7 +42,7 @@ const sync_movie = async(ctx, next) => {
     where: {
       movie_id: movie_id
     }
-  }).then(function(obj) {
+  }).then(function (obj) {
     if (obj) {
       return obj.update({
         movie_id: movie_id,
@@ -66,7 +66,7 @@ const sync_movie = async(ctx, next) => {
 }
 
 //缓存影院数据
-const cache_cinema_info = async(ctx, next) => {
+const cache_cinema_info = async (ctx, next) => {
 
 
   cinemas = await Cinema.findAll({
@@ -89,7 +89,7 @@ const cache_cinema_info = async(ctx, next) => {
   mcinemas = []
   geos = []
 
-  cinemas.forEach(async function(val) {
+  cinemas.forEach(async function (val) {
     mcinemas.push(val.hash_code)
     mcinemas.push(JSON.stringify(val))
 
@@ -107,12 +107,12 @@ const cache_cinema_info = async(ctx, next) => {
 }
 
 //同步影院信息后刷编码，需多次执行
-const mix_cinema_code = async(ctx, next) => {
+const mix_cinema_code = async (ctx, next) => {
 
   cinemas = await sequelize.query("select * from applet_cinemas where length(`hash_code`) =8", {
     type: Sequelize.QueryTypes.SELECT
-  }).then(function(res) {
-    res.forEach(function(cinema) {
+  }).then(function (res) {
+    res.forEach(function (cinema) {
       cinema.update({
         hash_code: require('crypto').createHash('md5').update(cinema.hash_code + 'huayingjuhe', 'utf8').digest('base64')
       })
@@ -123,7 +123,7 @@ const mix_cinema_code = async(ctx, next) => {
 }
 
 //获取最近的影院列表
-const nearby_cinemas = async(ctx, next) => {
+const nearby_cinemas = async (ctx, next) => {
   const {
     longitude,
     latitude,
@@ -137,7 +137,7 @@ const nearby_cinemas = async(ctx, next) => {
 
   cinemas = []
 
-  cinema_list.forEach(function(val) {
+  cinema_list.forEach(function (val) {
     cinemas.push(JSON.parse(val))
   })
 
@@ -145,12 +145,12 @@ const nearby_cinemas = async(ctx, next) => {
 }
 
 //搜索影院
-const search_cineams = async(ctx, next) => {
+const search_cineams = async (ctx, next) => {
 
   const {
     city_code = null,
-      name,
-      num = 10
+    name,
+    num = 10
   } = ctx.request.params;
 
   if (!name) {
@@ -175,7 +175,7 @@ const search_cineams = async(ctx, next) => {
 }
 
 // 搜索影片
-const search_movie = async(ctx, next) => {
+const search_movie = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name
@@ -198,7 +198,7 @@ const search_movie = async(ctx, next) => {
 }
 
 // 添加活动
-const add = async(ctx, next) => {
+const add = async (ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -225,7 +225,7 @@ const add = async(ctx, next) => {
 }
 
 //小程序活动列表
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     name = '',
@@ -269,11 +269,11 @@ const app_list = async(ctx, next) => {
 }
 
 // 后台活动列表
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     status = '',
-      title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
+    title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -310,7 +310,7 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -337,7 +337,7 @@ const del = async(ctx, next) => {
 }
 
 // 编辑活动
-const edit = async(ctx, next) => {
+const edit = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -371,26 +371,31 @@ const edit = async(ctx, next) => {
 }
 
 // 发布活动
-const start_end = async(ctx, next) => {
+const start_end = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
     status
   } = p;
-  if (!(status == 1) || !id) {
+  if (!(status == 1 || status == 3) || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Activity.findById(id);
     if (res) {
-      const o = [, 0, 1],
-        b = ['未开始', '已开始', '已结束'];
-      if (res.status !== o[status]) {
-        ctx.body = failed(b[res.status]);
+      if (res.status === 2) {
+        ctx.body = failed('活动已结束');
+      } if (res.status === status) {
+        if (status === 1) {
+          ctx.body = failed('活动已开始');
+        }
+        if (status === 3) {
+          ctx.body = failed('活动已结束');
+        }
       } else {
         res = res.update({
           status: status
         });
-        let j = ['', '发布成功', '结束成功'];
+        let j = ['', '活动发布成功', '', '活动结束成功'];
         ctx.body = success(res, j[status]);
       }
     } else {
@@ -400,7 +405,7 @@ const start_end = async(ctx, next) => {
 }
 
 //小程序活动详情
-const app_info = async(ctx, next) => {
+const app_info = async (ctx, next) => {
   let {
     id
   } = ctx.request.params;
@@ -436,7 +441,7 @@ const app_info = async(ctx, next) => {
 }
 
 //活动开奖
-const lottery = async(ctx, next) => {
+const lottery = async (ctx, next) => {
   let {
     winners,
     activite_id
@@ -484,7 +489,7 @@ const lottery = async(ctx, next) => {
   for (let item of Object.values(winner_list)) {
 
 
-    if (Object.keys(winners).includes(''+item.id)) {
+    if (Object.keys(winners).includes('' + item.id)) {
 
       let winner = {}
 
@@ -562,7 +567,7 @@ const lottery = async(ctx, next) => {
 
 
 // 活动详细
-const info = async(ctx, next) => {
+const info = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -598,7 +603,7 @@ module.exports = {
     search_movie,
     app_list,
   },
-  app:{
+  app: {
     app_info
   }
 };
