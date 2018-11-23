@@ -38,20 +38,13 @@ const upload = async(ctx, next) => {
   activite_info = await Activity.findById({
     where: {
       id: activite_id,
-      invalid: 0
+      invalid: 0,
+      status: 1
     }
   })
 
   if (!activite_info) {
-    return ctx.body = failed('活动不存在')
-  }
-
-  if (activite_info.status == 0) {
-    return ctx.body = failed('活动未开始')
-  }
-
-  if (activite_info.status == 2) {
-    return ctx.body = failed('活动已结束')
+    return ctx.body = failed('活动不存在或已结束')
   }
 
   if (moment().format('YYYY-MM-DD') > activite_info.end_day) {
@@ -169,9 +162,15 @@ const app_list = async(ctx, next) => {
     we['end_day'] = {
       $gte: moment().format('YYYY-MM-DD')
     }
+    we['status'] = {
+      $ne: 3
+    }
   } else {
-    we['end_day'] = {
-      $lt: moment().format('YYYY-MM-DD')
+    we['$or'] = {
+      'end_day': {
+        $lt: moment().format('YYYY-MM-DD')
+      },
+      'status': 3
     }
   }
 

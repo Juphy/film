@@ -389,7 +389,7 @@ const winners = sequelize.define('applet_winners', {
   status: {
     type: Sequelize.INTEGER
   },
-  need_delivery: {
+  type: {
     type: Sequelize.INTEGER
   },
   mailno: {
@@ -450,6 +450,18 @@ const winners = sequelize.define('applet_winners', {
   expiration_day: {
     type: Sequelize.DATEONLY
   },
+  coupon: {
+    type: Sequelize.STRING
+  },
+  bankcard: {
+    type: Sequelize.STRING
+  },
+  identify_card: {
+    type: Sequelize.STRING
+  },
+  real_name: {
+    type: Sequelize.STRING
+  }
 }, {
   timestamps: false,
   freezeTableName: true

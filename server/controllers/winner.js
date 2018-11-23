@@ -29,7 +29,7 @@ const add_sf_order = async(ctx, next) => {
     where: {
       id: winner_id,
       invalid: 0,
-      needDelivery: 1,
+      type: 1,
       isSure: 1
     }
   })
@@ -287,7 +287,7 @@ const express_winner_list = async(ctx, next) => {
       invalid: 0,
       is_sure: 1,
       status: 1,
-      need_delivery: 1,
+      type: 1,
       open_id: ctx.state.$wxInfo.userinfo.openId,
       mailno: {
         $not: null
