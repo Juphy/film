@@ -402,6 +402,7 @@ const app_info = async(ctx, next) => {
 
 
 module.exports = {
+  bind_phone,
   pub: {
     info,
     add_address,
@@ -412,7 +413,6 @@ module.exports = {
     list
   },
   app: {
-    bind_phone,
     check_bind_phone,
     app_info
   }
