@@ -481,7 +481,7 @@ const accept_money_prize = async(ctx, next) => {
 
 }
 
-const accept_coupon_prize = async(ctx, body) {
+const accept_coupon_prize = async(ctx, next) => {
   let {
     open_id,
     winner_id,
@@ -519,6 +519,27 @@ const accept_coupon_prize = async(ctx, body) {
   ctx.body = success('领奖成功')
 }
 
+const coupon_list = async(ctx, next) => {
+  let {
+    open_id,
+  } = ctx.request.params;
+
+  if (!open_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  winners = await Winner.findAll({
+    where: {
+      open_id: open_id,
+      is_sure: 1,
+      invalid: 0,
+      type: 3
+    }
+  })
+
+  ctx.body = success(winners)
+}
+
 
 
 module.exports = {
@@ -531,7 +552,8 @@ module.exports = {
     del,
     accept_goods_prize,
     accept_money_prize,
-    accept_coupon_prize
+    accept_coupon_prize,
+    coupon_list
   },
   app: {
     express_winner_list,
