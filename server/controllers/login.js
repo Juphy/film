@@ -17,7 +17,9 @@ module.exports = async(ctx, next) => {
     open_id = ctx.state.$wxInfo.userinfo.userinfo.openId
 
     userinfo = await User.find({
-      open_id: open_id
+      where: {
+        open_id: open_id
+      }
     })
 
     ctx.state.data['userinfo']['phone'] = userinfo.phone
