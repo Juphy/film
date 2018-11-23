@@ -213,10 +213,12 @@ module.exports = {
   post,
   get,
   pub: {
-    send_msg,
     app_msg,
     list,
     del,
     send_winner
+  },
+  app:{
+    send_msg
   }
 }

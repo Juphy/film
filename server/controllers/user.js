@@ -47,7 +47,6 @@ const bind_phone = async(ctx, next) => {
   // 具体查看：
 
   let {
-    open_id,
     phone,
     code
   } = ctx.request.params;
@@ -71,7 +70,7 @@ const bind_phone = async(ctx, next) => {
   console.log('-----true:')
   user_info = await User.findOne({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.userinfo.openId,
       invalid: 0
     }
   });
@@ -405,7 +404,6 @@ const app_info = async(ctx, next) => {
 module.exports = {
   pub: {
     info,
-    bind_phone,
     add_address,
     edit_address,
     del_address,
@@ -414,6 +412,7 @@ module.exports = {
     list
   },
   app: {
+    bind_phone,
     check_bind_phone,
     app_info
   }

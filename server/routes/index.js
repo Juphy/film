@@ -61,7 +61,7 @@ routes.forEach(item => {
       }), service[item.type][item.action]);
     }
     if (item.type === 'app') {
-      router[method](item.path, service[item.type][item.action]);
+      router[method](item.path, validationMiddleware);
     }
   });
 });
