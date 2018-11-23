@@ -596,9 +596,9 @@ module.exports = {
     nearby_cinemas,
     search_cineams,
     search_movie,
+    app_list,
   },
   app:{
-    app_list,
     app_info
   }
 };

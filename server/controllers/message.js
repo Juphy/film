@@ -217,9 +217,7 @@ module.exports = {
     list,
     del,
     send_winner,
-    send_msg
-  },
-  app:{
+    send_msg,
     app_msg
   }
 }
