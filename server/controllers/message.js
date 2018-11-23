@@ -143,9 +143,6 @@ const send_winner = async (ctx, next) => {
 
 //获取用户消息（公告）
 const app_msg = async (ctx, next) => {
-  const {
-    open_id
-  } = ctx.request.params;
 
   msgs = await Msg.findAll({
     where: {
@@ -217,10 +214,12 @@ module.exports = {
   post,
   get,
   pub: {
-    app_msg,
     list,
     del,
     send_winner,
     send_msg
   },
+  app:{
+    app_msg
+  }
 }

@@ -240,12 +240,11 @@ const express_sf_order = async(ctx, next) => {
 //查询中奖列表(me)
 const winner_list = async(ctx, next) => {
   const {
-    open_id,
     page = 1,
     page_size = 10
   } = ctx.request.params;
 
-  if (!page || !page_size || !open_id) {
+  if (!page || !page_size) {
     return ctx.body = failed('参数错误')
   }
 
@@ -254,7 +253,7 @@ const winner_list = async(ctx, next) => {
     where: {
       invalid: 0,
       status: 1,
-      open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId
     },
     order: [
       ['create_time', 'DESC']
@@ -271,12 +270,11 @@ const winner_list = async(ctx, next) => {
 //查询需要寄送快递奖品列表(me)
 const express_winner_list = async(ctx, next) => {
   const {
-    open_id,
     page = 1,
     page_size = 10
   } = ctx.request.params;
 
-  if (!page || !page_size || !open_id) {
+  if (!page || !page_size) {
     return ctx.body = failed('参数错误')
   }
 
@@ -287,7 +285,7 @@ const express_winner_list = async(ctx, next) => {
       is_sure: 1,
       status: 1,
       need_delivery: 1,
-      open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       mailno: {
         $not: null
       },
@@ -435,10 +433,12 @@ module.exports = {
     search_sf_order,
     confirm_sf_order,
     express_sf_order,
-    express_winner_list,
-    winner_list,
     list,
     del,
     accept_prize
+  },
+  app: {
+    express_winner_list,
+    winner_list,
   }
 };

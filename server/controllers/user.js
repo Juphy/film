@@ -93,7 +93,6 @@ const bind_phone = async(ctx, next) => {
 const add_address = async(ctx, next) => {
 
   let {
-    open_id,
     province,
     city,
     county,
@@ -103,25 +102,14 @@ const add_address = async(ctx, next) => {
     is_default
   } = ctx.request.params;
 
-  if (!open_id || !province || !city || !county || !address || !is_default || !contact || !phone) {
+  if (!province || !city || !county || !address || !is_default || !contact || !phone) {
     return ctx.body = failed('参数错误')
-  }
-
-  user_info = await User.findOne({
-    where: {
-      open_id: open_id,
-      invalid: 0
-    }
-  });
-
-  if (!user_info) {
-    return ctx.body = failed('用户不存在')
   }
 
   res = await Address.create({
     province: province,
     city: city,
-    open_id: open_id,
+    open_id: ctx.state.$wxInfo.userinfo.openId,
     county: county,
     address: address,
     contact: contact,
@@ -132,8 +120,12 @@ const add_address = async(ctx, next) => {
   console.log('------res:', res)
 
   if (is_default == 1) {
-    await user_info.update({
+    await User.update({
       address_id: res.id
+    }, {
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
     })
   }
 
@@ -146,7 +138,6 @@ const add_address = async(ctx, next) => {
 const edit_address = async(ctx, next) => {
 
   let {
-    open_id,
     province,
     city,
     county,
@@ -157,24 +148,27 @@ const edit_address = async(ctx, next) => {
     id
   } = ctx.request.params;
 
-  if (!open_id || !province || !city || !county || !address || !is_default || !contact || !phone || !id) {
+  if (!province || !city || !county || !address || !is_default || !contact || !phone || !id) {
     return ctx.body = failed('参数错误')
   }
 
-  user_info = await User.findOne({
+  // user_info = await User.findOne({
+  //   where: {
+  //     open_id: open_id,
+  //     invalid: 0
+  //   }
+  // });
+
+  // if (!user_info) {
+  //   return ctx.body = failed('用户不存在')
+  // }
+
+  _address = await Address.find({
     where: {
-      open_id: open_id,
-      invalid: 0
+      id: id,
+      invalid: 0,
+      open_id: ctx.state.$wxInfo.userinfo.openId
     }
-  });
-
-  if (!user_info) {
-    return ctx.body = failed('用户不存在')
-  }
-
-  _address = await Address.findById(id, {
-    invalid: 0,
-    open_id: open_id
   })
 
   if (!_address) {
@@ -185,7 +179,7 @@ const edit_address = async(ctx, next) => {
   res = await _address.update({
     province: province,
     city: city,
-    open_id: open_id,
+    open_id: ctx.state.$wxInfo.userinfo.openId,
     county: county,
     address: address,
     contact: contact,
@@ -198,6 +192,10 @@ const edit_address = async(ctx, next) => {
   if (is_default == 1) {
     await user_info.update({
       address_id: res.id
+    }, {
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
     })
   }
 
@@ -209,22 +207,10 @@ const edit_address = async(ctx, next) => {
 //删除地址
 const del_address = async(ctx, next) => {
   let {
-    open_id,
     address_id
   } = ctx.request.params;
-  if (!open_id || !address_id) {
+  if (!address_id) {
     return ctx.body = failed('参数错误')
-  }
-
-  user_info = await User.findOne({
-    where: {
-      open_id: open_id,
-      invalid: 0
-    }
-  });
-
-  if (!user_info) {
-    return ctx.body = failed('用户不存在')
   }
 
   if (user_info.address_id == address_id) {
@@ -233,7 +219,7 @@ const del_address = async(ctx, next) => {
 
   address_info = await Address.findOne({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       id: address_id,
       invalid: 0
     }
@@ -252,28 +238,11 @@ const del_address = async(ctx, next) => {
 
 //地址列表
 const address_list = async(ctx, next) => {
-  let {
-    open_id
-  } = ctx.request.params;
-  if (!open_id) {
-    return ctx.body = failed('参数错误')
-  }
-
-  user_info = await User.findOne({
-    where: {
-      open_id: open_id,
-      invalid: 0
-    }
-  });
-
-  if (!user_info) {
-    return ctx.body = failed('用户不存在')
-  }
 
   const address_list = await Address.findAll({
     where: {
       invalid: 0,
-      open_id: open_id
+      open_id: ctx.state.$wxInfo.userinfo.openId
     }
   })
 
@@ -292,27 +261,15 @@ const address_list = async(ctx, next) => {
 //设置默认地址
 const set_default_address = async(ctx, next) => {
   let {
-    open_id,
     address_id
   } = ctx.request.params;
-  if (!open_id) {
+  if (!address_id) {
     return ctx.body = failed('参数错误')
-  }
-
-  user_info = await User.findOne({
-    where: {
-      open_id: open_id,
-      invalid: 0
-    }
-  });
-
-  if (!user_info) {
-    return ctx.body = failed('用户不存在')
   }
 
   address_info = await Address.findOne({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       id: address_id,
       invalid: 0
     }
@@ -324,6 +281,10 @@ const set_default_address = async(ctx, next) => {
 
   await user_info.update({
     address_id: address_id
+  }, {
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
   });
 
   ctx.body = success('', '设置默认地址成功')
@@ -360,36 +321,32 @@ const list = async(ctx, next) => {
 }
 
 
-//小程序端获取用户信息
-const app_info = async(ctx, next) => {
-  let {
-    open_id
-  } = ctx.request.params;
+//小程序端统计参与记录，中奖记录
+const app_monitor = async(ctx, next) => {
 
   const count_report = await Report.count({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0
     }
   })
 
   const count_winner = await Winner.count({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0
     }
   })
 
   const count_winner_sure = await Winner.count({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0,
       is_sure: 0
     }
   })
 
   ctx.body = success({
-    'phone': 18210364952,//ctx.state.$wxInfo.userinfo.phone,
     'count_report': count_report,
     'count_winner': count_winner,
     'count_winner_sure': count_winner_sure
@@ -402,18 +359,18 @@ const app_info = async(ctx, next) => {
 
 
 module.exports = {
-  bind_phone,
   pub: {
     info,
-    add_address,
-    edit_address,
-    del_address,
-    address_list,
-    set_default_address,
     list
   },
   app: {
     check_bind_phone,
-    app_info
+    app_monitor,
+    add_address,
+    del_address,
+    bind_phone,
+    address_list,
+    set_default_address,
+    edit_address,
   }
 }

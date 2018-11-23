@@ -229,8 +229,8 @@ const app_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     name = '',
-      page = 1,
-      page_size = 10
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -596,6 +596,8 @@ module.exports = {
     nearby_cinemas,
     search_cineams,
     search_movie,
+  },
+  app:{
     app_list,
     app_info
   }

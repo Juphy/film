@@ -18,9 +18,8 @@ const Op = Sequelize.Op;
 
 
 //上传票根
-const upload = async (ctx, next) => {
+const upload = async(ctx, next) => {
   const {
-    open_id,
     show_day,
     cinema_code,
     remark = '',
@@ -28,7 +27,7 @@ const upload = async (ctx, next) => {
     activite_id
   } = ctx.request.params
 
-  if (!open_id || !show_day || !cinema_code || !activite_id || !content) {
+  if (!show_day || !cinema_code || !activite_id || !content) {
     return ctx.body = failed('参数错误')
   }
 
@@ -69,7 +68,7 @@ const upload = async (ctx, next) => {
 
   report_info = await Report.find({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       show_day: show_day,
       cinema_code: cinema_code,
       invalid: 0,
@@ -81,11 +80,22 @@ const upload = async (ctx, next) => {
     return ctx.body = failed('重复上传')
   }
 
+
+  userinfo = await User.find({
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
+  })
+
+  if (!userinfo) {
+    return ctx.body = failed('用户信息不存在')
+  }
+
   res = await Report.create({
-    open_id: open_id,
-    nick_name: 'run', //ctx.state.data.nick_name,
-    avatar_url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erYcyhqyv5TNicF9jQUGYWt9hF2LZrJJ1oCWemIU5K3KAK1hR6thSmmTAQwN9xicFnGSBoIodQXctRw/132', //ctx.state.data.nick_name,
-    phone: '18210364952', //ctx.state.data.phone
+    open_id: userinfo.open_id,
+    nick_name: userinfo.nick_name,
+    avatar_url: userinfo.avatar_url,
+    phone: userinfo.phone,
     cinema_code: cinema_code,
     cinema_name: cinema_info.name,
     chain: cinema_info.chain,
@@ -107,19 +117,18 @@ const upload = async (ctx, next) => {
 
 
 //删除上传数据
-const app_del = async (ctx, next) => {
+const app_del = async(ctx, next) => {
   let {
-    open_id,
     report_id
   } = ctx.request.params;
 
-  if (!open_id || !report_id) {
+  if (!report_id) {
     return ctx.body = failed('参数错误')
   }
 
   report_info = await Report.find({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0,
       id: report_id
     }
@@ -138,10 +147,9 @@ const app_del = async (ctx, next) => {
 
 
 //参与记录
-const app_list = async (ctx, next) => {
+const app_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
-    open_id,
     type,
     page = 1,
     page_size = 10
@@ -149,7 +157,7 @@ const app_list = async (ctx, next) => {
   p['page'] = page;
   p['page_size'] = page_size;
 
-  if (!type || !open_id) {
+  if (!type || !page || !page_size) {
     return ctx.body = failed('参数错误')
   }
 
@@ -173,7 +181,7 @@ const app_list = async (ctx, next) => {
       where: we,
     }],
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0
     },
     offset: (page - 1) * page_size,
@@ -187,19 +195,21 @@ const app_list = async (ctx, next) => {
 
 
 //上传票根信息
-const app_info = async (ctx, next) => {
+const app_info = async(ctx, next) => {
   let {
-    open_id,
     report_id
   } = ctx.request.params
 
-  if (!open_id || !report_id) {
+  if (!report_id) {
     return failed('参数错误')
   }
 
-  report_info = await Report.findById(report_id, {
-    invalid: 0,
-    open_id: open_id
+  report_info = await Report.find({
+    where: {
+      id: report_id,
+      invalid: 0,
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
   })
 
   if (!report_info) {
@@ -212,17 +222,17 @@ const app_info = async (ctx, next) => {
 
 
 // 上报数据列表（活动进行中和活动已结束）
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    title = '',
-    show_day,
-    status = '',
-    is_winner = '',
-    page = 1,
-    page_size = 10,
-    active_status = ''  // 判别活动是否结束
+      title = '',
+      show_day,
+      status = '',
+      is_winner = '',
+      page = 1,
+      page_size = 10,
+      active_status = '' // 判别活动是否结束
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -275,7 +285,7 @@ const list = async (ctx, next) => {
 }
 
 // 批量审核
-const reviews = async (ctx, next) => {
+const reviews = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -299,12 +309,12 @@ const reviews = async (ctx, next) => {
           manager_id: ctx.state.managerInfo['data']['id'],
           manager_name: ctx.state.managerInfo['data']['name']
         }, {
-            where: {
-              id: {
-                [Op.in]: ids
-              }
+          where: {
+            id: {
+              [Op.in]: ids
             }
-          });
+          }
+        });
         ctx.body = success(_res);
       }
     } else {
@@ -314,7 +324,7 @@ const reviews = async (ctx, next) => {
 }
 
 // 中奖，标记中奖者
-const winning = async (ctx, next) => {
+const winning = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id,
@@ -339,7 +349,7 @@ const winning = async (ctx, next) => {
 }
 
 // 已标记为中奖的数据
-const report_winning = async (ctx, next) => {
+const report_winning = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -359,13 +369,15 @@ const report_winning = async (ctx, next) => {
 
 module.exports = {
   pub: {
-    upload,
     list,
     reviews,
     winning,
+    report_winning
+  },
+  app: {
+    upload,
     app_list,
     app_info,
     app_del,
-    report_winning
   }
 }
