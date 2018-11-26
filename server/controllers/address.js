@@ -142,7 +142,7 @@ const city = async(ctx, next) => {
   ctx.body = success(res)
 }
 
-const host_city = async(ctx, next) => {
+const hot_city = async(ctx, next) => {
   res = await City.findAll({
     where: {
       grade: 1
@@ -160,6 +160,7 @@ module.exports = {
     edit,
     info,
     diqu,
-    city
+    city,
+    hot_city
   }
 };

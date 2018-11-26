@@ -455,7 +455,7 @@ const lottery = async (ctx, next) => {
     where: {
       id: activite_id,
       invalid: 0,
-      status: 1
+      status: {$in:[1,3]}
     }
   }) //查询活动信息
 
@@ -531,6 +531,8 @@ const lottery = async (ctx, next) => {
       break
     }
   }
+
+  console.dir(wins)
 
   winner_res = await Winner.bulkCreate(wins) //批量插入winner
 
