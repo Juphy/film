@@ -17,7 +17,7 @@ const redis = new Redis();
 
 
 // 添加地址
-const add = async (ctx, next) => {
+const add = async(ctx, next) => {
   const {
     open_id,
     province,
@@ -39,7 +39,7 @@ const add = async (ctx, next) => {
   }
 }
 // 编辑
-const edit = async (ctx, next) => {
+const edit = async(ctx, next) => {
   let {
     open_id,
     province,
@@ -61,7 +61,7 @@ const edit = async (ctx, next) => {
   }
 }
 
-const info = async (ctx, next) => {
+const info = async(ctx, next) => {
   let {
     id
   } = ctx.request.params;
@@ -74,10 +74,10 @@ const info = async (ctx, next) => {
 }
 
 //地区列表
-const diqu = async (ctx, next) => {
+const diqu = async(ctx, next) => {
   const {
     name = '',
-    code = ''
+      code = ''
   } = ctx.request.params;
 
   let res
@@ -108,7 +108,7 @@ const diqu = async (ctx, next) => {
 }
 
 //城市列表
-const city = async (ctx, next) => {
+const city = async(ctx, next) => {
   const {
     name = ''
   } = ctx.request.params;
@@ -138,6 +138,16 @@ const city = async (ctx, next) => {
     })
   }
 
+
+  ctx.body = success(res)
+}
+
+const host_city = async(ctx, next) => {
+  res = await City.findAll({
+    where: {
+      grade: 1
+    }
+  })
 
   ctx.body = success(res)
 }
