@@ -25,7 +25,7 @@ const add_sf_order = async(ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
-  winner_info = await Winner.findById({
+  winner_info = await Winner.find({
     where: {
       id: winner_id,
       invalid: 0,
