@@ -475,7 +475,7 @@ const accept_money_prize = async(ctx, next) => {
   res = await winner_info.update({
     is_sure: 1,
     real_name: real_name,
-    bankcark: bankcark,
+    bankcard: bankcard,
     identify_card: identify_card
   })
 
