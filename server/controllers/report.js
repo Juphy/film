@@ -35,7 +35,7 @@ const upload = async(ctx, next) => {
 
 
 
-  activite_info = await Activity.findById({
+  activite_info = await Activity.find({
     where: {
       id: activite_id,
       invalid: 0,
