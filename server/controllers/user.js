@@ -327,7 +327,8 @@ const app_monitor = async(ctx, next) => {
   const count_report = await Report.count({
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId,
-      invalid: 0
+      invalid: 0,
+      is_winner: 0
     }
   })
 

@@ -244,7 +244,7 @@ const express_sf_order = async(ctx, next) => {
 const winner_list = async(ctx, next) => {
   const {
     page = 1,
-      page_size = 10
+    page_size = 10
   } = ctx.request.params;
 
   if (!page || !page_size) {
@@ -406,7 +406,8 @@ const accept_goods_prize = async(ctx, next) => {
       id: winner_id,
       open_id: open_id,
       invalid: 0,
-      type: 1
+      type: 1,
+      status:1
     }
   })
 
@@ -454,7 +455,8 @@ const accept_money_prize = async(ctx, next) => {
       id: winner_id,
       open_id: open_id,
       type: 2,
-      invalid: 0
+      invalid: 0,
+      status:1
     }
   })
 
@@ -481,6 +483,7 @@ const accept_money_prize = async(ctx, next) => {
 
 }
 
+//领取优惠卷
 const accept_coupon_prize = async(ctx, next) => {
   let {
     open_id,
@@ -496,7 +499,8 @@ const accept_coupon_prize = async(ctx, next) => {
       id: winner_id,
       open_id: open_id,
       type: 3,
-      invalid: 0
+      invalid: 0,
+      status:1
     }
   })
 
