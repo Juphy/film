@@ -246,6 +246,16 @@ const address_list = async(ctx, next) => {
     }
   })
 
+  const user_info = await User.find({
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
+  })
+
+  if (!user_info) {
+    return ctx.body = failed('用户信息不存在')
+  }
+
   address_list.forEach(function(item) {
     if (item.id == user_info.address_id) {
       item.setDataValue('default', 1)
@@ -256,6 +266,24 @@ const address_list = async(ctx, next) => {
 
   ctx.body = success(address_list, '查询成功')
 
+}
+
+//获取默认地址
+
+const get_default_address = async(ctx, next) => {
+  const user_info = await User.find({
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
+  })
+
+  if (!user_info) {
+    return ctx.body = failed('用户信息不存在')
+  }
+
+  const address_info = await Address.findById(user_info.address_id)
+
+  ctx.body = success(address_info)
 }
 
 //设置默认地址
@@ -373,5 +401,6 @@ module.exports = {
     address_list,
     set_default_address,
     edit_address,
+    get_default_address
   }
 }
