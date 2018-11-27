@@ -428,7 +428,6 @@ module.exports = {
   pub: {
     info,
     list,
-    address_list,
   },
   app: {
     check_bind_phone,
@@ -438,6 +437,7 @@ module.exports = {
     bind_phone,
     set_default_address,
     edit_address,
-    get_default_address
+    get_default_address,
+    address_list,
   }
 }
