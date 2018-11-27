@@ -30,7 +30,7 @@ const add_sf_order = async(ctx, next) => {
       id: winner_id,
       invalid: 0,
       type: 1,
-      isSure: 1
+      is_sure: 1
     }
   })
 
