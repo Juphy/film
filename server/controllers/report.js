@@ -18,7 +18,7 @@ const Op = Sequelize.Op;
 
 
 //上传票根
-const upload = async(ctx, next) => {
+const upload = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
@@ -118,12 +118,12 @@ const upload = async(ctx, next) => {
 
 
 //删除上传数据
-const app_del = async(ctx, next) => {
+const app_del = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
   }
-  
+
   let {
     report_id
   } = ctx.request.params;
@@ -153,7 +153,7 @@ const app_del = async(ctx, next) => {
 
 
 //参与记录
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
@@ -212,7 +212,7 @@ const app_list = async(ctx, next) => {
 
 
 //上传票根信息
-const app_info = async(ctx, next) => {
+const app_info = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
@@ -244,17 +244,16 @@ const app_info = async(ctx, next) => {
 
 
 // 上报数据列表（活动进行中和活动已结束）
-const list = async(ctx, next) => {
+const pending_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-      title = '',
-      show_day,
-      status = '',
-      is_winner = '',
-      page = 1,
-      page_size = 10,
-      active_status = '' // 判别活动是否结束
+    title = '',
+    show_day,
+    status = '',
+    is_winner = '',
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -276,38 +275,77 @@ const list = async(ctx, next) => {
   if (show_day) {
     we['show_day'] = new Date(show_day);
   }
-  let res;
-  if (active_status !== '') {
-    res = await Report.findAndCountAll({
-      include: [{
-        model: Activity,
-        where: {
-          status: active_status
-        },
-        attributes: ['status']
-      }],
-      where: we,
-      order: [
-        ['create_time', 'DESC']
-      ],
-      offset: (page - 1) * page_size,
-      limit: page_size * 1
-    });
-  } else {
-    res = await Report.findAndCountAll({
-      where: we,
-      order: [
-        ['create_time', 'DESC']
-      ],
-      offset: (page - 1) * page_size,
-      limit: page_size * 1
-    });
+  let res = await Report.findAndCountAll({
+    include: [{
+      model: Activity,
+      where: {
+        status: {
+          [Op.ne]: 2
+        }
+      },
+      attributes: ['status']
+    }],
+    where: we,
+    order: [
+      ['create_time', 'DESC']
+    ],
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
+  });
+  ctx.body = success(res);
+}
+
+const ending_list = async (ctx, next) => {
+  let p = ctx.request.params;
+  let {
+    movie_name = '',
+    title = '',
+    show_day,
+    status = '',
+    is_winner = '',
+    page = 1,
+    page_size = 10
+  } = p;
+  p['page'] = page;
+  p['page_size'] = page_size;
+  const we = {
+    invalid: 0,
+    movie_name: {
+      [Op.like]: '%' + movie_name + '%'
+    },
+    title: {
+      [Op.like]: '%' + title + '%'
+    }
+  };
+  if (status !== '') {
+    we['status'] = status;
   }
+  if (is_winner !== '') {
+    we['is_winner'] = is_winner
+  }
+  if (show_day) {
+    we['show_day'] = new Date(show_day);
+  }
+  let res = await Report.findAndCountAll({
+    include: [{
+      model: Activity,
+      where: {
+        status: 2
+      },
+      attributes: ['status']
+    }],
+    where: we,
+    order: [
+      ['create_time', 'DESC']
+    ],
+    offset: (page - 1) * page_size,
+    limit: page_size * 1
+  });
   ctx.body = success(res);
 }
 
 // 批量审核
-const reviews = async(ctx, next) => {
+const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -331,12 +369,12 @@ const reviews = async(ctx, next) => {
           manager_id: ctx.state.managerInfo['data']['id'],
           manager_name: ctx.state.managerInfo['data']['name']
         }, {
-          where: {
-            id: {
-              [Op.in]: ids
+            where: {
+              id: {
+                [Op.in]: ids
+              }
             }
-          }
-        });
+          });
         ctx.body = success(_res);
       }
     } else {
@@ -346,7 +384,7 @@ const reviews = async(ctx, next) => {
 }
 
 // 中奖，标记中奖者
-const winning = async(ctx, next) => {
+const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id,
@@ -371,7 +409,7 @@ const winning = async(ctx, next) => {
 }
 
 // 已标记为中奖的数据
-const report_winning = async(ctx, next) => {
+const report_winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -391,7 +429,8 @@ const report_winning = async(ctx, next) => {
 
 module.exports = {
   pub: {
-    list,
+    pending_list,
+    ending_list,
     reviews,
     winning,
     report_winning
