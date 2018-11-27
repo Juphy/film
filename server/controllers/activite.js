@@ -406,7 +406,7 @@ const start_end = async (ctx, next) => {
 
 //小程序活动详情
 const app_info = async (ctx, next) => {
-  
+
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
   }
@@ -459,7 +459,7 @@ const lottery = async (ctx, next) => {
     where: {
       id: activite_id,
       invalid: 0,
-      status: {$in:[1,3]}
+      status: { $in: [1, 3] }
     }
   }) //查询活动信息
 
@@ -590,6 +590,36 @@ const info = async (ctx, next) => {
   }
 }
 
+// image->base64
+const image_base64 = async (ctx, next) => {
+  let p = ctx.request.params;
+  let {
+    url
+  } = p;
+  let http = require('http');
+  if (url.includes('https')) {
+    http = require('https');
+  }
+  let base64 = await new Promise((resolve, reject) => {
+    http.get(url, function (res) {
+      var chunks = [];
+      var size = 0;　　 //保存缓冲数据的总长度
+      res.on('data', function (chunk) {
+        chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+        size += chunk.length;　　//累加缓冲数据的长度
+      });
+      res.on('end', function (err) {
+        var data = Buffer.concat(chunks, size);
+        console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+        var base64Img = data.toString('base64');　　//将Buffer对象转换为字符串并以base64编码格式显示
+        console.log(base64Img);
+        resolve(base64Img);　　 //进入终端terminal,然后进入index.js所在的目录，　
+      });
+    });
+  });
+  ctx.body = success('data:image/jpeg;base64,' + base64);
+}
+
 module.exports = {
   adm: {
     add,
@@ -608,6 +638,7 @@ module.exports = {
     search_cineams,
     search_movie,
     app_list,
+    image_base64
   },
   app: {
     app_info
