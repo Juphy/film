@@ -406,6 +406,10 @@ const start_end = async (ctx, next) => {
 
 //小程序活动详情
 const app_info = async (ctx, next) => {
+  
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
   let {
     id
   } = ctx.request.params;

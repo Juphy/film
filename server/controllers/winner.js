@@ -242,6 +242,11 @@ const express_sf_order = async(ctx, next) => {
 
 //查询中奖列表(me)
 const winner_list = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+  
   const {
     page = 1,
     page_size = 10
@@ -272,6 +277,11 @@ const winner_list = async(ctx, next) => {
 
 //查询需要寄送快递奖品列表(me)
 const express_winner_list = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   const {
     page = 1,
       page_size = 10

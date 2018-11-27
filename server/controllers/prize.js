@@ -6,6 +6,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const { secret } = require('../config');
 
 const add = async (ctx, next) => {
+  
     let p = ctx.request.params;
     let { name, image, num } = p;
     const create_time = new Date(), invalid = 0;

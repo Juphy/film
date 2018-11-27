@@ -32,6 +32,11 @@ const info = async(ctx, next) => {
 //判断用户是否绑定手机号
 
 const check_bind_phone = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   if (!ctx.state.$wxInfo.userinfo.phone) {
     return ctx.body = failed('未绑定')
   }
@@ -51,9 +56,11 @@ const bind_phone = async(ctx, next) => {
     code
   } = ctx.request.params;
 
-  const reply = await
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
 
-  redis.get('bindPhoneCode_' + phone, function(err, reply) {
+  const reply = await redis.get('bindPhoneCode_' + phone, function(err, reply) {
     return reply;
   });
 
@@ -102,6 +109,10 @@ const add_address = async(ctx, next) => {
     is_default
   } = ctx.request.params;
 
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   if (!province || !city || !county || !address || !is_default || !contact || !phone) {
     return ctx.body = failed('参数错误')
   }
@@ -136,6 +147,10 @@ const add_address = async(ctx, next) => {
 
 //编辑地址
 const edit_address = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
 
   let {
     province,
@@ -209,9 +224,15 @@ const del_address = async(ctx, next) => {
   let {
     address_id
   } = ctx.request.params;
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   if (!address_id) {
     return ctx.body = failed('参数错误')
   }
+
 
   if (user_info.address_id == address_id) {
     return ctx.body = failed('默认地址不可被删除')
@@ -271,6 +292,11 @@ const address_list = async(ctx, next) => {
 //获取默认地址
 
 const get_default_address = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   const user_info = await User.find({
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId
@@ -288,12 +314,19 @@ const get_default_address = async(ctx, next) => {
 
 //设置默认地址
 const set_default_address = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   let {
     address_id
   } = ctx.request.params;
+
   if (!address_id) {
     return ctx.body = failed('参数错误')
   }
+
 
   address_info = await Address.findOne({
     where: {
@@ -352,6 +385,10 @@ const list = async(ctx, next) => {
 //小程序端统计参与记录，中奖记录
 const app_monitor = async(ctx, next) => {
 
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   const count_report = await Report.count({
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId,
@@ -390,7 +427,8 @@ const app_monitor = async(ctx, next) => {
 module.exports = {
   pub: {
     info,
-    list
+    list,
+    address_list,
   },
   app: {
     check_bind_phone,
@@ -398,7 +436,6 @@ module.exports = {
     add_address,
     del_address,
     bind_phone,
-    address_list,
     set_default_address,
     edit_address,
     get_default_address

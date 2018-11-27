@@ -19,6 +19,11 @@ const Op = Sequelize.Op;
 
 //上传票根
 const upload = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   const {
     show_day,
     cinema_code,
@@ -114,6 +119,11 @@ const upload = async(ctx, next) => {
 
 //删除上传数据
 const app_del = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+  
   let {
     report_id
   } = ctx.request.params;
@@ -144,6 +154,11 @@ const app_del = async(ctx, next) => {
 
 //参与记录
 const app_list = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   let p = ctx.request.params;
   let {
     type,
@@ -198,6 +213,11 @@ const app_list = async(ctx, next) => {
 
 //上传票根信息
 const app_info = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
   let {
     report_id
   } = ctx.request.params
