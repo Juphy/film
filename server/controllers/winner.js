@@ -65,11 +65,9 @@ const add_sf_order = async(ctx, next) => {
             "pay_method": config.sf.payMethod,
             "custid": config.sf.custid,
             "parcel_quantity": config.sf.parcelQuantity,
-            "d_province": winner_info.address.province,
-            "d_city": winner_info.address.city,
-            "d_contact": winner_info.address.contact,
-            "d_mobile": winner_info.address.phone,
-            "d_address": winner_info.address.address,
+            "d_contact": winner_info.receiver,
+            "d_mobile": winner_info.phone,
+            "d_address": winner_info.address,
 
           },
           "AddedService": {
