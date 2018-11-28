@@ -7,7 +7,8 @@ const {
 } = require('../lib/model');
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 
 const Redis = require('ioredis');
@@ -21,7 +22,7 @@ const Op = Sequelize.Op;
 const upload = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   const {
@@ -121,7 +122,7 @@ const upload = async (ctx, next) => {
 const app_del = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   let {
@@ -156,7 +157,7 @@ const app_del = async (ctx, next) => {
 const app_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   let p = ctx.request.params;
@@ -215,7 +216,7 @@ const app_list = async (ctx, next) => {
 const app_info = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   let {

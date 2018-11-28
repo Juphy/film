@@ -1,6 +1,7 @@
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 
 const {uploader} = require('../lib/uploader.js')

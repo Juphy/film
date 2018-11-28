@@ -13,7 +13,8 @@ const {
 
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 
 const Redis = require('ioredis');

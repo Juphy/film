@@ -5,7 +5,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 const bcrypt = require('bcrypt');
 const { SALTROUNDS, secret } = require('../config');

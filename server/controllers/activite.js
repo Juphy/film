@@ -8,7 +8,8 @@ const {
 } = require('../lib/model');
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 const Sequelize = require('sequelize');
 const moment = require('moment');
@@ -408,7 +409,7 @@ const start_end = async (ctx, next) => {
 const app_info = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
   let {
     id

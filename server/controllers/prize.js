@@ -1,5 +1,5 @@
 const { Prize } = require('../lib/model');
-const { success, failed } = require('./base.js');
+const { success, failed, authFailed } = require('./base.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const jsonwebtoken = require('jsonwebtoken');

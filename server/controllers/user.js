@@ -8,7 +8,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 // const redis = require("redis")
 
@@ -34,7 +35,7 @@ const info = async (ctx, next) => {
 const check_bind_phone = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   if (!ctx.state.$wxInfo.userinfo.phone) {
@@ -57,7 +58,7 @@ const bind_phone = async (ctx, next) => {
   } = ctx.request.params;
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   const reply = await redis.get('bindPhoneCode_' + phone, function (err, reply) {
@@ -110,7 +111,7 @@ const add_address = async (ctx, next) => {
   } = ctx.request.params;
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   if (!province || !city || !county || !address || !is_default || !contact || !phone) {
@@ -163,20 +164,24 @@ const edit_address = async (ctx, next) => {
     id
   } = ctx.request.params;
 
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
+  }
+
   if (!province || !city || !county || !address || !is_default || !contact || !phone || !id) {
     return ctx.body = failed('参数错误')
   }
 
-  // user_info = await User.findOne({
-  //   where: {
-  //     open_id: open_id,
-  //     invalid: 0
-  //   }
-  // });
+  user_info = await User.findOne({
+    where: {
+      open_id: open_id,
+      invalid: 0
+    }
+  });
 
-  // if (!user_info) {
-  //   return ctx.body = failed('用户不存在')
-  // }
+  if (!user_info) {
+    return ctx.body = failed('用户不存在')
+  }
 
   _address = await Address.find({
     where: {
@@ -226,7 +231,7 @@ const del_address = async (ctx, next) => {
   } = ctx.request.params;
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   if (!address_id) {
@@ -259,6 +264,10 @@ const del_address = async (ctx, next) => {
 
 //地址列表
 const address_list = async (ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
+  }
 
   const address_list = await Address.findAll({
     where: {
@@ -294,7 +303,7 @@ const address_list = async (ctx, next) => {
 const get_default_address = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   const user_info = await User.find({
@@ -316,7 +325,7 @@ const get_default_address = async (ctx, next) => {
 const set_default_address = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   let {
@@ -386,7 +395,7 @@ const list = async (ctx, next) => {
 const app_monitor = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   const count_report = await Report.count({
@@ -425,7 +434,7 @@ const app_share = async(ctx, next) => {
 
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
 

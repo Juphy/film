@@ -8,7 +8,8 @@ const moment = require('moment');
 
 const {
   success,
-  failed
+  failed,
+  authFailed
 } = require('./base.js');
 
 const Sequelize = require('sequelize');
@@ -242,7 +243,7 @@ const express_sf_order = async(ctx, next) => {
 const winner_list = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
   
   const {
@@ -277,7 +278,7 @@ const winner_list = async(ctx, next) => {
 const express_winner_list = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
-    return ctx.body = failed('登录失败')
+    return ctx.body = authFailed()
   }
 
   const {
