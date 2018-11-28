@@ -164,6 +164,30 @@ const reset_password = async (ctx, next) => {
   }
 }
 
+const edit_password = async (ctx, next) => {
+  const p = ctx.request.params;
+  let { origin_password, password } = p;
+  if (!password || !origin_password) {
+    ctx.body = failed('必填项缺省或者无效');
+  } else {
+    let id = ctx.state.managerInfo['data']['id'];
+    let res = await Manager.findById(id);
+    if (res) {
+      const check = await bcrypt.compare(origin_password, res.password);
+      if (!check) {
+        ctx.body = failed('原密码错误');
+      } else {
+        res = res.update({
+          password: await bcrypt.hash(password, SALTROUNDS)
+        });
+        ctx.body = success(res, '密码修改成功')
+      }
+    } else {
+      ctx.body = failed('当前用户不存在');
+    }
+  }
+}
+
 // id查询管理员信息
 const info = async (ctx, next) => {
   const p = ctx.request.params;
@@ -210,7 +234,8 @@ module.exports = {
     list,
     del,
     edit,
-    info
+    info,
+    edit_password
   },
   pub: {
     login,
