@@ -53,6 +53,11 @@ const upload = async (ctx, next) => {
     return ctx.body = failed('活动不存在或已结束')
   }
 
+  if (moment().format('YYYY-MM-DD') < activite_info.start_day) {
+    return ctx.body = failed('活动未开始')
+  }
+
+
   if (moment().format('YYYY-MM-DD') > activite_info.end_day) {
     return ctx.body = failed('活动已结束')
   }
