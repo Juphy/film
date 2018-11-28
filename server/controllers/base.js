@@ -20,7 +20,7 @@ let authFailed = () => {
   return {
     res: null,
     msg: '未登录或登录失效',
-    attr: attr,
+    attr: '',
     code: 403
   }
 }
