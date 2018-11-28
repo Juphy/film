@@ -420,6 +420,46 @@ const app_monitor = async (ctx, next) => {
 
 }
 
+//分享
+const app_share = async(ctx, next) => {
+
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = failed('登录失败')
+  }
+
+
+  let {
+    uuid
+  } = ctx.request.params
+
+  if (!uuid) {
+    return ctx.body = failed('参数错误')
+  }
+
+  userinfo = await User.find({
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
+  })
+
+  if (!userinfo) {
+    return ctx.body = failed('用户不存在')
+  }
+
+  res = ''
+
+  if (userinfo.uuid != uuid && !userinfo.from_uuid) {
+    res = userinfo.update({
+      from_uuid: uuid
+    })
+  }
+
+  ctx.body = success(res)
+
+
+}
+
 
 
 
@@ -439,5 +479,6 @@ module.exports = {
     edit_address,
     get_default_address,
     address_list,
+    app_share
   }
 }
