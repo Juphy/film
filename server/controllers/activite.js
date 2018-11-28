@@ -483,7 +483,7 @@ const lottery = async (ctx, next) => {
   let msgs = []
   let nick_names = []
 
-  winners = JSON.parse(winners)
+  // winners = JSON.parse(winners)
 
   if (winners.length == 0) {
     return ctx.body = failed('奖品不能为空')
