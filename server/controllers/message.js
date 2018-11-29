@@ -56,7 +56,7 @@ async function post(ctx, next) {
 
 
 //发送验证码
-const send_msg = async(ctx, next) => {
+const send_msg = async (ctx, next) => {
 
   console.log(ctx.request.header)
 
@@ -91,7 +91,7 @@ const send_msg = async(ctx, next) => {
 }
 
 //短信通知中奖者信息
-const send_winner = async(ctx, next) => {
+const send_winner = async (ctx, next) => {
 
 
   msg = await Msg.find({
@@ -135,7 +135,7 @@ const send_winner = async(ctx, next) => {
 }
 
 //获取用户消息（公告）
-const app_msg = async(ctx, next) => {
+const app_msg = async (ctx, next) => {
 
   msgs = await Msg.findAll({
     where: {
@@ -150,7 +150,7 @@ const app_msg = async(ctx, next) => {
   ctx.body = success(msgs)
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     title = '', page = 1, page_size = 10, type = ''
@@ -177,7 +177,7 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -206,9 +206,11 @@ const del = async(ctx, next) => {
 module.exports = {
   post,
   get,
-  pub: {
+  adm: {
     list,
-    del,
+    del
+  },
+  pub: {
     send_winner,
     send_msg,
     app_msg
