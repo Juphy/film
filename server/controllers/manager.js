@@ -189,22 +189,22 @@ const edit_password = async (ctx, next) => {
 }
 
 // id查询管理员信息
-const info = async (ctx, next) => {
-  const p = ctx.request.params;
-  let {
-    id
-  } = p;
-  if (!id) {
-    ctx.body = failed('id无效或者缺省');
-  } else {
-    let res = await Manager.findById(id);
-    if (res) {
-      ctx.body = success(res);
-    } else {
-      ctx.body = failed('id无效或者缺省');
-    }
-  }
-};
+// const info = async (ctx, next) => {
+//   const p = ctx.request.params;
+//   let {
+//     id
+//   } = p;
+//   if (!id) {
+//     ctx.body = failed('id无效或者缺省');
+//   } else {
+//     let res = await Manager.findById(id);
+//     if (res) {
+//       ctx.body = success(res);
+//     } else {
+//       ctx.body = failed('id无效或者缺省');
+//     }
+//   }
+// };
 
 // 查询当前登录人信息
 const info_my_account = async (ctx, next) => {
@@ -234,12 +234,11 @@ module.exports = {
     list,
     del,
     edit,
-    info,
-    edit_password
-  },
-  pub: {
-    login,
+    edit_password,
     reset_password,
     info_my_account
+  },
+  pub: {
+    login
   }
 };
