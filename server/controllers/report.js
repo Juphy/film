@@ -356,7 +356,7 @@ const reviews = async (ctx, next) => {
   let {
     ids = [], status
   } = p;
-  if (!(status == 1 || status == 2) || !ids.length) {
+  if (!(status === 1 || status === 2) || !ids.length) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Report.findAll({
@@ -396,18 +396,39 @@ const winning = async (ctx, next) => {
     report_id,
     is_winner = ''
   } = p;
-  if (!report_id || is_winner === '') {
+  if (!report_id || !(is_winner === 0 || is_winner === 1)) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Report.findById(report_id);
     if (res) {
-      res = await res.update({
-        status: 1,
-        is_winner: is_winner,
-        manager_id: ctx.state.managerInfo['data']['id'],
-        manager_name: ctx.state.managerInfo['data']['name']
-      });
-      ctx.body = success(res, '操作成功');
+      if (is_winner === 1) {
+        let reports = await Report.findAll({
+          where: {
+            open_id: res.open_id,
+            is_winner: 1,
+            activite_id: res.activite_id
+          }
+        })
+        if (reports.length) {
+          ctx.body = failed('该用户已中奖');
+        } else {
+          res = await res.update({
+            status: 1,
+            is_winner: 1,
+            manager_id: ctx.state.managerInfo['data']['id'],
+            manager_name: ctx.state.managerInfo['data']['name']
+          });
+          ctx.body = success(res, '操作成功');
+        }
+      } else {
+        res = await res.update({
+          status: 1,
+          is_winner: 0,
+          manager_id: ctx.state.managerInfo['data']['id'],
+          manager_name: ctx.state.managerInfo['data']['name']
+        });
+        ctx.body = success(res, '操作成功');
+      }
     } else {
       ctx.body = failed('id无效');
     }
@@ -434,7 +455,7 @@ const report_winning = async (ctx, next) => {
 }
 
 module.exports = {
-  pub: {
+  adm: {
     pending_list,
     ending_list,
     reviews,
