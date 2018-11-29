@@ -405,10 +405,11 @@ const winning = async (ctx, next) => {
         let reports = await Report.findAll({
           where: {
             open_id: res.open_id,
-            is_winner: 1
+            is_winner: 1,
+            activite_id: res.activite_id
           }
         })
-        if (reports) {
+        if (reports.length) {
           ctx.body = failed('该用户已中奖');
         } else {
           res = await res.update({
