@@ -18,7 +18,7 @@ const redis = new Redis();
 
 //判断用户是否绑定手机号
 
-const check_bind_phone = async (ctx, next) => {
+const check_bind_phone = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -33,7 +33,7 @@ const check_bind_phone = async (ctx, next) => {
 
 
 // 绑定手机号
-const bind_phone = async (ctx, next) => {
+const bind_phone = async(ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
@@ -47,7 +47,7 @@ const bind_phone = async (ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  const reply = await redis.get('bindPhoneCode_' + phone, function (err, reply) {
+  const reply = await redis.get('bindPhoneCode_' + phone, function(err, reply) {
     return reply;
   });
 
@@ -84,7 +84,7 @@ const bind_phone = async (ctx, next) => {
 };
 
 //添加地址
-const add_address = async (ctx, next) => {
+const add_address = async(ctx, next) => {
 
   let {
     province,
@@ -121,10 +121,10 @@ const add_address = async (ctx, next) => {
     await User.update({
       address_id: res.id
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success(res, '添加成功')
@@ -133,7 +133,7 @@ const add_address = async (ctx, next) => {
 }
 
 //编辑地址
-const edit_address = async (ctx, next) => {
+const edit_address = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
@@ -199,10 +199,10 @@ const edit_address = async (ctx, next) => {
     await user_info.update({
       address_id: res.id
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success(res, '编辑成功')
@@ -211,7 +211,7 @@ const edit_address = async (ctx, next) => {
 }
 
 //删除地址
-const del_address = async (ctx, next) => {
+const del_address = async(ctx, next) => {
   let {
     address_id
   } = ctx.request.params;
@@ -224,6 +224,15 @@ const del_address = async (ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
+  let user_info = await User.find({
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId,
+    }
+  })
+
+  if (!user_info) {
+    return ctx.body = failed('用户信息不存在')
+  }
 
   if (user_info.address_id == address_id) {
     return ctx.body = failed('默认地址不可被删除')
@@ -249,7 +258,7 @@ const del_address = async (ctx, next) => {
 }
 
 //地址列表
-const address_list = async (ctx, next) => {
+const address_list = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -272,7 +281,7 @@ const address_list = async (ctx, next) => {
     return ctx.body = failed('用户信息不存在')
   }
 
-  address_list.forEach(function (item) {
+  address_list.forEach(function(item) {
     if (item.id == user_info.address_id) {
       item.setDataValue('default', 1)
     } else {
@@ -286,7 +295,7 @@ const address_list = async (ctx, next) => {
 
 //获取默认地址
 
-const get_default_address = async (ctx, next) => {
+const get_default_address = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -308,7 +317,7 @@ const get_default_address = async (ctx, next) => {
 }
 
 //设置默认地址
-const set_default_address = async (ctx, next) => {
+const set_default_address = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -338,17 +347,17 @@ const set_default_address = async (ctx, next) => {
   await user_info.update({
     address_id: address_id
   }, {
-      where: {
-        open_id: ctx.state.$wxInfo.userinfo.openId
-      }
-    });
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
+  });
 
   ctx.body = success('', '设置默认地址成功')
 
 
 }
 
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     nick_name = '', phone, page = 1, page_size = 10
@@ -378,7 +387,7 @@ const list = async (ctx, next) => {
 
 
 //小程序端统计参与记录，中奖记录
-const app_monitor = async (ctx, next) => {
+const app_monitor = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
