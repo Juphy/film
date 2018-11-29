@@ -215,13 +215,18 @@ const add = async (ctx, next) => {
   if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    p['manager_id'] = ctx.state.managerInfo['data']['id'];
-    p['manager_name'] = ctx.state.managerInfo['data']['name'];
-    p['status'] = 0;
-    p['invalid'] = 0;
-    p['create_time'] = new Date();
-    let res = await Activity.create(p);
-    ctx.body = success(res, '创建成功');
+    if (new Date() > new Date(start_day)) {
+      ctx.body = failed('活动的开始日期不得小于当前日期')
+    } else {
+      p['manager_id'] = ctx.state.managerInfo['data']['id'];
+      p['manager_name'] = ctx.state.managerInfo['data']['name'];
+      p['status'] = 0;
+      p['invalid'] = 0;
+      p['create_time'] = new Date();
+      p['other_description'] = other_description;
+      let res = await Activity.create(p);
+      ctx.body = success(res, '创建成功');
+    }
   }
 }
 
@@ -397,11 +402,15 @@ const start_end = async (ctx, next) => {
           ctx.body = failed('活动已结束');
         }
       } else {
-        res = res.update({
-          status: status
-        });
-        let j = ['', '活动发布成功', '', '活动结束成功'];
-        ctx.body = success(res, j[status]);
+        if (status === 1 && (new Date(res.end_day) > new Date())) {
+          ctx.body = failed('活动的结束时间不得大于当前时间')
+        } else {
+          res = res.update({
+            status: status
+          });
+          let j = ['', '活动发布成功', '', '活动结束成功'];
+          ctx.body = success(res, j[status]);
+        }
       }
     } else {
       ctx.body = failed('id无效或者缺省');
