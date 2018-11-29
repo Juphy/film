@@ -344,7 +344,9 @@ const set_default_address = async(ctx, next) => {
     return ctx.body = failed('该地址不存在或已被删除')
   }
 
-  await user_info.update({
+
+
+  await User.update({
     address_id: address_id
   }, {
     where: {
