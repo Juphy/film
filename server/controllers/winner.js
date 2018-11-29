@@ -525,7 +525,7 @@ const accept_coupon_prize = async(ctx, next) => {
     return ctx.body = failed('已确认领奖')
   }
 
-  res = await winner.update({
+  res = await winner_info.update({
     is_sure: 1
   })
 
