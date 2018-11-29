@@ -160,7 +160,7 @@ const edit_address = async(ctx, next) => {
 
   user_info = await User.findOne({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0
     }
   });
