@@ -241,7 +241,7 @@ const app_list = async(ctx, next) => {
       $in: [1, 2]
     },
     start_day: {
-      $gte: moment().format('YYYY-MM-DD')
+      $lte: moment().format('YYYY-MM-DD')
     }
   };
 
