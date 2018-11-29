@@ -402,7 +402,7 @@ const start_end = async (ctx, next) => {
           ctx.body = failed('活动已结束');
         }
       } else {
-        if (status === 1 && (new Date(res.end_day) >= new Date())) {
+        if (status === 1 && (new Date(res.end_day) < new Date())) {
           ctx.body = failed('活动的结束时间不得大于当前时间')
         } else {
           res = res.update({
