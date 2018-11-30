@@ -1,0 +1,33 @@
+.money{
+  display: flex;
+  flex-direction: column;
+  background: #eaeaea;
+  height: 100vh;  
+  font-size: 24rpx;
+  color: #333
+}
+.money-item{
+  height: 88rpx;
+  background: #fff;
+  padding-left:30rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  
+}
+
+.money-item-input{
+flex-grow: 1;
+  margin-left: 30rpx;
+}
+
+.money-submit{
+  background: #56bdac;
+  color: #fff;
+  font-size: 24rpx;
+  height: 68rpx;
+  margin-top: 60rpx;
+  margin-right: 30rpx;
+  margin-left: 30rpx;
+}
+

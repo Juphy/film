@@ -23,6 +23,7 @@
 
 .address-item-default{
   font-size: 24rpx;
+  color: #56bdac
 }
 
 .address-item-address-text{

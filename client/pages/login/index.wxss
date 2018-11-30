@@ -1,0 +1,20 @@
+.login-icon {
+  margin-top: 120rpx;
+  width: 542rpx;
+  height: 338rpx;
+  margin-bottom: 196rpx;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-qx {
+
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}

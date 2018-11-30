@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "参与详情"
+  "navigationBarTitleText": "参与详情",
+  "enablePullDownRefresh": false
 }

@@ -5,45 +5,45 @@
   <scroll-view scroll-y style='height:92vh'>
     <text class='partake-record-title'>{{title}}</text>
 
-    <block wx:key='index' wx:for='{{partakeRecordList}}'>
 
-      <view class='partake-record-item'>
+    <view class='partake-record-item'>
 
-        <view class='partake-record-date-del'>
+      <view class='partake-record-date-del'>
 
-          <text class='partake-record-date'>{{item.date}}</text>
-          <image bindtap='onClickDel' class='partake-record-del' src='/images/mine_participation_delete_btn@2x.png'></image>
-
-        </view>
-
-        <view class='partake-record-line'></view>
-
-        <text class='partake-record-film-name'>{{item.filmName}}</text>
-        <text class='partake-record-film-address'>{{item.address}}</text>
-        <view class='partake-record-line'></view>
-
-        <text class='partake-record-film-demo'>{{item.demo}}</text>
-
-
-        <view class='partake-record-images'>
-
-          <block wx:key='imageIndex' wx:for='{{item.images}}' wx:for-item='image'>
-
-            <image class='partake-record-images-item' src='{{image}}'></image>
-
-          </block>
-        </view>
-
-
+        <text class='partake-record-date'>{{show_day}}</text>
+        <image data-report_id='{{report_id}}' bindtap='onClickDel' class='partake-record-del' src='/images/mine_participation_delete_btn@2x.png'></image>
 
       </view>
 
+      <view class='partake-record-line'></view>
+
+      <text class='partake-record-film-name'>{{cinema_name}}</text>
+      <text class='partake-record-film-address'>{{address}}</text>
+      <view class='partake-record-line'></view>
+
+      <text class='partake-record-film-demo'>{{remark}}</text>
+
+
+      <view class='partake-record-images'>
+
+        <block wx:key='imageIndex' wx:for='{{images}}' wx:for-item='image'>
+          <image bindtap='onClickPic' data-url='{{image}}' class='partake-record-images-item' src='{{image}}'></image>
     </block>
+
+
+    <video wx:if='{{video}}' id='myVideo' bindplay='onPlayVideoListen' class='partake-record-images-item' src="{{video}}" bindended='onEndVideoListen'></video>
+
+      </view>
+
+
+
+    </view>
+
   </scroll-view>
 </view>
 
 
-<view class='pratake-record-detail'>
+<view bindtap='onClickActivityDetail' class='pratake-record-detail'>
 
   <text>查看活动详情</text>
 

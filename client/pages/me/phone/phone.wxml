@@ -1,25 +1,26 @@
+<form bindsubmit="formSubmit">
+  <view class='phone'>
 
-<view class='phone'>
-
-<view class='phone-item-number'>
-
-<text class='phone-tag'>输入手机号</text>
-<input class='phone-number' type='number' maxlength='11'></input>
-</view>
-<view class='phone-line'></view>
-
-<view class='phone-item-code'>
-<text class='phone-tag'>验证码</text>
-<input class='phone-number' type='number' maxlength='6'></input>
-
-<button class='phone-code'  disabled="{{send_disabled}}" bindtap="sendSMSCode">{{send_text}}</button>
-
-</view>
-<view class='phone-line'></view>
-</view>
+    <view class='phone-item-number'>
 
 
-<view class='phone-submit' bindtap='onSubmitContent'>
-<text >提交</text>
+      <input placeholder='输入手机号' bindinput='onPhoneNumberListen' name='phoneNumber' class='phone-number' type='number' maxlength='11'></input>
+    </view>
+    <view class='phone-line'></view>
 
-</view>
+    <view class='phone-item-code'>
+
+      <input placeholder='请输入验证码' name='code' class='phone-number' type='number' maxlength='6'></input>
+
+      <button data-phonenumber='{{phoneNumber}}' class='phone-code' disabled="{{send_disabled}}" bindtap="sendSMSCode">{{send_text}}</button>
+
+    </view>
+    <view class='phone-line'></view>
+  </view>
+
+
+
+  <button form-type='submit' class='phone-submit'> 提交</button>
+
+
+</form>

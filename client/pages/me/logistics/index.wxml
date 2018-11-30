@@ -1,42 +1,22 @@
 <view class='logistics'>
-
-
-<block wx:key='root' wx:for-item='root' wx:for='{{logisticsList}}'>
-
-<view class='logistics-item'>
-
-<text class='logistics-item-order-number'>运单号：{{root.orderNumber}}</text>
-
-<block wx:for-item='itemContent' wx:key='itemIndex' wx:for='{{root.content}}'>
-
-<view class='logistics-item-info'>
-
-<view class='logistics-item-tag'>
-<view id='{{index}}' class='logistics-item-item-top-line{{index==0?"-white":""}}'></view>
-
-<block wx:if='{{index==0}}'>
-<image class='logistics-item-item-icon-one' src='/images/logistics_arrive.png'></image>
-</block>
-
-<block wx:else>
-<view class='logistics-item-item-icon'></view>
-</block>
-
-
-<view class='logistics-item-item-bottom-line{{root.content.length-1==index?"-white":""}} ' ></view>
-
-</view>
-<view class='logistics-item-item-info' >{{itemContent.info}} 
-</view>
-</view>
-
-</block>
-
-<view class='logistics-item-line'></view>
-
-
-</view>
-
-</block>
-
+  <view class='logistics-item'>
+    <text class='logistics-item-order-number'>运单号：{{logisticsInfo.orderNumber}}</text>
+    <block wx:for-item='itemContent' wx:key='itemIndex' wx:for='{{logisticsInfo.res}}'>
+      <view class='logistics-item-info'>
+        <view class='logistics-item-tag'>
+          <view id='{{index}}' class='logistics-item-item-top-line{{index==0?"-white":""}}'></view>
+          <block wx:if='{{index==0}}'>
+            <image class='logistics-item-item-icon-one' src='/images/logistics_arrive.png'></image>
+          </block>
+          <block wx:else>
+            <view class='logistics-item-item-icon'></view>
+          </block>
+          <view class='logistics-item-item-bottom-line{{logisticsInfo.res.length-1==index?"-white":""}} '></view>
+        </view>
+        <view class='logistics-item-item-info'>{{itemContent.accept_time}} {{itemContent.accept_address}} {{itemContent.remark}}
+        </view>
+      </view>
+    </block>
+    <view class='logistics-item-line'></view>
+  </view>
 </view>

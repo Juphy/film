@@ -1,8 +1,13 @@
 //index.js 
 //我的 绑定手机
 //获取应用实例
-const app = getApp()
 
+var phone_api = require('../../../net/phone_api.js')
+var utils = require('../../..//utils/util.js')
+var meApi = require('../../../net/me_api.js')
+var qcloud = require('../../../vendor/wafer2-client-sdk/index')
+
+const app = getApp()
 
 Page({
   data: {
@@ -10,60 +15,142 @@ Page({
     send_disabled: false,
     send_time: null
   },
-  onLoad: function (options) {
+  onLoad: function(options) {
+
   },
-  onReady: function () {
+  onReady: function() {
     // 页面渲染完成
   },
-  onShow: function () {
+  onShow: function() {
     // 页面显示
   },
-  onHide: function () {
+  onHide: function() {
     // 页面隐藏
   },
-  onUnload: function () {
+  onUnload: function() {
     // 页面关闭
+    utils.showConsole('页面关闭')
   },
-  sendSMSCode: function () {
+
+  loadUserInfo: function() {
+    wx.showLoading({
+      title: '数据加载中...',
+    })
+    meApi.userAppMonitor(this.userAppMonitorSuccess, this.userAppMonitorFail)
+  },
+
+  userAppMonitorSuccess: function(result) {
+    util.showConsole(result)
+
+  },
+  userAppMonitorFail: function(e) {
+    util.showModel('提示', e)
+  },
+
+  onPhoneNumberListen: function(even) {
+
+    this.setData({
+      phoneNumber: even.detail.value
+    })
+
+  },
+  sendSMSCode: function(even) {
+    var phoneNumber = even.currentTarget.dataset.phonenumber
+    if (!utils.phoneNumberCheck(phoneNumber)) {
+      utils.showModel('提示', '请输入正确的手机号。')
+      return
+    }
+
     this.setData({
       send_disabled: true
     })
-    var that = this
+
+    phone_api.requestCheckCode(
+      even.currentTarget.dataset.phonenumber,
+      this.sendPhoneCheckCodeSuccess,
+      this.sendPhoneCheckCodeFail)
+
+  },
+
+  formSubmit: function(e) {
+
+    wx.showLoading({
+      title: '数据提交中....',
+    })
+
+    var phoneNumber = e.detail.value.phoneNumber;
+    var code = e.detail.value.code;
+
+    if (!utils.phoneNumberCheck(phoneNumber)) {
+      utils.showModel("提示", "请输入正确的手机号。")
+      return;
+    }
+
+    if (code == null || code == "") {
+      utils.showModel("提示", "请输入验证码。")
+      return;
+
+    }
+
+    phone_api.bindingPhone(
+      phoneNumber,
+      parseInt(code),
+      this.bindingPhoneSuccess,
+      this.bindingPhoneFail,
+    )
+
+  },
+
+  bindingPhoneSuccess: function(res) {
+    utils.showSuccess(res.data.msg)
+    this.login()
+  },
+
+  bindingPhoneFail: function(error) {
+    wx.hideLoading()
+    utils.showModel('提示', error.data.msg)
+  },
 
 
-    that.setData({
+  login: function() {
+    const session = qcloud.Session.get()
+
+    if (session) {
+      qcloud.loginWithCode({
+        success: res => {
+          wx.hideLoading()
+
+          wx.navigateBack({
+            delta: 1
+          })
+        },
+        fail: err => {
+          utils.showModel("提示", err)
+        }
+      })
+    }
+
+
+
+  },
+
+
+
+  sendPhoneCheckCodeSuccess: function(res) {
+    // 开始倒计时
+    this.setData({
       send_time: Math.round(+new Date() / 1000)
     })
-    that.sendCountDown()
+    this.sendCountDown()
 
-    // wx.request({
-    //   url: 'this is your send sms sode url',
-    //   data: {},
-    //   method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-    //   // header: {}, // 设置请求的 header
-    //   success: function (res) {
-    //     // success
-    //     // 开始倒计时
-    //     that.setData({
-    //       send_time: Math.round(+new Date() / 1000)
-    //     })
-    //     that.sendCountDown()
-    //   },
-    //   fail: function () {
-    //     // fail
-    //     that.setData({
-    //       send_disabled: false
-    //     })
-    //   },
-    //   complete: function () {
-    //     // complete
-    //   }
-    // })
-
-
-    
   },
-  sendCountDown: function () {
+  sendPhoneCheckCodeFail: function(error) {
+    this.setData({
+      send_disabled: false
+    })
+    utils.showModel('提示', error)
+  },
+  sendCountDown: function() {
     if (!this.data.send_time) {
       return
     }
@@ -81,59 +168,5 @@ Page({
       })
     }
   },
-  //example.js
-  submit: function (e) {
-    
-    console.log(e.detail.formId);
-    wx.showModal({
-      title: 'formId',
-      content: e.detail.formId,
-      success: function (res) {
-        if (res.confirm) {
-          console.log('用户点击确定')
-        } else if (res.cancel) {
-          console.log('用户点击取消')
-        }
-      }
-
-
-    });
-
-    wx.getUserInfo({
-      success: res => {
-        app.globalData.userInfo = res.userInfo
-        console.log(app.globalData.userInfo);
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-    })
-
-    
-  },
-
-
-  onSubmitContent:function(){
-
-    wx.request({
-      url: 'https://api2.huayingjuhe.top/app/info',
-      success(res){
-
-console.log(res);
-      },
-      fail(e){
-        console.log(e);
-
-      }
-
-
-    })
-
-  }
-
-
-
-
 
 })

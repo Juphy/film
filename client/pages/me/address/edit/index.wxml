@@ -1,33 +1,52 @@
 <form bindsubmit='formSubmit'>
-  <view class='address-manage'>
-    <view class='address-manage-item'>
-      <text>收货人</text>
-      <input name='userName' placeholder='请输入收货人姓名' maxlength='10' class='address-manage-item-input'></input>
+    <view class='address-manage'>
+        <view class='address-manage-item'>
+            <text>收货人</text>
+            <input name='userName' placeholder='请输入收货人姓名' value='{{name}}' maxlength='10' class='address-manage-item-input'></input>
+        </view>
+        <view class='address-manage-line'></view>
+        <view class='address-manage-item'>
+            <text>联系电话</text>
+            <input name='userPhone' value='{{phone}}' placeholder='请输入收货人手机号' maxlength='11' class='address-manage-item-input'></input>
+        </view>
+        <view class='address-manage-line'></view>
+        <view class='address-manage-item'>
+            <text style="margin-right:30rpx">所在地区</text>
+            <view class="address-province-picker">
+                <picker mode='selector' bindchange="bindProvinceDateChange" range='{{provinceList}}' range-key="{{'name'}}">
+                    <view class="picker">
+                        {{province==null?'所在省':province}}
+                    </view>
+                </picker>
+            </view>
+            <view class="address-province-picker">
+                <picker mode='selector' bindchange="bindCityDateChange" range='{{cityList}}' range-key="{{'name'}}">
+                    <view class="picker">
+                        {{city==null?'所在市':city}}
+                    </view>
+                </picker>
+            </view>
+            <view class="address-province-picker">
+                <picker mode='selector' bindchange="bindCountyDateChange" range='{{countyList}}' range-key="{{'name'}}">
+                    <view class="picker">
+                        {{county==null?'所在区':county}}
+                    </view>
+                </picker>
+            </view>
+        </view>
+        <view class='address-manage-line'></view>
+        <view class='address-manage-item-address'>
+            <text style='margin-top:15rpx'>详细地址</text>
+            <textarea name='userAddress' value='{{address}}' placeholder='请输入收货地址' style='width:0rpx;height:110rpx;margin-top:15rpx' class='address-manage-item-input'></textarea>
+        </view>
+        <view class='address-manage-line'></view>
+        <view class='address-manage-item'>
+            <text style='flex-grow:1'>设置默认地址</text>
+            <switch name='isDefault' checked='{{isDefault==1}}' bindchange="onSwitch2Change" />
+        </view>
+        <view class='address-manage-line'></view>
+        <button formType='submit' class='address-manage-save'>
+            保存
+        </button>
     </view>
-    <view class='address-manage-line'></view>
-
-    <view class='address-manage-item'>
-      <text>联系电话</text>
-      <input name='userPhone' placeholder='请输入收货人手机号' maxlength='11' class='address-manage-item-input' value='{{phone}}'></input>
-    </view>
-    <view class='address-manage-line'></view>
-
-    <view class='address-manage-item-address'>
-      <text style='margin-top:15rpx'>详细地址</text>
-      <textarea name='userAddress' placeholder='请输入收货地址' style='width:0rpx;height:110rpx;margin-top:15rpx' class='address-manage-item-input'></textarea>
-    </view>
-    <view class='address-manage-line'></view>
-
-
-    <view class='address-manage-item'>
-      <text style='flex-grow:1'>设置默认地址</text>
-      <switch name='isDefault' checked='{{isDefault}}' bindchange="onSwitch2Change" />
-    </view>
-    <view class='address-manage-line'></view>
-
-      <button formType='submit' class='address-manage-save'>
-        保存
-      </button>
-
-  </view>
 </form>

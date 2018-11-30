@@ -1,52 +1,39 @@
 <view class='address'>
+    <scroll-view scroll-y style="height: 92vh;">
+        <block wx:for="{{addressList}}">
+            <view class='address-item'>
+                <view class='address-item-name-phone'>
+                    <text class='address-item-name'>{{item.contact}}</text>
+                    <text class='address-item-phone'>{{item.phone}}</text>
+                </view>
+                <view class='address-item-address'>{{item.province}}{{item.city}}{{item.conty}}{{item.address}}</view>
+                <view class='address-item-line'></view>
+                <view class='address-item-menu'>
 
-  <scroll-view scroll-y style="height: 92vh;">
+                    <view bindtap='onClickDefaultAddress' data-default='{{item.default}}' data-addressId='{{item.id}}' id='{{index}}' class='address-item-default-text'>
+                        <block wx:if="{{item.default==1}}">
+                            <image class='address-item-default' src='/images/receipt_address@2x.png'></image>
+                        </block>
+                        <block wx:else>
+                            <image class='address-item-default' src='/images/receipt_address2@2x.png'></image>
+                        </block>
+                        <text>默认地址</text>
+                    </view>
 
-    <block wx:for="{{addressList}}" >
-
-      <view class='address-item'>
-
-        <view class='address-item-name-phone'>
-          <text class='address-item-name'>{{item.name}}</text>
-          <text class='address-item-phone'>{{item.phone}}</text>
-        </view>
-        <text class='address-item-address'>{{item.address}}</text>
-
-        <view class='address-item-line'></view>
-
-        <view class='address-item-menu'>
-
-          <view id='{{index}}' bindtap='onClickDefault' class='address-item-default-text'> 
-
-            <block wx:if="{{item.isDefault}}">
-              <image class='address-item-default' src='/images/receipt_address@2x.png'></image>
-            </block>
-            <block wx:else>
-              <image class='address-item-default' src='/images/receipt_address2@2x.png'></image>
-            </block>
-
-            <text >默认地址</text>
-          </view>
-
-          <view class='address-item-edit'  id='{{index}}' bindtap='onClickEdit'>
-            <image class='address-item-edit-image' src='/images/address_editor@2x.png'></image>
-            <text>编辑</text>
-          </view>
-
-          <view class='address-item-edit' id='{{index}}' bindtap='onClickDel'>
-            <image class='address-item-edit-image' src='/images/address_delete@2x.png'></image>
-            <text>删除</text>
-          </view>
-        </view>
-
-        <view class='address-item-fg-line'></view>
-
-      </view>
-
-    </block>
-  </scroll-view>
-  <view bindtap='onClickAdd' class='address-item-add'>
-    <text style='font-size:28rpx;color:#fff'>添加地址</text>
-
-  </view>
+                    <view class='address-item-edit' id='{{index}}' bindtap='onClickEdit'>
+                        <image class='address-item-edit-image' src='/images/address_editor@2x.png'></image>
+                        <text>编辑</text>
+                    </view>
+                    <view class='address-item-edit' id='{{item.id}}' bindtap='onClickDel'>
+                        <image class='address-item-edit-image' src='/images/address_delete@2x.png'></image>
+                        <text>删除</text>
+                    </view>
+                </view>
+                <view class='address-item-fg-line'></view>
+            </view>
+        </block>
+    </scroll-view>
+    <view bindtap='onClickAdd' class='address-item-add'>
+        <text style='font-size:28rpx;color:#fff'>添加地址</text>
+    </view>
 </view>

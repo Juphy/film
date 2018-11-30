@@ -71,13 +71,14 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: start;
 }
 
 .partake-record-images-item {
   width: 170rpx;
   height: 170rpx;
   margin-top: 30rpx;
+  margin-right: 20rpx;
 }
 
 .pratake-record-detail{

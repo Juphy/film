@@ -1,61 +1,118 @@
 //index.js 
 //地址管理
 //获取应用实例
+var addressApi = require('../../../net/address_api.js')
+var utils = require('../../../utils/util.js')
+
 const app = getApp()
 
 Page({
-  data: {
+    data: {
 
-    addressList:[
-      {name:"张三",phone:"15501059685",address:"北京市海淀区花园路13号庚坊国际八层华影聚合",isDefault:false},
-      { name: "张三", phone: "15501059685", address: "北京市海淀区花园路13号庚坊国际八层华影聚合", isDefault: true },
-      { name: "张三", phone: "15501059685", address: "北京市海淀区花园路13号庚坊国际八层华影聚合", isDefault: false },
-      { name: "张三", phone: "15501059685", address: "北京市海淀区花园路13号庚坊国际八层华影聚合", isDefault: false },
-      { name: "张三", phone: "15501059685", address: "北京市海淀区花园路13号庚坊国际八层华影聚合", isDefault: false },
-      { name: "张三", phone: "15501059685", address: "北京市海淀区花园路13号庚坊国际八层华影聚合", isDefault: false },
-      { name: "张三", phone: "15501059685", address: "北京市海淀区花园路13号庚坊国际八层华影聚合", isDefault: false },
-    ],
-    svWidth:0
+        svWidth: 0
 
-  },
-  onLoad: function () {
-  },
-//设置默认地址
-  onClickDefault:function(event){
+    },
+    onLoad: function() {
+        utils.showConsole('onLoad')
+    },
 
-    var name=event.currentTarget.id;
-    console.log(name);
-  },
-  //编辑地址
-  onClickEdit:function(event){
 
-  },
-//删除地址
-  onClickDel:function(event){
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow: function() {
+        utils.showConsole('onShow')
+        this.loadAddressList()
 
-wx.showModal({
-  title: '提示',
-  content: '您确定要删除该地址吗？',
-  showCancel: true,
-  success: function(res) {
+    },
+
+  onClickDefaultAddress:function(e){
+
+utils.showConsole(e.currentTarget.dataset)
+let addressId=e.currentTarget.dataset.addressid
+let isDefault=e.currentTarget.dataset.default
+if(isDefault==0){
+  addressApi.requestSetDefaultAddress(addressId,this.defaultAddressSuccess,this.defaultAddressFail)
+
+}
+
+   
+
+
 
   },
-  fail: function(res) {
-    
+  defaultAddressSuccess: function (result) {
+this.loadAddressList()
   },
-  complete: function(res) {},
-})
+  defaultAddressFail:function(e){
+    utils.showConsole(e)
 
   },
-  //添加地址
-  onClickAdd:function(event){
+    loadAddressList: function() {
+        addressApi.requestAddressList(this.addressListSuccess, this.addressListFail)
 
-wx.navigateTo({
-  url: '/pages/me/address/edit/index',
-})
+    },
+    //编辑地址
+    onClickEdit: function(event) {
+        var address = this.data.addressList[event.currentTarget.id]
 
-  }
+        wx.navigateTo({
+            url: '/pages/me/address/edit/index?userName=' + address.contact + '&province=' + address.province + '&city=' + address.city + '&county=' + address.county + '&address=' + address.address + '&phone=' + address.phone + '&default=' + address.default+'&id=' + address.id,
+        })
 
-  
+    },
+    //删除地址
+    onClickDel: function(event) {
+
+        utils.showConsole(event.currentTarget.id)
+        var that = this
+        wx.showModal({
+            title: '提示',
+            content: '您确定要删除该地址吗？',
+            showCancel: true,
+            success: function(res) {
+
+                that.delAddress(event.currentTarget.id)
+
+            },
+            fail: function(res) {
+
+            },
+        })
+
+    },
+
+    delAddress: function(addressId) {
+        addressApi.requestDelAddress(addressId, this.delAddressSuccess, this.delAddressFail)
+    },
+
+    //添加地址
+    onClickAdd: function(event) {
+
+        wx.navigateTo({
+            url: '/pages/me/address/edit/index',
+        })
+
+    },
+
+    addressListSuccess: function(result) {
+        utils.showConsole(result)
+        this.setData({
+            addressList: result.data.res
+        });
+
+    },
+
+    addressListFail: function(e) {
+        utils.showConsole(e)
+
+    },
+    delAddressSuccess: function(result) {
+        utils.showSuccess("删除成功")
+        this.loadAddressList();
+    },
+    delAddressFail: function(e) {
+        utils.showModel('提示', e.data.msg)
+    }
 
 })

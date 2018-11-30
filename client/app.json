@@ -1,12 +1,16 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/activity/index",
+    "pages/index/index",
     "pages/activity/detail/detail",
     "pages/activity/partake/index",
+    "pages/activity/film/index",
+    "pages/activity/city/index",
+    "pages/login/index",
     "pages/addCgi/addCgi",
     "pages/me/index",
     "pages/me/logistics/index",
+    "pages/me/logistics/logistics_list/index",
     "pages/me/about/about",
     "pages/me/phone/phone",
     "pages/me/problem/problem",
@@ -17,16 +21,20 @@
     "pages/me/partake_record/index",
     "pages/me/partake_record/detail/index",
     "pages/me/award/index",
+    "pages/me/coupon/index",
     "pages/me/award/address/index",
+    "pages/me/award/money/index",
+    
     
     "pages/publicity/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "Wafer Quick Start",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh":true
   },
   "tabBar": {
     "color": "#939393",

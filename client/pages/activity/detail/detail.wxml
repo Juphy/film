@@ -1,27 +1,79 @@
 <view class='activity-detail'>
 
-<view class='activity-detail-foot'>
-<view class='activity-detail-foot-line'></view>
 
-<view class='activity-detail-foot-mf'>
+  <scroll-view scroll-y style="height: 92vh;">
+
+    <view class='activity-detail-content'>
+
+      <text class='activity-detail-title'>{{activityInfo.activite_info.title}}</text>
+      <image class='activity-detail-ad-image' src='{{activityInfo.activite_info.playbill}}'></image>
+
+      <view class='activity-detail-other-icon'>
+        <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>活动描述</text>
+      </view>
+
+      <view class='activity-detail-text'>{{activityInfo.activite_info.description}}</view>
+
+      <view class='activity-detail-other-icon'>
+        <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>奖品描述</text>
+      </view>
+
+      <view class='activity-detail-award'>
+        <block wx:for='{{activityInfo.activite_info.prize_description}}'>
+
+          <view class='activity-detail-award-item'>
+            <image class='activity-detail-award-item-pic' src='{{item.image}}'></image>
+            <view class='activity-detail-award-item-name'>{{item.description}}</view>
+
+          </view>
+
+        </block>
+      </view>
+
+      <block wx:for='{{activityInfo.activite_info.other_description}}'>
+
+        <view class='activity-detail-other-icon'>
+          <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>{{item.title}}</text>
+        </view>
+
+        <view class='activity-detail-text'>{{item.description}}</view>
+
+      </block>
+
+      <block wx:if='{{activityInfo.winners.length>0}}'>
+        <image style='width:666rpx;height:40rpx;margin-top:80rpx;margin-bottom:40rpx;' src='/images/huojiangmingdan@2x.png'></image>
+
+        <view style='display:flex; flex-direction: row; margin-bottom:80rpx;'>
+
+          <block wx:for='{{activityInfo.winners}}'>
+            <view style='display:flex; flex-direction: column;font-size:24rpx;align-items: center;margin-right:85rpx;'>
+              <image style='width:100rpx;height:100rpx;border-radius: 60%;' src='{{item.avatar_url}}'></image>
+              <text>{{item.nick_name}}</text>
+            </view>
+          </block>
+        </view>
+      </block>
 
 
-<view bindtap='onClickLogistics' class='activity-detail-foot-wycj'>
-<image class='activity-detail-foot-icon' src='/images/activities_detail_icon@3x.png'></image>
-<text>我要参加</text>
-</view>
 
+    </view>
+  </scroll-view>
 
-<view class='activity-detail-foot-mf-line'></view>
+  <view class='activity-detail-foot'>
+    <view class='activity-detail-foot-line'></view>
+    <view class='activity-detail-foot-mf'>
 
-<view class='activity-detail-foot-share'>
-<image class='activity-detail-foot-icon'  src='/images/activities_share_icon@3x.png'></image>
-<text>分享</text>
-</view>
-
-
-</view>
-
-</view>
+      <view id='{{activityInfo.activite_info.id}}' bindtap='onClickLogistics' class='activity-detail-foot-wycj '>
+        <image class='activity-detail-foot-icon' src='/images/activities_detail_icon@3x.png'></image>
+        <text>我要参加</text>
+      </view>
+      
+      <view class='activity-detail-foot-mf-line'></view>
+      <view class='activity-detail-foot-share'>
+        <image class='activity-detail-foot-icon' src='/images/activities_share_icon@3x.png'></image>
+        <button open-type='share' class='activity-detail-share-btn'>分享</button>
+      </view>
+    </view>
+  </view>
 
 </view>

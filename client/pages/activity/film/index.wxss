@@ -1,0 +1,39 @@
+.select-film-list {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.select-film-search{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  
+}
+
+.select-film-list-item-name {
+    font-size: 24rpx;
+    color: #333;
+    margin-top: 30rpx;
+
+}
+
+.select-film-list-item-address {
+    font-size: 20rpx;
+    color: #939393;
+    margin-bottom: 30rpx;
+}
+
+.select-film-list-item {
+    display: flex;
+    flex-direction: column;
+    margin-left: 30rpx;
+    margin-right: 30rpx;
+
+}
+
+.select-film-list-item-line {
+    height: 2rpx;
+    background: #eaeaea;
+    
+}

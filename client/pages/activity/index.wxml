@@ -15,27 +15,24 @@
   <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
 </view>
 
-
-<scroll-view >
-
+<scroll-view>
   <block wx:for="{{activityList}}">
+    <view id="{{item.id}}" bindtap='onClickItem' class='activitylist-item'>
 
-    <view bindtap='onClickItem' class='activitylist-item'>
-
-      <block wx:if="{{index!=1}}">
-        <image class='activitylist-item-image' src='{{item.icon}}'></image>
+      <block wx:if="{{item.end_day >nowDate  && item.status==1}}">
+        <image mode='aspectFit' class='activitylist-item-image' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx' src='{{item.playbill}}'></image>
       </block>
 
       <block wx:else>
         <view class='activitylist-item-over'>
-          <image class='activitylist-item-image-no' src='{{item.icon}}'></image>
+          <image class='activitylist-item-image-no' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx' src='{{item.playbill}}'></image>
+          <view class='activitylist-item-image-over' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx;background:#000000;opacity:0.2; border-radius: 18rpx;'></view>
           <image class='activitylist-item-image-over' src='/images/activity_end@3x.png' />
         </view>
-
       </block>
-      <text class='activitylist-item-name'>{{item.name}}</text>
 
     </view>
+    <view class='activitylist-item-name'>{{item.title}} </view>
 
   </block>
 </scroll-view>

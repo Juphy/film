@@ -2,22 +2,22 @@
   <scroll-view scroll-y style="height: 88vh;">
     <block wx:for="{{addressList}}">
 
-      <view class='address-item'>
+      <view data-addressInfo='{{item}}' bindtap='onClickSelectAddress' class='address-item'>
 
         <view class='address-item-phone-name'>
 
-          <text class='address-item-name'>{{item.name}}</text>
+          <text class='address-item-name'>{{item.contact}}</text>
           <text>{{item.phone}}</text>
-
+ 
         </view>
 
         <view class='address-item-address'>
 
-          <block wx:if="{{item.isDefault}}">
+          <block wx:if="{{item.default!=0}}">
             <text class='address-item-default'>[默认地址]</text>
           </block>
 
-          <text class='address-item-address-text'>{{item.address}}</text>
+          <text class='address-item-address-text'>{{item.province}}{{item.city}}{{item.county}}{{item.address}}</text>
 
         </view>
 

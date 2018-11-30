@@ -1,43 +1,37 @@
 .activitylist-item {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15rpx;
-  margin-top: 15rpx;
-  margin-left: 60rpx;
-  margin-right: 60rpx;
+  position: relative;
+  justify-content: center;
+  align-items: center;
 }
 
 .activitylist-item-image {
   background-color: #eaea;
-  width: 630rpx;
-  height: 378rpx;
   margin-bottom: 30rpx;
   border-radius: 18rpx;
+  margin-top: 30rpx;
   
 }
 
 .activitylist-item-image-no {
-  background-color: #eaea;
-  width: 630rpx;
-  height: 378rpx;
   margin-bottom: 30rpx;
   border-radius: 18rpx;
+  margin-top: 30rpx;
+  
+}
 
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
 }
-::-webkit-scrollbar
-{
-width: 0;
-height: 0;
-color: transparent;
-}
+
 .activitylist-item-over {
   display: flex;
-  flex-direction: column;
-  position: relative;
   justify-content: center;
   align-items: center;
   filter: grayscale(100%);
-  
 }
 
 .activitylist-item-image-over {
@@ -50,4 +44,6 @@ color: transparent;
 .activitylist-item-name {
   font-size: 32rpx;
   font-weight: 700;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
 }

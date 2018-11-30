@@ -1,71 +1,73 @@
-.logistics-item-tag{
-display: flex;
-flex-direction: column;
-align-items: center;
-width: 20rpx;
-margin-right: 20rpx;
+.logistics-item-tag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20rpx;
+    margin-right: 20rpx;
 }
 
-.logistics-item-info{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-left: 30rpx;
-  margin-right: 30rpx;
+.logistics-item-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 30rpx;
+    margin-right: 30rpx;
 }
 
-.logistics-item-item-top-line{
-  width: 2rpx;
-  height: 22rpx;
-  background: #eaeaea;
+.logistics-item-item-top-line {
+    width: 2rpx;
+    height: 42rpx;
+    background: #eaeaea;
 }
 
-.logistics-item-item-top-line-white{
-  width: 2rpx;
-  height: 22rpx;
-  background: #fff;
+.logistics-item-item-top-line-white {
+    width: 2rpx;
+    height: 42rpx;
+    background: #fff;
 }
 
 
-.logistics-item-item-bottom-line{
-  width: 2rpx;
-  height: 22rpx;
-  background: #eaeaea;
+.logistics-item-item-bottom-line {
+    width: 2rpx;
+    height: 42rpx;
+    background: #eaeaea;
 }
 
-.logistics-item-item-bottom-line-white{
-  width: 2rpx;
-  height: 22rpx;
-  background: #fff;
+.logistics-item-item-bottom-line-white {
+    width: 2rpx;
+    height: 42rpx;
+    background: #fff;
 }
 
-.logistics-item-item-icon{
-  width: 15rpx;
-  height: 15rpx;
-  border-radius: 18rpx;
-  background: #939393;
+.logistics-item-item-icon {
+    width: 20rpx;
+    height: 20rpx;
+    border-radius: 50%;
+    background: #939393;
 }
 
-.logistics-item-line{
-  background: #eaeaea;
-  height: 2rpx;
-  margin-left: 30rpx;
-  margin-right: 30rpx;
-  margin-top: 10rpx;
+.logistics-item-line {
+    background: #eaeaea;
+    height: 2rpx;
+    margin-left: 30rpx;
+    margin-right: 30rpx;
+    margin-top: 10rpx;
 }
 
-.logistics-item-item-info{
-  font-size:24rpx;color:#939393;word-break: break-all;
+.logistics-item-item-info {
+    font-size: 24rpx;
+    color: #939393;
+    word-break: break-all;
 }
 
-.logistics-item-order-number{
-  font-size: 28rpx;
-  color: #333;
-  margin-left: 30rpx;
-  margin-right: 30rpx;
+.logistics-item-order-number {
+    font-size: 28rpx;
+    color: #333;
+    margin-left: 30rpx;
+    margin-right: 30rpx;
 }
 
-.logistics-item-item-icon-one{
-  width: 20rpx;
-  height: 20rpx;
+.logistics-item-item-icon-one {
+    width: 20rpx;
+    height: 20rpx;
 }

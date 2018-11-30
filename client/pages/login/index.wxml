@@ -1,0 +1,13 @@
+<view class='login'>
+
+<image class='login-icon' src='/images/shouquandenglu@2x.png'></image>
+
+
+<view class='login-qx'>
+
+<text style='  font-size: 30rpx;color: #333;font-weight: 700;'>申请获取以下权限</text>
+<view style='fons-size: 24rpx;color:#939393;margin-top:30rpx;margin-bottom:100rpx;'>获得你的公开信息(昵称、头像等）</view>
+</view>
+
+<button style='margin-left:30rpx;margin-right:30rpx;height:80rpx;background:#56bdac;color:#fff;font-size:28rpx;  vertical-align:middle;text-align: center;' open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="onGotUserInfo">获取用户信息</button>
+</view>

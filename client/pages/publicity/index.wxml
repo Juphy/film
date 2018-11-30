@@ -4,8 +4,8 @@
 
     <view class='publicitylist-item'>
       <text class='publicitylist-item-title'>{{item.title}}</text>
-      <text class='publicitylist-item-date'>{{item.date}}</text>
-      <text class='publicitylist-item-describe'>{{item.describe}}</text>
+      <text class='publicitylist-item-date'>{{item.create_time}}</text>
+      <text class='publicitylist-item-describe'>{{item.content}}</text>
 
 
     </view>

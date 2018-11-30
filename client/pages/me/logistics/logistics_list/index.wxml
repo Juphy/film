@@ -1,0 +1,16 @@
+<view class='award'>
+  <block wx:for='{{awardList}}'>
+    <view class='award-list-item'>
+
+      <view class="award-item-icocn-title">
+        <view class='award-item-title'>{{item.prize_name}}</view>
+
+      </view>
+
+      <view class='award-item-state'>
+        <text data-orderNumber='{{item.mailno}}' data-state='{{item.state}}' bindtap='onClickAward' class='award-item-state-y '>物流信息</text>
+      </view>
+
+    </view>
+  </block>
+</view>

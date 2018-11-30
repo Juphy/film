@@ -1,17 +1,15 @@
 <view class='award'>
+    <block wx:for='{{awardList}}'>
+        <view class='award-list-item'>
 
-  <block wx:for='{{awardList}}'>
-    <view class='award-list-item'>
-      <text class='award-item-title'>{{item.title}}</text>
-
-
-
-
-<view  class='award-item-state'>
-
-      <text data-type='{{item.awardtype}}' data-state='{{item.state}}' bindtap='{{item.state==true?"onClickAward":""}}' class='award-item-state-{{item.state?"y":"n"}} ' >{{item.state?'领奖':'已领'}}</text>
+        <view class="award-item-icocn-title">
+            <text class='award-item-title'>{{item.prize_name}}</text>
 </view>
-    </view>
-  </block>
 
+            <view class='award-item-state'>
+                <text data-type='{{item.type}}' data-winner_id='{{item.id}}' data-state='{{item.is_sure}}' bindtap='onClickAward' class='award-item-state-{{item.is_sure==0?"y":"n"}} '>{{item.is_sure==0?'领奖':'已领'}}</text>
+            </view>
+
+        </view>
+    </block>
 </view>

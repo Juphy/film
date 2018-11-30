@@ -15,6 +15,7 @@ function getWxLoginResult (cb) {
         success (loginResult) {
             wx.getUserInfo({
                 success (userResult) {
+                  
                     cb(null, {
                         code: loginResult.code,
                         encryptedData: userResult.encryptedData,
@@ -54,52 +55,58 @@ const defaultOptions = {
  * @param {Function} [opts.fail]    可选。登录失败后的回调函数，参数 error 错误信息
  */
 function login (opts) {
-    opts = Object.assign({}, defaultOptions, opts)
+  
+  opts = Object.assign({}, defaultOptions, opts)
 
-    if (!opts.loginUrl) {
-        return opts.fail(new Error('登录错误：缺少登录地址，请通过 setLoginUrl() 方法设置登录地址'))
+  if (!opts.loginUrl) {
+    return opts.fail(new Error('登录错误：缺少登录地址，请通过 setLoginUrl() 方法设置登录地址'))
+  }
+
+  getWxLoginResult((err, loginResult) => {
+    if (err) {
+      return opts.fail(err)
     }
 
-    getWxLoginResult((err, loginResult) => {
-        if (err) {
-            return opts.fail(err)
+    // 构造请求头，包含 code、encryptedData 和 iv
+    const header = {
+      [constants.WX_HEADER_CODE]: loginResult.code,
+      [constants.WX_HEADER_ENCRYPTED_DATA]: loginResult.encryptedData,
+      [constants.WX_HEADER_IV]: loginResult.iv
+    }
+
+    // 请求服务器登录地址，获得会话信息
+    wx.request({
+      url: opts.loginUrl,
+      header: header,
+      method: opts.method,
+      success(result) {
+        result = result.data;
+        const data = result.res;
+
+        console.log(result)
+
+        if (!data || result.code !== 200 || !data.skey) {
+          return opts.fail(new Error(`响应错误，${JSON.stringify(data)}`))
         }
 
-        // 构造请求头，包含 code、encryptedData 和 iv
-        const header = {
-            [constants.WX_HEADER_CODE]: loginResult.code,
-            [constants.WX_HEADER_ENCRYPTED_DATA]: loginResult.encryptedData,
-            [constants.WX_HEADER_IV]: loginResult.iv
+        // const res = data.data
+
+        if (!data || !data.userinfo) {
+          return opts.fail(new Error(`登录失败(${result.msg}`))
         }
 
-        // 请求服务器登录地址，获得会话信息
-        wx.request({
-            url: opts.loginUrl,
-            header: header,
-            method: opts.method,
-            success (result) {
-                const data = result.data;
+        // 成功地响应会话信息
+        Session.set(data)
 
-                if (!data || data.code !== 0 || !data.data || !data.data.skey) {
-                    return opts.fail(new Error(`响应错误，${JSON.stringify(data)}`))
-                }
-
-                const res = data.data
-
-                if (!res || !res.userinfo) {
-                    return opts.fail(new Error(`登录失败(${data.error})：${data.message}`))
-                }
-
-                // 成功地响应会话信息
-                Session.set(res)
-                opts.success(res.userinfo)
-            },
-            fail (err) {
-                console.error('登录失败，可能是网络错误或者服务器发生异常')
-                opts.fail(err)
-            }
-        });
-    })
+        console.log(data.userinfo)
+        opts.success(data.userinfo)
+      },
+      fail(err) {
+        console.error('登录失败，可能是网络错误或者服务器发生异常')
+        opts.fail(err)
+      }
+    });
+  })
 }
 
 /**
@@ -135,21 +142,26 @@ function loginWithCode (opts) {
                 header: header,
                 method: opts.method,
                 success (result) {
-                    const data = result.data;
-    
-                    if (!data || data.code !== 0 || !data.data || !data.data.skey) {
-                        return opts.fail(new Error(`用户未登录过，请先使用 login() 登录`))
-                    }
-    
-                    const res = data.data
-    
-                    if (!res || !res.userinfo) {
-                        return opts.fail(new Error(`登录失败(${data.error})：${data.message}`))
-                    }
-    
-                    // 成功地响应会话信息
-                    Session.set(res)
-                    opts.success(res.userinfo)
+                  result = result.data;
+                  const data = result.res;
+
+                  console.log(result)
+
+                  if (!data || result.code !== 200 || !data.skey) {
+                    return opts.fail(new Error(`响应错误，${result.msg}`))
+                  }
+
+                  // const res = data.data
+
+                  if (!data || !data.userinfo) {
+                    return opts.fail(new Error(`登录失败(${result.msg}`))
+                  }
+
+                  // 成功地响应会话信息
+                  Session.set(data)
+
+                  console.log(data.userinfo)
+                  opts.success(data.userinfo)
                 },
                 fail (err) {
                     console.error('登录失败，可能是网络错误或者服务器发生异常')
@@ -157,11 +169,17 @@ function loginWithCode (opts) {
                 }
             });
         }
+
+
+
+
     })
 }
 
 function setLoginUrl (loginUrl) {
+  
     defaultOptions.loginUrl = loginUrl;
 }
+
 
 module.exports = { login, setLoginUrl, loginWithCode }

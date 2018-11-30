@@ -1,0 +1,38 @@
+<view class="weui-search-bar">
+    <view class="weui-search-bar__form">
+        <view class="weui-search-bar__box">
+            <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+            <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindconfirm="inputTyping" />
+            <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                <icon type="clear" size="14"></icon>
+            </view>
+        </view>
+        <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+            <icon class="weui-icon-search" type="search" size="14"></icon>
+            <view class="weui-search-bar__text">搜索</view>
+        </label>
+    </view>
+    <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+</view>
+
+<view class='city_box' style='{{styles}}'>
+      <view class='city_left'>
+          <scroll-view scroll-y style='width:100%;height:100%;' scroll-with-animation scroll-into-view='{{cityListId}}'>
+          <view class='new_city'>
+                  <view id='RR' class='new_city_title'>热门城市</view>
+                  <view class='new_city_box'>
+                      <text class='new_city_text' wx:for='{{newcity}}' wx:key='this' data-types='new' catchtap='cityTap' data-val='{{item}}'>{{item.name}}</text>
+                  </view>
+              </view>
+              <view class='city_list_box'>
+                <block wx:for='{{citylist}}' wx:key='this' wx:for-item='letterItem' wx:for-index='letterIndex'>
+                  <view class='city_first_letter' id='{{letterItem.letter}}'>{{letterItem.letter}}</view>
+                  <text class='city_name' wx:for='{{letterItem.data}}' wx:key='this' data-types='list' catchtap='cityTap' data-index='{{index}}' data-val='{{item}}'>{{item.name}}</text>
+                </block>
+              </view>
+          </scroll-view>
+      </view>
+      <view class='city_right'>
+          <text class='letter_item' wx:for='{{letter}}' wx:key='this' catchtap='letterTap' data-item='{{item}}'>{{item}}</text>
+      </view>
+  </view>

@@ -1,41 +1,118 @@
-.activity-detail{
+.activity-detail {
   display: flex;
   flex-direction: column;
 }
 
-.activity-detail-foot{
+.activity-detail-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  margin-bottom: 40rpx;
+  margin-top: 40rpx;
+}
+
+.activity-detail-ad-image {
+  width: 690rpx;
+  height: 380rpx;
+  margin-bottom: 30rpx;
+}
+
+.activity-detail-text {
+  font-size: 24rpx;
+  margin-top: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.activity-detail-icon {
+  width: 112rpx;
+  height: 32rpx;
+}
+
+.activity-detail-other-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 112rpx;
+  height: 32rpx;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAAAgCAYAAAAcyybZAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3lJREFUeNrsm09IFFEcx9+ss7PWqLibtmymIkmHugQRISaShEgdOtShjkFQ0CEvQdChDbpHl4gOXj14KAgC0UN1EIUOdcvoIBVoSWBuO6z7t+93mlnM3CGh2fbR7wc/3puZt3P4ffz+3u/NexrpdFptNsMwVCaTURsbGyoWi6lSqaSKxaIyTdPts6Wxj7GHI5HIIVweLZfL3ZVKJYl+CvfZWur/toof0pDenzF3+AMTgIbRngWgIbRHCNGHDpAKz5VYXaw1EB6BeEYlXQacq4Czv8YYAVdfC1YeUmEr4NwEtOsAY0u8GsvMaDT6a6L21ANopzDXTaDt3qwusb88MSLeiG+RSkK/HTWFwXjn83l3GgqEl8vlfgOH9i5ecEughQOrqanJ7aOdQnabLBQKCwD1DeASKBYHMeZ8PB4/R4CB01pvb2/1oqOjQ42MjExDcaMyf4VjBOc4TgY+hqw3Z9t2tdBrbm5WS0tLbqXf398/DHhP8Ky9BouMOTAwUC08LMuawF+CgAsZXjabvbC+vj6HWKtkMqna2trcpRezYCKRcJdmGPMCY1lvPKyZNvv6+lxwADaOF1widUmX4RkArXV2dj5LpVLuNVKmqzTWHlxDU32MP8HCXzF11uJh8iEGHQC8e1tLf7FQlLcbAPdAXV8Zay/juWnTA1bNhCxggnhEKFHYpIS1bmYhFU4xffpOYIRHFv4XLSoS/dtBL4pAssfRHpOY1q/aRHo8GYvFXsJPU3W+urx2F/wMfB4+FLhUQI69IgVK/QESDFrCeQclvkabhbfDBwFx7x8t0uEnJJz/1A56vmPjEn6fxE9PI7yChEFfeGUJg5ZmRCQG2lpJ4Olr3wWerjnTMFYEnoZrRO5CYKH/1JRw6GX8eM1PZ4uLi/dFeRoqz7Ksa11dXWuiPL3mOX6sns7n8w9aWlqUwNNpbVAqvQW4Me46cA9Q4GmiOBQpa5jvRjnn+QeTBJ4G4KC057ZtX0SqXPE3awVe46uN6fHO6upqmpu2VN3m7TuB10BVJAF5RQlvzeDeDSwL3vCoynZ7rgKvQYwq845B8IjEI9ya9WH65zy3nmchvISErv4p0Veb+vnfRLNYu80sLy8/dhznfU9Pj/LOFgUv2OEf4HEJaWjG/VIeS+fxZwfgvkBdn9H/BLUtRKPReVx/9A8hbaewWvZDgAEAJaORrOmn2SAAAAAASUVORK5CYII=');
+}
+
+.activity-detail-award {
+  margin-top: 30rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.activity-detail-award-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-detail-award-item-pic {
+  width: 300rpx;
+  height: 180rpx;
+}
+
+.activity-detail-award-item-name {
+  font-size: 24rpx;
+  margin-bottom: 30rpx;
+  margin-top: 30rpx;
+}
+
+.activity-detail-content {
+  display: flex;
+  flex-direction: column;
+  padding-right: 30rpx;
+  padding-left: 30rpx;
+}
+
+.activity-detail-foot {
   position: fixed;
   bottom: 0;
 }
 
-.activity-detail-foot-icon{
+.activity-detail-foot-icon {
   width: 30rpx;
   height: 30rpx;
   margin-right: 20rpx;
 }
 
-.activity-detail-foot-line{
+.activity-detail-foot-line {
   width: 100%;
   background: #eaeaea;
   height: 2rpx;
 }
 
-.activity-detail-foot{
+.activity-detail-foot {
   width: 100%;
   display: flex;
   flex-direction: column;
   height: 98rpx;
-  font-size: 20rpx;
+  font-size: 24rpx;
 }
 
-.activity-detail-foot-mf{
+.activity-detail-foot-mf {
   display: flex;
   flex-direction: row;
-height: 95rpx;
-align-items: center;
+  height: 95rpx;
+  align-items: center;
 }
 
-.activity-detail-foot-wycj{
+.activity-detail-foot-wycj {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  height: 95rpx;
+}
+
+.activity-detail-foot-share {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -43,16 +120,20 @@ align-items: center;
   justify-content: center;
 }
 
-.activity-detail-foot-share{
-    display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: center;
-}
-
-.activity-detail-foot-mf-line{
+.activity-detail-foot-mf-line {
   width: 2rpx;
   height: 30rpx;
   background: #eaeaea;
+}
+
+.activity-detail-share-btn {
+  font-size: 24rpx;
+  background: #fff;
+  margin: 0rpx;
+  padding: 0rpx;
+  border-radius: 0;
+}
+
+button::after {
+  border: none;
 }

@@ -1,58 +1,69 @@
 .award {
-  width: 100%;
-  height: 100vh;
-  background: #eaeaea;
+    width: 100%;
+    height: 100vh;
+    background: #eaeaea;
 }
 
 .award-list-item {
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10rpx;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10rpx;
 }
 
 .award-item-title {
-  margin-top: 30rpx;
-  font-size: 28rpx;
-  color: #333;
-  margin-left: 30rpx;
-  margin-right: 30rpx;
+    font-size: 28rpx;
+    color: #333;
+    margin-left: 20rpx;
+    width: 80vw;
 }
 
 .award-item-state-y {
-  width: 100rpx;
-  height: 50rpx;
-  border-radius: 6rpx;
-  background: #56bdac;
-  color: #fff;
-  font-size: 24rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 40rpx;
-  margin-bottom: 30rpx;
+    width: 100rpx;
+    height: 50rpx;
+    border-radius: 6rpx;
+    background: #56bdac;
+    color: #fff;
+    font-size: 24rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30rpx;
 }
 
 .award-item-state-n {
-  width: 100rpx;
-  height: 50rpx;
-  border-radius: 6rpx;
-  background: #939393;
-  color: #fff;
-  font-size: 24rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 40rpx;
-  margin-bottom: 30rpx;
-  
+    width: 100rpx;
+    height: 50rpx;
+    border-radius: 6rpx;
+    background: #939393;
+    color: #fff;
+    font-size: 24rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30rpx;
+
 }
 
-.award-item-state{
-  display: flex;
-  flex: row;
-  justify-content: flex-end;
-  margin-right: 30rpx;
+.award-item-state {
+    display: flex;
+    flex: row;
+    justify-content: flex-end;
+    margin-right: 30rpx;
+}
+
+.award-item-icocn-title {
+    display: flex;
+    flex: row;
+    margin-top: 30rpx;
+    margin-right: 30rpx;
+    margin-left: 30rpx;
+
+}
+
+.award-item-icon {
+    width: 90rpx;
+    height: 90rpx;
 }

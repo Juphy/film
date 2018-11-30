@@ -1,0 +1,16 @@
+
+<view class='award' >
+
+  <block wx:for='{{couponList}}'>
+    <view class='award-list-item'>
+
+        <view class='award-item-title'>
+        <text style=' margin-top: 30rpx; margin-left: 196rpx;'> {{item.prize_name}}</text>
+        
+        </view>
+
+
+    </view>
+  </block>
+
+</view>
