@@ -461,22 +461,48 @@ const report_winning = async (ctx, next) => {
   }
 }
 
-const report_count = async (ctx, next) => {
-  let a = await Report.count({ where: { status: 1, invalid: 0 } });
-  let b = await Report.count({ where: { status: 3, invalid: 0 } });
-  let c = await Report.count({ where: { status: 2, invalid: 0 } });
-  let d = await Report.count({ where: { is_winner: 1, invalid: 0 } });
+const pending_count = async (ctx, next) => {
+  let inc = [{
+    model: Activity,
+    where: {
+      status: {
+        [Op.ne]: 2
+      },
+      invalid: 0
+    }
+  }];
+  let a = await Report.count({ include: inc, where: { status: 0, invalid: 0 } });
+  let b = await Report.count({ include: inc, where: { status: 2, invalid: 0 } });
+  let c = await Report.count({ include: inc, where: { status: 1, invalid: 0 } });
+  let d = await Report.count({ include: inc, where: { is_winner: 1, invalid: 0 } });
   ctx.body = success([a, b, c, d]);
 }
 
+const ending_count = async (ctx, next) => {
+  let inc = [{
+    model: Activity,
+    where: {
+      status: 2,
+      invalid: 0
+    }
+  }];
+  let b = await Report.count({ include: inc, where: { status: 2, invalid: 0 } });
+  let c = await Report.count({ include: inc, where: { status: 1, invalid: 0 } });
+  let d = await Report.count({ include: inc, where: { is_winner: 1, invalid: 0 } });
+  ctx.body = success([b, c, d]);
+}
+
 module.exports = {
+  pub: {
+    pending_count,
+    ending_count
+  },
   adm: {
     pending_list,
     ending_list,
     reviews,
     winning,
-    report_winning,
-    report_count
+    report_winning
   },
   app: {
     upload,
