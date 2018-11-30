@@ -600,11 +600,6 @@ reports.belongsTo(activities, {
   targetKey: 'id'
 });
 
-reports.belongsTo(address, {
-  foreignKey: 'address_id',
-  targetKey: 'id'
-});
-
 users.belongsTo(address, {
   foreignKey: 'address_id',
   targetKey: 'id',

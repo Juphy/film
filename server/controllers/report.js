@@ -202,10 +202,6 @@ const app_list = async (ctx, next) => {
       model: Activity,
       attributes: ['status'],
       where: we,
-    },
-    {
-      model: Address,
-      attributes: ['address'],
     }],
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId,
@@ -214,6 +210,14 @@ const app_list = async (ctx, next) => {
     offset: (page - 1) * page_size,
     limit: page_size * 1
   })
+
+  console.dir(res)
+  for (item of res.rows){
+    addr = await redis.get(item.cinema_code)
+    // item.push(addr)
+    item.dataValues.address= JSON.parse(addr)
+  }
+
   ctx.body = success(res);
 
 
@@ -504,7 +508,8 @@ module.exports = {
     winning,
     report_winning,
     pending_count,
-    ending_count
+    ending_count,
+    
   },
   app: {
     upload,
