@@ -360,7 +360,8 @@ const list = async (ctx, next) => {
       invalid: 0,
       title: {
         [Op.like]: '%' + title + '%'
-      }
+      },
+      is_sure: 1
     },
     order: [
       ['create_time', 'DESC']
@@ -395,6 +396,21 @@ const del = async (ctx, next) => {
   }
 }
 
+// 现金，确认发奖
+const make_prize = async (ctx, next) => {
+  let { id } = ctx.request.params;
+  if (!id) {
+    return ctx.body = failed('参数错误');
+  }
+  let res = await Winner.findById(id);
+  if (!res) {
+    ctx.body = failed('id无效');
+  }
+  res = await res.update({
+    is_received: 1
+  });
+  ctx.body = success(res, '确认发奖成功');
+}
 
 //领取实物
 const accept_goods_prize = async (ctx, next) => {
@@ -568,7 +584,8 @@ module.exports = {
   },
   adm: {
     list,
-    del
+    del,
+    make_prize
   },
   app: {
     express_winner_list,
