@@ -528,11 +528,10 @@ const accept_coupon_prize = async(ctx, next) => {
   }
 
   let {
-    open_id,
     winner_id,
   } = ctx.request.params;
 
-  if (!open_id || !winner_id) {
+  if (!winner_id) {
     return ctx.body = failed('参数错误')
   }
 
@@ -569,8 +568,8 @@ const accept_coupon_prize = async(ctx, next) => {
 
 const coupon_list = async(ctx, next) => {
 
-  if (!open_id) {
-    return ctx.body = failed('参数错误')
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
   }
 
   winners = await Winner.findAll({
