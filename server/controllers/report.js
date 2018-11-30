@@ -493,16 +493,14 @@ const ending_count = async (ctx, next) => {
 }
 
 module.exports = {
-  pub: {
-    pending_count,
-    ending_count
-  },
   adm: {
     pending_list,
     ending_list,
     reviews,
     winning,
-    report_winning
+    report_winning,
+    pending_count,
+    ending_count
   },
   app: {
     upload,
