@@ -6,20 +6,33 @@ const debug = require('debug')('koa-weapp-demo')
 module.exports = async function (ctx, next) {
     try {
         // 调用下一个 middleware
-        await next()
-        if (ctx.body.code === 200) {
+        await next().catch((err) => {
+            if (err.status === 401) {
+                ctx.status = 401;
+                ctx.body = {
+                    code: 401,
+                    msg: err.originalError ? err.originalError.message : err.message,
+                };
+            } else {
+                throw err;
+            }
+        });
+        if (ctx.body) ctx.status = ctx.body.code;
+        if (ctx.status === 200) {
             const p = ctx.request.params;
             if ('page' in p && 'page_size' in p) {
                 const body = ctx.body['res'];
-                let obj = {};
+                let obj = {
+                    page: {},
+                    data: {}
+                };
                 obj.data = body['rows'];
-                obj.page = {};
                 obj.page['count'] = body.count;
                 obj.page['total'] = Math.ceil(body.count / p.page_size);
                 ctx.body['res'] = obj;
             }
         }
-        ctx.status = ctx.body.code;
+
         // 处理响应结果
         // 如果直接写入在 body 中，则不作处理
         // 如果写在 ctx.body 为空，则使用 state 作为响应
@@ -29,6 +42,7 @@ module.exports = async function (ctx, next) {
         //     data: ctx.state.data !== undefined ? ctx.state.data : {}
         // }
     } catch (e) {
+        console.log(e);
         // catch 住全局的错误信息
         debug('Catch Error: %o', e)
 

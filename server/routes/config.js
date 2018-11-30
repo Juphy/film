@@ -6,6 +6,10 @@ const config = {
     'prize',
     'report',
     'winner',
+    'user',
+    'upload',
+    'message',
+    'login'
   ],
   methods: [
     'get',
