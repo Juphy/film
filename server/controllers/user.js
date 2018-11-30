@@ -454,8 +454,9 @@ const app_share = async(ctx, next) => {
   }
 
   res = ''
-
+  console.log('---------uuid_out:', uuid)
   if (userinfo.uuid != uuid && !userinfo.from_uuid) {
+    console.log('---------uuid_in:',uuid)
     res = userinfo.update({
       from_uuid: uuid
     })
