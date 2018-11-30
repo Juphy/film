@@ -202,6 +202,10 @@ const app_list = async (ctx, next) => {
       model: Activity,
       attributes: ['status'],
       where: we,
+    },
+    {
+      model: Address,
+      attributes: ['address'],
     }],
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId,
