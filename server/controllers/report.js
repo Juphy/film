@@ -287,7 +287,8 @@ const pending_list = async (ctx, next) => {
       where: {
         status: {
           [Op.ne]: 2
-        }
+        },
+        invalid: 0
       },
       attributes: ['status']
     }],
@@ -300,7 +301,7 @@ const pending_list = async (ctx, next) => {
   });
 
 
-  
+
 
 
   ctx.body = success(res);
@@ -341,7 +342,8 @@ const ending_list = async (ctx, next) => {
     include: [{
       model: Activity,
       where: {
-        status: 2
+        status: 2,
+        invalid: 0
       },
       attributes: ['status']
     }],
@@ -459,13 +461,46 @@ const report_winning = async (ctx, next) => {
   }
 }
 
+const pending_count = async (ctx, next) => {
+  let inc = [{
+    model: Activity,
+    where: {
+      status: {
+        [Op.ne]: 2
+      },
+      invalid: 0
+    }
+  }];
+  let a = await Report.count({ include: inc, where: { status: 0, invalid: 0 } });
+  let b = await Report.count({ include: inc, where: { status: 2, invalid: 0 } });
+  let c = await Report.count({ include: inc, where: { status: 1, invalid: 0 } });
+  let d = await Report.count({ include: inc, where: { is_winner: 1, invalid: 0 } });
+  ctx.body = success([a, b, c, d]);
+}
+
+const ending_count = async (ctx, next) => {
+  let inc = [{
+    model: Activity,
+    where: {
+      status: 2,
+      invalid: 0
+    }
+  }];
+  let b = await Report.count({ include: inc, where: { status: 2, invalid: 0 } });
+  let c = await Report.count({ include: inc, where: { status: 1, invalid: 0 } });
+  let d = await Report.count({ include: inc, where: { is_winner: 1, invalid: 0 } });
+  ctx.body = success([b, c, d]);
+}
+
 module.exports = {
   adm: {
     pending_list,
     ending_list,
     reviews,
     winning,
-    report_winning
+    report_winning,
+    pending_count,
+    ending_count
   },
   app: {
     upload,
