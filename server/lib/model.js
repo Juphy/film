@@ -423,6 +423,12 @@ const winners = sequelize.define('applet_winners', {
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
+  accept_time:{
+    type: Sequelize.DATE,
+    get() {
+      return moment(this.getDataValue('accept_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
   invalid: {
     type: Sequelize.INTEGER
   },

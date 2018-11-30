@@ -398,22 +398,26 @@ const del = async (ctx, next) => {
 
 //领取实物
 const accept_goods_prize = async (ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
+  }
+
   let {
-    open_id,
     winner_id,
     receiver,
     phone,
     address
   } = ctx.request.params;
 
-  if (!open_id || !winner_id || !receiver || !phone || !address) {
+  if ( !winner_id || !receiver || !phone || !address) {
     return ctx.body = failed('参数错误')
   }
 
   winner_info = await Winner.find({
     where: {
       id: winner_id,
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0,
       type: 1,
       status: 1
@@ -436,7 +440,8 @@ const accept_goods_prize = async (ctx, next) => {
     is_sure: 1,
     receiver: receiver,
     address: address,
-    phone: phone
+    phone: phone,
+    accept_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })
 
   ctx.body = success(res, '领奖成功')
@@ -446,8 +451,12 @@ const accept_goods_prize = async (ctx, next) => {
 
 //领取money
 const accept_money_prize = async (ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
+  }
+
   let {
-    open_id,
     winner_id,
     bankcard,
     identify_card,
@@ -455,14 +464,14 @@ const accept_money_prize = async (ctx, next) => {
     real_name
   } = ctx.request.params;
 
-  if (!open_id || !winner_id || !bankcard || !identify_card || !phone || !real_name) {
+  if (!winner_id || !bankcard || !identify_card || !phone || !real_name) {
     return ctx.body = failed('参数错误')
   }
 
   winner_info = await Winner.find({
     where: {
       id: winner_id,
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       type: 2,
       invalid: 0,
       status: 1
@@ -485,7 +494,8 @@ const accept_money_prize = async (ctx, next) => {
     is_sure: 1,
     real_name: real_name,
     bankcard: bankcard,
-    identify_card: identify_card
+    identify_card: identify_card,
+    accept_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })
 
   ctx.body = success(res, '领奖成功')
@@ -494,6 +504,11 @@ const accept_money_prize = async (ctx, next) => {
 
 //领取优惠卷
 const accept_coupon_prize = async (ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
+  }
+
   let {
     open_id,
     winner_id,
@@ -506,7 +521,7 @@ const accept_coupon_prize = async (ctx, next) => {
   winner_info = await Winner.find({
     where: {
       id: winner_id,
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       type: 3,
       invalid: 0,
       status: 1
@@ -526,16 +541,14 @@ const accept_coupon_prize = async (ctx, next) => {
   }
 
   res = await winner_info.update({
-    is_sure: 1
+    is_sure: 1,
+    accept_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })
 
   ctx.body = success('领奖成功')
 }
 
 const coupon_list = async (ctx, next) => {
-  let {
-    open_id,
-  } = ctx.request.params;
 
   if (!open_id) {
     return ctx.body = failed('参数错误')
@@ -543,7 +556,7 @@ const coupon_list = async (ctx, next) => {
 
   winners = await Winner.findAll({
     where: {
-      open_id: open_id,
+      open_id: ctx.state.$wxInfo.userinfo.openId,
       is_sure: 1,
       invalid: 0,
       type: 3
@@ -561,10 +574,6 @@ module.exports = {
     search_sf_order,
     confirm_sf_order,
     express_sf_order,
-    accept_goods_prize,
-    accept_money_prize,
-    accept_coupon_prize,
-    coupon_list
   },
   adm: {
     list,
@@ -573,5 +582,9 @@ module.exports = {
   app: {
     express_winner_list,
     winner_list,
+    accept_goods_prize,
+    accept_money_prize,
+    accept_coupon_prize,
+    coupon_list
   }
 };
