@@ -5,8 +5,6 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 
 
-
-
 const managers = sequelize.define('applet_managers', {
   name: {
     type: Sequelize.STRING
@@ -156,7 +154,7 @@ const msgs = sequelize.define('applet_msgs', {
   create_time: {
     type: Sequelize.DATE,
     get() {
-      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+      return moment(this.getDataValue('create_time')).locale('zh-cn').format('YYYY-MM-DD HH:mm:ss');
     }
   },
   status: {
