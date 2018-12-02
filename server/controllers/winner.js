@@ -95,7 +95,8 @@ const add_sf_order = async(ctx, next) => {
 
   res = await winner_info.update({
     mailno: mailno,
-    orderid: orderid
+    orderid: orderid,
+    is_received: 1,
   })
 
   ctx.body = success(res, '下订单成功')
