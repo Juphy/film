@@ -1,3 +1,5 @@
+<view style="display:flex;height: 100%;flex-direction:column">
+
 <scroll-view scroll-x="true" style="width: 100%;white-space:nowrap;">
   <!-- tab -->
   <view class="tab">
@@ -17,7 +19,7 @@
 
 
 
-<swiper current="{{showtab}}" class="swiper-box" duration="300" style="height:100vh" bindchange="bindChange">
+<swiper current="{{showtab}}" class="swiper-box" duration="300" style="flex:1;scroll: auto" bindchange="bindChange">
 
   <swiper-item>
 
@@ -99,3 +101,4 @@
 
 
 </swiper>
+</view>

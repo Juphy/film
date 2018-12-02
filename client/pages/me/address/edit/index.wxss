@@ -75,5 +75,6 @@
     background: #56bdac;
     color: #fff;
     font-size: 28rpx;
-    border-radius: 0
+    border-radius: 0;
+    line-height: 98rpx;
 }

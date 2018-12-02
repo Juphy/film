@@ -61,7 +61,7 @@
 .activity-detail-award-item-name {
   font-size: 24rpx;
   margin-bottom: 30rpx;
-  margin-top: 30rpx;
+  margin-top: 20rpx;
 }
 
 .activity-detail-content {

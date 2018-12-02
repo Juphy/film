@@ -1,7 +1,7 @@
 <form bindsubmit='formSubmit'>
     <view class='address-manage'>
         <view class='address-manage-item'>
-            <text>收货人</text>
+            <text style="width: 48px;text-align: right">收货人</text>
             <input name='userName' placeholder='请输入收货人姓名' value='{{name}}' maxlength='10' class='address-manage-item-input'></input>
         </view>
         <view class='address-manage-line'></view>
@@ -37,7 +37,7 @@
         <view class='address-manage-line'></view>
         <view class='address-manage-item-address'>
             <text style='margin-top:15rpx'>详细地址</text>
-            <textarea name='userAddress' value='{{address}}' placeholder='请输入收货地址' style='width:0rpx;height:110rpx;margin-top:15rpx' class='address-manage-item-input'></textarea>
+            <textarea name='userAddress' value='{{address}}' placeholder='请输入收货地址' style='width:0rpx;height:110rpx;margin-top:18rpx' class='address-manage-item-input'></textarea>
         </view>
         <view class='address-manage-line'></view>
         <view class='address-manage-item'>

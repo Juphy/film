@@ -49,6 +49,8 @@
   font-size: 28rpx;
   border-radius: 0;
   margin: 0rpx;
+  height: 98rpx;
+  line-height: 98rpx;
 }
 
 .partake-item-pic {

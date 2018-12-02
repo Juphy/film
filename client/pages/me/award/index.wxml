@@ -1,5 +1,6 @@
 <view class='award'>
     <block wx:for='{{awardList}}'>
+        <!-- <view class='publicitylist-line'></view> -->
         <view class='award-list-item'>
 
         <view class="award-item-icocn-title">

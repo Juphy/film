@@ -1,9 +1,8 @@
 <view class='publicitylist'>
 
   <block wx:for="{{publicityList}}">
-
     <view class='publicitylist-item'>
-      <text class='publicitylist-item-title'>{{item.title}}</text>
+      <a class='publicitylist-item-title' id="{{item.activite_id}}" bindtap='onClickItem'>{{item.title}}</a>
       <text class='publicitylist-item-date'>{{item.create_time}}</text>
       <text class='publicitylist-item-describe'>{{item.content}}</text>
 

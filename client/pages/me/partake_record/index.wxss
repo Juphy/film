@@ -79,8 +79,8 @@
 
 .partake-record-item {
   margin-top: 30rpx;
-  margin-left: 60rpx;
-  margin-right: 60rpx;
+  margin-left: 40rpx;
+  margin-right: 40rpx;
   background-color: #fff;
   border-radius: 25rpx;
   padding: 30rpx;

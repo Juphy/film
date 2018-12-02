@@ -1,6 +1,7 @@
 <view class='address'>
     <scroll-view scroll-y style="height: 92vh;">
         <block wx:for="{{addressList}}">
+            <view wx:if="{{index===0}}" class='address-item-fg-line'></view>
             <view class='address-item'>
                 <view class='address-item-name-phone'>
                     <text class='address-item-name'>{{item.contact}}</text>
@@ -29,8 +30,8 @@
                         <text>删除</text>
                     </view>
                 </view>
-                <view class='address-item-fg-line'></view>
             </view>
+            <view class='address-item-fg-line'></view>
         </block>
     </scroll-view>
     <view bindtap='onClickAdd' class='address-item-add'>

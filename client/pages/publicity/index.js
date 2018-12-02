@@ -52,6 +52,13 @@ Page({
 
   },
 
+  onClickItem: function (e) {
 
+    util.showConsole(e.currentTarget.id)
+
+    wx.navigateTo({
+      url: '/pages/activity/detail/detail?id=' + e.currentTarget.id,
+    })
+  },
 
 })

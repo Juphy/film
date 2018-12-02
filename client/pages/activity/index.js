@@ -16,7 +16,13 @@ var detailActivityId
 Page({
   data: {
     nowDate: util.getNowTime(),
-    activityList: []
+    activityList: [],
+    inputVal:''
+  },
+  inputValueChange: function(e){
+    this.setData({
+      inputVal: e.detail.value
+    })
   },
 
   onLoad: function(options) {
@@ -60,19 +66,21 @@ Page({
   },
   hideInput: function() {
     page = 1
+    // this.data.activityList = []
+    this.loadActivityList(this.data.inputVal)
+    // this.setData({
+    //   inputVal: "",
+    //   inputShowed: false
+    // });
+  },
+  clearInput: function() {
+
     this.data.activityList = []
     this.loadActivityList('')
     this.setData({
       inputVal: "",
       inputShowed: false
     });
-  },
-  clearInput: function() {
-
-    this.setData({
-      inputVal: ""
-    });
-
   },
   onClickItem: function(e) {
 
@@ -84,7 +92,7 @@ Page({
   },
   inputTyping: function(e) {
     page = 1
-    this.data.activityList = []
+    // this.data.activityList = []
     util.showConsole(e.detail.value)
     this.loadActivityList(e.detail.value)
 
@@ -100,7 +108,7 @@ Page({
     totalPage = result.data.res.page.total
     wx.hideLoading()
     wx.stopPullDownRefresh()
-
+    that.data.activityList = []
     for (var item in result.data.res.data) {
       this.data.activityList.push(result.data.res.data[item])
     }
