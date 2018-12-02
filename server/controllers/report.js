@@ -183,9 +183,7 @@ const app_list = async (ctx, next) => {
     we['end_day'] = {
       $gte: moment().format('YYYY-MM-DD')
     }
-    we['status'] = {
-      $ne: 3
-    }
+    we['status'] = 1
   } else {
     we['$or'] = {
       'end_day': {
