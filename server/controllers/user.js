@@ -88,8 +88,11 @@ const add_address = async(ctx, next) => {
 
   let {
     province,
+    province_code,
     city,
+    city_code,
     county,
+    county_code,
     address,
     contact,
     phone,
@@ -100,15 +103,18 @@ const add_address = async(ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  if (!province || !city || !county || !address || !is_default || !contact || !phone) {
+  if (!province || !province_code || !city || !city_code || !county || !county_code || !address || !is_default || !contact || !phone) {
     return ctx.body = failed('参数错误')
   }
 
   res = await Address.create({
     province: province,
+    province_code: province_code,
     city: city,
-    open_id: ctx.state.$wxInfo.userinfo.openId,
+    city_code: city_code,
     county: county,
+    county_code: county_code,
+    open_id: ctx.state.$wxInfo.userinfo.openId,
     address: address,
     contact: contact,
     phone: phone,
@@ -141,8 +147,11 @@ const edit_address = async(ctx, next) => {
 
   let {
     province,
+    province_code,
     city,
+    city_code,
     county,
+    county_code,
     address,
     contact,
     phone,
@@ -154,7 +163,7 @@ const edit_address = async(ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  if (!province || !city || !county || !address || !is_default || !contact || !phone || !id) {
+  if (!province || !province_code || !city || !city_code || !county || !county_code || !address || !is_default || !contact || !phone ||!id) {
     return ctx.body = failed('参数错误')
   }
 
@@ -184,9 +193,12 @@ const edit_address = async(ctx, next) => {
   console.log('------id', id)
   res = await _address.update({
     province: province,
+    province_code: province_code,
     city: city,
-    open_id: ctx.state.$wxInfo.userinfo.openId,
+    city_code: city_code,
     county: county,
+    county_code: county_code,
+    open_id: ctx.state.$wxInfo.userinfo.openId,
     address: address,
     contact: contact,
     phone: phone,
@@ -455,7 +467,7 @@ const app_share = async(ctx, next) => {
   res = ''
   console.log('---------uuid_out:', uuid)
   if (userinfo.uuid != uuid && !userinfo.from_uuid) {
-    console.log('---------uuid_in:',uuid)
+    console.log('---------uuid_in:', uuid)
     res = userinfo.update({
       from_uuid: uuid
     })

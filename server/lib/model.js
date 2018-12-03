@@ -108,11 +108,20 @@ const address = sequelize.define('applet_address', {
   province: {
     type: Sequelize.STRING
   },
+  province_code: {
+    type: Sequelize.INTEGER
+  },
   city: {
     type: Sequelize.STRING
   },
+  city_code: {
+    type: Sequelize.INTEGER
+  },
   county: {
     type: Sequelize.STRING
+  },
+  county_code: {
+    type: Sequelize.INTEGER
   },
   address: {
     type: Sequelize.STRING
