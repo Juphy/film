@@ -87,6 +87,7 @@ const list = async (ctx, next) => {
   let res = await Manager.findAndCountAll({
     where: {
       invalid: 0,
+      is_super: 0,
       name: {
         [Op.like]: '%' + name + '%'
       }
@@ -188,6 +189,22 @@ const edit_password = async (ctx, next) => {
   }
 }
 
+const make_super = async (ctx, next) => {
+  let { id } = ctx.request.params;
+  if (!id) {
+    ctx.body = failed('id无效');
+  } else {
+    let res = await Manager.findById(id);
+    if (res) {
+      res = res.update({
+        is_super: 1
+      })
+    } else {
+      ctx.body = failed('当前用户不存在');
+    }
+  }
+}
+
 // id查询管理员信息
 // const info = async (ctx, next) => {
 //   const p = ctx.request.params;
@@ -236,7 +253,8 @@ module.exports = {
     edit,
     edit_password,
     reset_password,
-    info_my_account
+    info_my_account,
+    make_super
   },
   pub: {
     login
