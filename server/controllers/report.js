@@ -189,7 +189,7 @@ const app_list = async (ctx, next) => {
       'end_day': {
         $lt: moment().format('YYYY-MM-DD')
       },
-      'status': 3
+      'status': {$in:[2,3]}
     }
   }
 
