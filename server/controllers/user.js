@@ -399,7 +399,6 @@ const app_monitor = async(ctx, next) => {
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId,
       invalid: 0,
-      is_winner: 0
     }
   })
 
