@@ -21,6 +21,9 @@ const managers = sequelize.define('applet_managers', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -79,6 +82,9 @@ const activities = sequelize.define('applet_activites', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -163,6 +169,9 @@ const msgs = sequelize.define('applet_msgs', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).locale('zh-cn').format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -222,6 +231,9 @@ const prizes = sequelize.define('applet_prizes', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -280,6 +292,9 @@ const reports = sequelize.define('applet_reports', {
   show_day: {
     type: Sequelize.DATEONLY,
     get() {
+      if (!this.getDataValue('show_day')) {
+        return null
+      }
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
   },
@@ -304,6 +319,9 @@ const reports = sequelize.define('applet_reports', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
     }
   }
@@ -427,12 +445,18 @@ const winners = sequelize.define('applet_winners', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
-  accept_time:{
+  accept_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('accept_time')) {
+        return null
+      }
       return moment(this.getDataValue('accept_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
