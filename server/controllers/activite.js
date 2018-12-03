@@ -215,7 +215,7 @@ const add = async(ctx, next) => {
   if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    if (!(new Date() < new Date(start_day))) {
+    if (new Date() > new Date(start_day)) {
       ctx.body = failed('活动的开始日期不得小于当前日期')
     } else {
       p['manager_id'] = ctx.state.managerInfo['data']['id'];
