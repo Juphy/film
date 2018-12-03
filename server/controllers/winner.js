@@ -589,12 +589,12 @@ const coupon_list = async(ctx, next) => {
 
 module.exports = {
   pub: {
-    add_sf_order,
     search_sf_order,
-    confirm_sf_order,
     express_sf_order,
   },
   adm: {
+    confirm_sf_order,
+    add_sf_order,
     list,
     del,
     make_prize
