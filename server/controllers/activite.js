@@ -367,6 +367,11 @@ const edit = async(ctx, next) => {
       if (res['status'] === 1) {
         ctx.body = failed('活动已开始，无法编辑');
       } else {
+
+        if (moment().format('YYYY-MM-DD') > moment(start_day).format('YYYY-MM-DD')){
+          return ctx.body = failed('活动的开始日期不得小于当前日期')
+        }
+
         p['manager_id'] = ctx.state.managerInfo['data']['id'];
         p['manager_name'] = ctx.state.managerInfo['data']['name'];
         res = res.update(p);
