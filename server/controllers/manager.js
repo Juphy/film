@@ -137,9 +137,9 @@ const edit = async (ctx, next) => {
   if (!name || !account || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = Manager.findById(id);
+    let res = await Manager.findById(id);
     if (res) {
-      res = res.update(p);
+      res = await res.update(p);
       ctx.body = success(res, '编辑成功');
     } else {
       ctx.body = failed('id无效或者缺省');
@@ -196,7 +196,7 @@ const make_super = async (ctx, next) => {
   } else {
     let res = await Manager.findById(id);
     if (res) {
-      res = res.update({
+      res = await res.update({
         is_super: 1
       })
     } else {
