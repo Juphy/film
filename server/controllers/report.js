@@ -150,6 +150,10 @@ const app_del = async (ctx, next) => {
     return ctx.body = failed('记录不存在或已删除')
   }
 
+  if (report_info.create_time < moment().add(-5, 'minutes').format('YYYY-MM-DD HH:mm:ss')){
+    return ctx.body = failed('超过5分钟不可被删除')
+  }
+
   res = await report_info.update({
     invalid: report_info.id
   })
