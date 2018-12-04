@@ -22,7 +22,7 @@ const image = async (ctx, next) => {
 const video = async (ctx, next) => {
 
   ctx.req.bucketType = config.cos.videoBucket
-  ctx.req.maxSize = 20
+  ctx.req.maxSize = 2
   ctx.req.mimetypes = ['audio/mpeg', 'audio/mp3', 'audio/m4a','video/mp4']
   const data = await uploader(ctx.req);
   ctx.body = success(data, '上传视频成功');
