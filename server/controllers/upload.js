@@ -22,7 +22,7 @@ const image = async (ctx, next) => {
 const video = async (ctx, next) => {
 
   ctx.req.bucketType = config.cos.videoBucket
-  ctx.req.maxSize = 2
+  ctx.req.maxSize = 5
   ctx.req.mimetypes = ['audio/mpeg', 'audio/mp3', 'audio/m4a','video/mp4']
   const data = await uploader(ctx.req);
   ctx.body = success(data, '上传视频成功');
@@ -32,7 +32,7 @@ const video = async (ctx, next) => {
 //上传文件
 const file = async (ctx, next) => {
   ctx.req.bucketType = config.cos.fileBucket
-  ctx.req.maxSize = 5
+  ctx.req.maxSize = 3
   ctx.req.mimetypes = ['application/pdf']
   const data = await uploader(ctx.req);
   ctx.body = success(data, '上传文件成功');
