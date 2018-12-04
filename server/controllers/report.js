@@ -150,7 +150,7 @@ const app_del = async (ctx, next) => {
     return ctx.body = failed('记录不存在或已删除')
   }
 
-  if (report_info.create_time < moment().add(-5, 'minutes').format('YYYY-MM-DD HH:mm:ss')){
+  if (report_info.create_time < moment().add(-5, 'minutes').format('YYYY-MM-DD HH:mm:ss')) {
     return ctx.body = failed('超过5分钟不可被删除')
   }
 
@@ -193,7 +193,7 @@ const app_list = async (ctx, next) => {
       'end_day': {
         $lt: moment().format('YYYY-MM-DD')
       },
-      'status': {$in:[2,3]}
+      'status': { $in: [2, 3] }
     }
   }
 
@@ -214,10 +214,10 @@ const app_list = async (ctx, next) => {
   })
 
   console.dir(res)
-  for (item of res.rows){
+  for (item of res.rows) {
     addr = await redis.get(item.cinema_code)
     // item.push(addr)
-    item.dataValues.address= JSON.parse(addr)
+    item.dataValues.address = JSON.parse(addr)
   }
 
   ctx.body = success(res);
@@ -264,6 +264,7 @@ const pending_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
+    cinema_name = '',
     title = '',
     show_day,
     status = '',
@@ -280,6 +281,9 @@ const pending_list = async (ctx, next) => {
     },
     title: {
       [Op.like]: '%' + title + '%'
+    },
+    cinema_name: {
+      [Op.like]: '%' + cinema_name + '%'
     }
   };
   if (status !== '') {
@@ -321,6 +325,7 @@ const ending_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
+    cinema_name = '',
     title = '',
     show_day,
     status = '',
@@ -337,6 +342,9 @@ const ending_list = async (ctx, next) => {
     },
     title: {
       [Op.like]: '%' + title + '%'
+    },
+    cinema_name: {
+      [Op.like]: '%' + cinema_name + '%'
     }
   };
   if (status !== '') {
@@ -511,7 +519,7 @@ module.exports = {
     report_winning,
     pending_count,
     ending_count,
-    
+
   },
   app: {
     upload,
