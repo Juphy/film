@@ -542,7 +542,7 @@ const lottery = async(ctx, next) => {
       let msg = {}
       msg['title'] = activite_info['title']
       msg['description'] = item.nick_name + '恭喜你获得' + winners[item.id]['prize']
-      msg['content'] = '恭喜您在“' + activite_info.title + '”中，获得“' + winners[item.id]['prize'] + '奖品”，请点击“领奖”按钮填写相关领奖信息。'
+      msg['content'] = JSON.stringify('恭喜您在“' + activite_info.title + '”中，获得“' + winners[item.id]['prize'] + '奖品”，请点击“领奖”按钮填写相关领奖信息。')
       msg['manager_id'] = ctx.state.managerInfo['data']['id']
       msg['manager_name'] = ctx.state.managerInfo['data']['name']
       msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -571,10 +571,10 @@ const lottery = async(ctx, next) => {
   msgs.push({
     title: activite_info['title'],
     description: activite_info['title'] + '活动开奖通知',
-    content: {
+    content: JSON.stringify({
       'winners': nick_names,
       'description': '请以上中奖者收到中奖通知后，于' + moment().add(1, 'month').format('YYYY年MM月DD日') + '前在“我的-中奖记录”中填写相关领奖信息，我们将尽快为您派发奖品，逾期未回复视为放弃本次活动奖品，将不再补发奖品，谢谢您的理解与支持。'
-    },
+    }),
     manager_id: ctx.state.managerInfo['data']['id'],
     manager_name: ctx.state.managerInfo['data']['name'],
     create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
