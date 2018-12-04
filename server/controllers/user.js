@@ -275,6 +275,16 @@ const del_address = async(ctx, next) => {
     invalid: address_info.id
   })
 
+  if (user_info.address_id == address_id) {
+    await user_info.update({
+      address_id: null
+    }, {
+        where: {
+          open_id: ctx.state.$wxInfo.userinfo.openId
+        }
+      })
+  }
+
   ctx.body = success('删除成功')
 }
 
