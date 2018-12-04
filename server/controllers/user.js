@@ -163,7 +163,7 @@ const edit_address = async(ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  if (!province || !province_code || !city || !city_code || !county || !county_code || !address || !is_default || !contact || !phone ||!id) {
+  if (!province || !province_code || !city || !city_code || !county || !county_code || !address || !is_default || !contact || !phone || !id) {
     return ctx.body = failed('参数错误')
   }
 
@@ -190,6 +190,7 @@ const edit_address = async(ctx, next) => {
     return ctx.body = failed('地址不存在')
   }
 
+
   console.log('------id', id)
   res = await _address.update({
     province: province,
@@ -205,6 +206,8 @@ const edit_address = async(ctx, next) => {
     invalid: 0,
   })
 
+
+
   console.log('------res:', res)
 
   if (is_default == 1) {
@@ -215,6 +218,16 @@ const edit_address = async(ctx, next) => {
         open_id: ctx.state.$wxInfo.userinfo.openId
       }
     })
+  }
+
+  if (is_default == 0 && user_info.address_id == id) {
+    await user_info.update({
+      address_id: null
+    }, {
+        where: {
+          open_id: ctx.state.$wxInfo.userinfo.openId
+        }
+      })
   }
 
   ctx.body = success(res, '编辑成功')
@@ -244,10 +257,6 @@ const del_address = async(ctx, next) => {
 
   if (!user_info) {
     return ctx.body = failed('用户信息不存在')
-  }
-
-  if (user_info.address_id == address_id) {
-    return ctx.body = failed('默认地址不可被删除')
   }
 
   address_info = await Address.findOne({
