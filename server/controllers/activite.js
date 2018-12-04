@@ -269,6 +269,7 @@ const app_list = async(ctx, next) => {
     order: [
       ['status', 'ASC'],
       ['start_day', 'DESC'],
+      ['id','DESC']
     ],
     offset: (page - 1) * page_size,
     limit: page_size * 1
