@@ -642,6 +642,12 @@ users.belongsTo(address, {
   as: 'address'
 });
 
+winners.belongsTo(users, {
+  foreignKey: 'open_id',
+  targetKey: 'open_id',
+  as: 'user'
+})
+
 module.exports = {
   'Manager': managers,
   'Address': address,
