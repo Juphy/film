@@ -199,6 +199,7 @@ const make_super = async (ctx, next) => {
       res = await res.update({
         is_super: 1
       })
+      ctx.body = success(res);
     } else {
       ctx.body = failed('当前用户不存在');
     }
