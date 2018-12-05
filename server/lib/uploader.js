@@ -204,7 +204,7 @@ const uploader = async (req) => {
   }).catch(e => {
     if (e.statusCode === 413) {
       debug('%s: %o', ERRORS.ERR_FILE_EXCEEDS_MAX_SIZE, e)
-      throw new Error(`${ERRORS.ERR_FILE_EXCEEDS_MAX_SIZE}\n${e}`)
+      throw new Error('上传文件超过大小限制')
     } else {
       throw e
     }

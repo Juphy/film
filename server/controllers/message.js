@@ -110,7 +110,7 @@ const send_winner = async (ctx, next) => {
     req.phone = msg.phone
     req.template_code = 'SMS_151578868'
     req.data = {
-      'title': msg.title
+      'title': msg.movie_name
     }
 
     res = await sendSMS(req)

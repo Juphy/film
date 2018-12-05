@@ -87,6 +87,7 @@ const list = async (ctx, next) => {
   let res = await Manager.findAndCountAll({
     where: {
       invalid: 0,
+      is_super: 0,
       name: {
         [Op.like]: '%' + name + '%'
       }
@@ -136,9 +137,9 @@ const edit = async (ctx, next) => {
   if (!name || !account || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    let res = Manager.findById(id);
+    let res = await Manager.findById(id);
     if (res) {
-      res = res.update(p);
+      res = await res.update(p);
       ctx.body = success(res, '编辑成功');
     } else {
       ctx.body = failed('id无效或者缺省');
@@ -182,6 +183,23 @@ const edit_password = async (ctx, next) => {
         });
         ctx.body = success(res, '密码修改成功')
       }
+    } else {
+      ctx.body = failed('当前用户不存在');
+    }
+  }
+}
+
+const make_super = async (ctx, next) => {
+  let { id } = ctx.request.params;
+  if (!id) {
+    ctx.body = failed('id无效');
+  } else {
+    let res = await Manager.findById(id);
+    if (res) {
+      res = await res.update({
+        is_super: 1
+      })
+      ctx.body = success(res);
     } else {
       ctx.body = failed('当前用户不存在');
     }
@@ -236,7 +254,8 @@ module.exports = {
     edit,
     edit_password,
     reset_password,
-    info_my_account
+    info_my_account,
+    make_super
   },
   pub: {
     login

@@ -21,8 +21,14 @@ const managers = sequelize.define('applet_managers', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
+  },
+  is_super: {
+    type: Sequelize.INTEGER
   },
   invalid: {
     type: Sequelize.INTEGER
@@ -31,9 +37,9 @@ const managers = sequelize.define('applet_managers', {
     type: Sequelize.STRING
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 managers.sync();
 
@@ -79,6 +85,9 @@ const activities = sequelize.define('applet_activites', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -87,9 +96,9 @@ const activities = sequelize.define('applet_activites', {
   }
 
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 activities.sync();
 
@@ -108,11 +117,20 @@ const address = sequelize.define('applet_address', {
   province: {
     type: Sequelize.STRING
   },
+  province_code: {
+    type: Sequelize.INTEGER
+  },
   city: {
     type: Sequelize.STRING
   },
+  city_code: {
+    type: Sequelize.INTEGER
+  },
   county: {
     type: Sequelize.STRING
+  },
+  county_code: {
+    type: Sequelize.INTEGER
   },
   address: {
     type: Sequelize.STRING
@@ -121,9 +139,9 @@ const address = sequelize.define('applet_address', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 address.sync();
 
@@ -154,6 +172,9 @@ const msgs = sequelize.define('applet_msgs', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).locale('zh-cn').format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -185,9 +206,9 @@ const msgs = sequelize.define('applet_msgs', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 msgs.sync();
 
@@ -213,6 +234,9 @@ const prizes = sequelize.define('applet_prizes', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -220,9 +244,9 @@ const prizes = sequelize.define('applet_prizes', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 prizes.sync();
 
@@ -271,6 +295,9 @@ const reports = sequelize.define('applet_reports', {
   show_day: {
     type: Sequelize.DATEONLY,
     get() {
+      if (!this.getDataValue('show_day')) {
+        return null
+      }
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
   },
@@ -295,13 +322,16 @@ const reports = sequelize.define('applet_reports', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
     }
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 reports.sync();
 
@@ -356,9 +386,9 @@ const users = sequelize.define('cSessionInfo', {
   }
 
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 users.sync();
 
@@ -418,12 +448,18 @@ const winners = sequelize.define('applet_winners', {
   create_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
-  accept_time:{
+  accept_time: {
     type: Sequelize.DATE,
     get() {
+      if (!this.getDataValue('accept_time')) {
+        return null
+      }
       return moment(this.getDataValue('accept_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
@@ -467,9 +503,9 @@ const winners = sequelize.define('applet_winners', {
     type: Sequelize.STRING
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 winners.sync()
 
@@ -499,9 +535,9 @@ const diqu = sequelize.define('applet_diqu', {
     type: Sequelize.INTEGER
   },
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 diqu.sync()
 
@@ -519,9 +555,9 @@ const movie = sequelize.define('applet_movies', {
     type: Sequelize.JSON
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+    timestamps: false,
+    freezeTableName: true
+  });
 
 movie.sync()
 
@@ -539,9 +575,9 @@ const cities = sequelize.define('applet_cities', {
     type: Sequelize.INTEGER
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-})
+    timestamps: false,
+    freezeTableName: true
+  })
 
 cities.sync()
 
@@ -589,9 +625,9 @@ const cinemas = sequelize.define('applet_cinemas', {
     type: Sequelize.DOUBLE
   }
 }, {
-  timestamps: false,
-  freezeTableName: true
-})
+    timestamps: false,
+    freezeTableName: true
+  })
 
 cinemas.sync()
 
@@ -605,6 +641,12 @@ users.belongsTo(address, {
   targetKey: 'id',
   as: 'address'
 });
+
+winners.belongsTo(users, {
+  foreignKey: 'open_id',
+  targetKey: 'open_id',
+  as: 'user'
+})
 
 module.exports = {
   'Manager': managers,

@@ -1,5 +1,6 @@
 const {
-  Winner
+  Winner,
+  User
 } = require('../lib/model');
 const xml2js = require('xml2js');
 const config = require('../config');
@@ -16,7 +17,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 //下寄送快递订单
-const add_sf_order = async(ctx, next) => {
+const add_sf_order = async (ctx, next) => {
 
   const {
     winner_id
@@ -105,7 +106,7 @@ const add_sf_order = async(ctx, next) => {
 
 
 //查询顺丰订单
-const search_sf_order = async(ctx, next) => {
+const search_sf_order = async (ctx, next) => {
   const {
     orderid
   } = ctx.request.params;
@@ -147,7 +148,7 @@ const search_sf_order = async(ctx, next) => {
 }
 
 //取消订单
-const confirm_sf_order = async(ctx, next) => {
+const confirm_sf_order = async (ctx, next) => {
   const {
     orderid,
     mailno
@@ -189,7 +190,7 @@ const confirm_sf_order = async(ctx, next) => {
 
 
 //查询顺丰快递递运信息
-const express_sf_order = async(ctx, next) => {
+const express_sf_order = async (ctx, next) => {
   const {
     mailno
   } = ctx.request.params;
@@ -229,7 +230,7 @@ const express_sf_order = async(ctx, next) => {
   const routes = res.Response.Body[0].RouteResponse[0].Route
   const arr = []
 
-  routes.forEach(function(val, index) {
+  routes.forEach(function (val, index) {
     arr[index] = val.$
   })
 
@@ -241,7 +242,7 @@ const express_sf_order = async(ctx, next) => {
 
 
 //查询中奖列表(me)
-const winner_list = async(ctx, next) => {
+const winner_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -249,7 +250,7 @@ const winner_list = async(ctx, next) => {
 
   const {
     page = 1,
-      page_size = 10
+    page_size = 10
   } = ctx.request.params;
 
   if (!page || !page_size) {
@@ -276,7 +277,7 @@ const winner_list = async(ctx, next) => {
 
 
 //查询需要寄送快递奖品列表(me)
-const express_winner_list = async(ctx, next) => {
+const express_winner_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -284,7 +285,7 @@ const express_winner_list = async(ctx, next) => {
 
   const {
     page = 1,
-      page_size = 10
+    page_size = 10
   } = ctx.request.params;
 
   if (!page || !page_size) {
@@ -338,7 +339,7 @@ async function sf_request(obj) {
   let parser = new xml2js.Parser();
 
   let res;
-  parser.parseString(xml_res, function(err, result) {
+  parser.parseString(xml_res, function (err, result) {
     console.dir(result);
     console.log('Done');
     res = result
@@ -347,7 +348,7 @@ async function sf_request(obj) {
   return res
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     title,
@@ -357,6 +358,11 @@ const list = async(ctx, next) => {
   p['page'] = page;
   p['page_size'] = page_size;
   let res = await Winner.findAndCountAll({
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: ['phone']
+    }],
     where: {
       invalid: 0,
       title: {
@@ -373,7 +379,7 @@ const list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async(ctx, next) => {
+const del = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     winner_id
@@ -398,7 +404,7 @@ const del = async(ctx, next) => {
 }
 
 // 现金，确认发奖
-const make_prize = async(ctx, next) => {
+const make_prize = async (ctx, next) => {
   let {
     id
   } = ctx.request.params;
@@ -416,7 +422,7 @@ const make_prize = async(ctx, next) => {
 }
 
 //领取实物
-const accept_goods_prize = async(ctx, next) => {
+const accept_goods_prize = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -469,7 +475,7 @@ const accept_goods_prize = async(ctx, next) => {
 
 
 //领取money
-const accept_money_prize = async(ctx, next) => {
+const accept_money_prize = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -522,7 +528,7 @@ const accept_money_prize = async(ctx, next) => {
 }
 
 //领取优惠卷
-const accept_coupon_prize = async(ctx, next) => {
+const accept_coupon_prize = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -567,7 +573,7 @@ const accept_coupon_prize = async(ctx, next) => {
   ctx.body = success('领奖成功')
 }
 
-const coupon_list = async(ctx, next) => {
+const coupon_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -589,12 +595,12 @@ const coupon_list = async(ctx, next) => {
 
 module.exports = {
   pub: {
-    add_sf_order,
     search_sf_order,
-    confirm_sf_order,
     express_sf_order,
   },
   adm: {
+    confirm_sf_order,
+    add_sf_order,
     list,
     del,
     make_prize

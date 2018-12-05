@@ -215,7 +215,7 @@ const add = async(ctx, next) => {
   if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
-    if (!(new Date() < new Date(start_day))) {
+    if (moment().format('YYYY-MM-DD') > moment(start_day).format('YYYY-MM-DD')) {
       ctx.body = failed('活动的开始日期不得小于当前日期')
     } else {
       p['manager_id'] = ctx.state.managerInfo['data']['id'];
@@ -269,6 +269,7 @@ const app_list = async(ctx, next) => {
     order: [
       ['status', 'ASC'],
       ['start_day', 'DESC'],
+      ['id','DESC']
     ],
     offset: (page - 1) * page_size,
     limit: page_size * 1
@@ -367,6 +368,11 @@ const edit = async(ctx, next) => {
       if (res['status'] === 1) {
         ctx.body = failed('活动已开始，无法编辑');
       } else {
+
+        if (moment().format('YYYY-MM-DD') > moment(start_day).format('YYYY-MM-DD')) {
+          return ctx.body = failed('活动的开始日期不得小于当前日期')
+        }
+
         p['manager_id'] = ctx.state.managerInfo['data']['id'];
         p['manager_name'] = ctx.state.managerInfo['data']['name'];
         res = res.update(p);
@@ -511,6 +517,7 @@ const lottery = async(ctx, next) => {
     if (Object.keys(winners).includes('' + item.id)) {
 
       let winner = {}
+      let wi = {}
 
       winner['prize_name'] = winners[item.id]['prize']
       winner['open_id'] = winners[item.id]['open_id']
@@ -528,12 +535,15 @@ const lottery = async(ctx, next) => {
       winner['phone'] = item.phone
       winner['expiration_day'] = moment().add(1, 'month').format('YYYY-MM-DD')
       wins.push(winner)
-      nick_names.push(item.nick_name)
+
+      wi['nick_name'] = item.nick_name
+      wi['avatar_url'] = item.avatar_url
+      nick_names.push(wi)
 
       let msg = {}
       msg['title'] = activite_info['title']
       msg['description'] = item.nick_name + '恭喜你获得' + winners[item.id]['prize']
-      msg['content'] = '恭喜您在“' + activite_info.title + '”中，获得“' + winners[item.id]['prize'] + '奖品”，请点击“领奖”按钮填写相关领奖信息。'
+      msg['content'] = JSON.stringify('恭喜您在“' + activite_info.title + '”中，获得“' + winners[item.id]['prize'] + '奖品”，请点击“领奖”按钮填写相关领奖信息。')
       msg['manager_id'] = ctx.state.managerInfo['data']['id']
       msg['manager_name'] = ctx.state.managerInfo['data']['name']
       msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -562,7 +572,10 @@ const lottery = async(ctx, next) => {
   msgs.push({
     title: activite_info['title'],
     description: activite_info['title'] + '活动开奖通知',
-    content: '中奖名单：【' + nick_names.join(',') + '】请以上中奖者收到中奖通知后，于' + moment().add(1, 'month').format('YYYY年MM月DD日') + '前在“我的-中奖记录”中填写相关领奖信息，我们将尽快为您派发奖品，逾期未回复视为放弃本次活动奖品，将不再补发奖品，谢谢您的理解与支持。',
+    content: JSON.stringify({
+      'winners': nick_names,
+      'description': '请以上中奖者收到中奖通知后，于' + moment().add(1, 'month').format('YYYY年MM月DD日') + '前在“我的-中奖记录”中填写相关领奖信息，我们将尽快为您派发奖品，逾期未回复视为放弃本次活动奖品，将不再补发奖品，谢谢您的理解与支持。'
+    }),
     manager_id: ctx.state.managerInfo['data']['id'],
     manager_name: ctx.state.managerInfo['data']['name'],
     create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
