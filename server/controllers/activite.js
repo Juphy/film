@@ -408,7 +408,7 @@ const start_end = async(ctx, next) => {
         }
       } else {
         if (status === 1 && (moment(res.end_day).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD'))) {
-          ctx.body = failed('活动的结束时间不得大于当前时间')
+          ctx.body = failed('活动的结束时间不得小于当前时间')
         } else {
           res = res.update({
             status: status
