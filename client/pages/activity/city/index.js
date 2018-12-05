@@ -3,7 +3,7 @@ var filmApi = require('../../../net/film_api.js')
 var util = require('../../../utils/util.js')
 var hz2py = require('../../../utils/hz2py.js')
 var qcloud = require('../../../vendor/wafer2-client-sdk/index')
-var keyWord
+var keyWord=""
 
 Page({
   data: {
@@ -31,6 +31,7 @@ Page({
     wx.getStorage({
       key: 'cityList',
       success: function(res) {
+
         that.setData({
           citylist: res.data
         })
@@ -38,7 +39,7 @@ Page({
       },
       fail: function(e) {
         util.showConsole(e)
-        that.loadCityData("")
+        that.loadCityData()
       }
     })
 

@@ -32,9 +32,15 @@ Page({
   },
 
   loadNearbyCinemas: function() {
+
+    if (!longitude) {
+      return
+    }
+
     wx.showLoading({
       title: '数据加载中.....',
     })
+
     filmApi.activiteNearbyCinemas(longitude, latitude, 10, this.activiteNearbyCinemasSuccess, this.activiteNearbyCinemasFail)
   },
   activiteNearbyCinemasSuccess: function(result) {
@@ -135,7 +141,7 @@ Page({
       inputShowed: false
     });
     this.loadNearbyCinemas()
-    
+
   },
   clearInput: function() {
 
@@ -144,7 +150,7 @@ Page({
     });
 
     this.loadNearbyCinemas()
-    
+
   },
   inputTyping: function(e) {
 
@@ -161,7 +167,7 @@ Page({
     wx.showLoading({
       title: '数据加载中.....',
     })
-    let keyword=e.detail?e.detail.value:''
+    let keyword = e.detail ? e.detail.value : ''
     filmApi.activiteSearchCineams(this.data.cityCode, keyword, 10, this.activiteSearchCineamsSuccess, this.activiteSearchCineamsFail)
 
   },

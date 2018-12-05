@@ -54,14 +54,15 @@
 }
 
 .activity-detail-award-item-pic {
-  width: 300rpx;
-  height: 180rpx;
+  width: 326rpx;
+  height: 196rpx;
 }
 
 .activity-detail-award-item-name {
   font-size: 24rpx;
   margin-bottom: 30rpx;
   margin-top: 20rpx;
+  width:326rpx;
 }
 
 .activity-detail-content {

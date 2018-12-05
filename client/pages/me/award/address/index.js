@@ -15,7 +15,6 @@ Page({
   onLoad: function(options) {
     utils.showConsole(options)
     winner_id = options.winner_id
-    this.loadAddressList()
   },
   onShow: function() {
 
@@ -24,11 +23,17 @@ Page({
     wx.getStorage({
       key: 'selectAddressInfo',
       success: function(res) {
+
         that.setData({
           addressInfo: res.data
         });
-      },
+
+      },fail:function(){
+        that.loadAddressList()
+
+      }
     })
+
   },
   loadAddressList: function() {
     addressApi.userGetDefaultAddress(this.userGetDefaultAddressSuccess, this.userGetDefaultAddressFail)

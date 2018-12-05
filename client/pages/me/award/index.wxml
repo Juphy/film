@@ -1,16 +1,43 @@
 <view class='award'>
-    <block wx:for='{{awardList}}'>
-        <!-- <view class='publicitylist-line'></view> -->
-        <view class='award-list-item'>
 
-        <view class="award-item-icocn-title">
-            <text class='award-item-title'>{{item.prize_name}}</text>
-</view>
 
-            <view class='award-item-state'>
-                <text data-type='{{item.type}}' data-winner_id='{{item.id}}' data-state='{{item.is_sure}}' bindtap='onClickAward' class='award-item-state-{{item.is_sure==0?"y":"n"}} '>{{item.is_sure==0?'领奖':'已领'}}</text>
-            </view>
+
+  <block wx:if='{{awardList.length==0}}'>
+    <view style='color:#939393;display: flex;flex-direction: column;align-items: center;padding-top:50%'>
+      <text>暂无中奖记录</text>
+
+    </view>
+
+  </block>
+
+
+  <block wx:for='{{awardList}}'>
+    <!-- <view class='publicitylist-line'></view> -->
+    <view class='award-list-item'>
+
+      <view class="award-item-icocn-title">
+        <block wx:if='{{item.type==1}}'>
+          <image class='award-item-icon' src='/images/shiwu@2x.png'></image>
+        </block>
+        <block wx:if='{{item.type==2}}'>
+          <image class='award-item-icon' src='/images/qian@2x.png'></image>
+        </block>
+        <block wx:if='{{item.type==3}}'>
+          <image class='award-item-icon' src='/images/dianyingpiao@2x.png'></image>
+        </block>
+        <view class='award-item-title'>
+
+
+          恭喜您在“{{item.title}}”中，获得“{{item.prize_name}}”，请点击“领奖”按钮填写相关领奖信息。
+
 
         </view>
-    </block>
+      </view>
+
+      <view class='award-item-state'>
+        <text data-type='{{item.type}}' data-winner_id='{{item.id}}' data-state='{{item.is_sure}}' bindtap='onClickAward' class='award-item-state-{{item.is_sure==0?"y":"n"}} '>{{item.is_sure==0?'领奖':'已领'}}</text>
+      </view>
+
+    </view>
+  </block>
 </view>

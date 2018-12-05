@@ -7,7 +7,6 @@
 }
 
 .activitylist-item-image {
-  background-color: #eaea;
   margin-bottom: 30rpx;
   border-radius: 18rpx;
   margin-top: 30rpx;

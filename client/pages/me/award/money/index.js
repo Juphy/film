@@ -118,8 +118,10 @@ Page({
   },
 
   winnerAcceptMoneyPrizeSuccess:function(result){
-utils.showConsole(result)
     utils.showSuccess(result.msg)
+    wx.navigateBack({
+      delta:1
+    })
   },
 
   winnerAcceptMoneyPrizeFail:function(e){

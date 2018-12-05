@@ -157,7 +157,7 @@ Page({
     wx.stopPullDownRefresh()
     ing_total_page = result.data.res.page.total
 
-
+    utils.showConsole(result)
     let that = this
     for (let item in result.data.res.data) {
       result.data.res.data[item].content = JSON.parse(result.data.res.data[item].content)
@@ -185,6 +185,8 @@ Page({
 
     let that = this
     for (let item in result.data.res.data) {
+      result.data.res.data[item].content = JSON.parse(result.data.res.data[item].content)
+      
       this.data.overActivityList.push(result.data.res.data[item])
     }
 

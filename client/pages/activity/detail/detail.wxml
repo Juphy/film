@@ -22,7 +22,7 @@
         <block wx:for='{{activityInfo.activite_info.prize_description}}'>
 
           <view class='activity-detail-award-item'>
-            <image class='activity-detail-award-item-pic' src='{{item.image}}'></image>
+            <image mode='widthFix' data-currentimage='{{item.image}}' bindtap='onClickImage' class='activity-detail-award-item-pic' src='{{item.image}}'></image>
             <view class='activity-detail-award-item-name'>{{item.description}}</view>
 
           </view>

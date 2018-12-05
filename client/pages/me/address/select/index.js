@@ -10,8 +10,11 @@ Page({
 
   },
   onLoad: function() {
-    this.loadAddressList()
+   
 
+  },
+  onShow:function(){
+    this.loadAddressList()
   },
   loadAddressList: function() {
     addressApi.requestAddressList(this.addressListSuccess, this.addressListFail)

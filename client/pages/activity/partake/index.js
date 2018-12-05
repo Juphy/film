@@ -105,20 +105,28 @@ Page({
           filePath: filePath,
           name: 'file',
           success: function(res) {
-            that.data.hasVideo = true
-            util.showSuccess('上传视频成功')
-            var data = JSON.parse(res.data)
-            that.data.partakeList.push({
-              dataType: 1,
-              url: data.res.imgUrl
-            })
-            that.setData({
-              partakeList: that.data.partakeList
-            })
-          },
+            util.showConsole('===========')
+            util.showConsole(res)
 
-          fail: function(e) {
-            util.showModel('上传视频失败')
+            util.showConsole(res.data.code)
+            if (res.statusCode != 200) {
+              util.showModel('提示', '上传视频失败,数据过大。')
+            } else {
+              that.data.hasVideo = true
+              util.showSuccess('上传视频成功')
+              var data = JSON.parse(res.data)
+              that.data.partakeList.push({
+                dataType: 1,
+                url: data.res.imgUrl
+              })
+              that.setData({
+                partakeList: that.data.partakeList
+              })
+            }
+
+
+
+
           }
         })
 
@@ -217,7 +225,7 @@ Page({
 
     if (!partakeList || Object.keys(partakeList).length == 0) {
 
-      util.showModel('提示', '请上传照片或视频。')
+      util.showModel('提示', "请上传照片或视频。")
       return
     }
 
@@ -267,7 +275,6 @@ Page({
 
   onUnload: function() {
 
-
     wx.removeStorage({
       key: 'city',
       success: function(res) {},
@@ -276,24 +283,32 @@ Page({
       key: 'selectCimema',
       success: function(res) {},
     })
-
+    imageUrlList = []
   },
   onClickDelImage: function(e) {
     let that = this
-    
+
     util.showConsole(e)
     let index = e.target.dataset.index;
 
-    if (this.data.partakeList[index].dataType==1){
+    if (this.data.partakeList[index].dataType == 1) {
       that.data.hasVideo = false
     }
 
     that.data.partakeList.splice(index, 1)
-    imageUrlList.splice(index, 1)
+
+    imageUrlList=[]
+    for(let item in that.daat.partakeList){
+      if (that.daat.partakeList[item].dataType!=1){
+        imageUrlList.push(that.daat.partakeList[item])
+      }
+    }
+    util.showConsole(imageUrlList)
 
     this.setData({
       partakeList: that.data.partakeList
     })
+
   }
 
 })

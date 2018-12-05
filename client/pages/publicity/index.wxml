@@ -1,15 +1,60 @@
 <view class='publicitylist'>
 
+
+  <block wx:if='{{!publicityList}}'>
+
+    <view style='color:#939393;display: flex;flex-direction: column;align-items: center;padding-top:50%'>
+      <text>暂无中奖公告</text>
+
+
+    </view>
+  </block>
+
   <block wx:for="{{publicityList}}">
-    <view class='publicitylist-item'>
-      <a class='publicitylist-item-title' id="{{item.activite_id}}" bindtap='onClickItem'>{{item.title}}</a>
+    <view class='publicitylist-item' id="{{item.activite_id}}"  bindtap='onClickItem'>
+      <text class='publicitylist-item-title'  >【{{item.title}}】中奖名单公布</text>
       <text class='publicitylist-item-date'>{{item.create_time}}</text>
-      <text class='publicitylist-item-describe'>{{item.content}}</text>
+
+      <view style='display:flex; flex-direction: row;'>
+
+        <block wx:for='{{item.content.winners}}'>
+
+          <block wx:if='{{index<4}}'>
+            <view style='display:flex; flex-direction: column;font-size:24rpx;align-items: center;margin-right:85rpx;'>
+
+              <view style='display: flex;justify-content: center;align-items: center;'>
+
+                <image style='width:100rpx;height:100rpx;border-radius: 60%;' src='{{item.avatar_url}}'></image>
+                <block wx:if='{{index==3}}'>
+
+                  <view style='width:100rpx;height:100rpx;border-radius: 60%; background:#000000;opacity:0.3; position: absolute;z-index: 10;'></view>
+                  <view style='color:#fff; position: absolute;z-index: 20;'>更多</view>
+                </block>
+
+              </view>
+  
+              <view class='publicitylist-item-name'  >{{item.nick_name}}</view>
+
+
+
+            </view>
+          </block>
+
+
+
+        </block>
+
+
+      </view>
+      <text class='publicitylist-item-describe'>{{item.content.description}}</text>
+
 
 
     </view>
     <view class='publicitylist-line'></view>
 
   </block>
+
+
 
 </view>

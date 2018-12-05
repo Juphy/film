@@ -12,7 +12,7 @@ const app = getApp()
 
 Page({
   data: {
-    publicityList:[]
+    publicityList: []
   },
 
   onLoad: function() {
@@ -32,6 +32,11 @@ Page({
     wx.stopPullDownRefresh()
     wx.hideLoading()
     util.showConsole(result)
+
+
+
+
+
     this.setData({
       publicityList: result.data.res
     })
@@ -52,7 +57,7 @@ Page({
 
   },
 
-  onClickItem: function (e) {
+  onClickItem: function(e) {
 
     util.showConsole(e.currentTarget.id)
 

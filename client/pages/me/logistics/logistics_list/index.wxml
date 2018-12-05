@@ -1,4 +1,18 @@
 <view class='award'>
+
+
+
+
+
+<block wx:if='{{awardList.length==0}}'>
+<view style='color:#939393;display: flex;flex-direction: column;align-items: center;padding-top:50%'>
+ <text>暂无物流信息</text> 
+ 
+ </view>
+ 
+</block>
+
+
   <block wx:for='{{awardList}}'>
     <view class='award-list-item'>
 

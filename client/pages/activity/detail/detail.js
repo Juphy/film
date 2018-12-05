@@ -5,6 +5,7 @@ var util = require('../../../utils/util.js')
 var qcloud = require('../../../vendor/wafer2-client-sdk/index')
 const app = getApp()
 var id
+var imageList=[]
 
 Page({
 
@@ -43,7 +44,7 @@ Page({
       activityApi.activiteInfo(id, this.activiteInfoSuccess, this.activiteInfoFail)
 
     }else{
-      wx.redirectTo({
+      wx.navigateTo({
         url: '/pages/login/index?id=' + id,
       })
     }
@@ -122,7 +123,7 @@ Page({
       }
 
     } else {
-      wx.redirectTo({
+      wx.navigateTo({
         url: '/pages/login/index?id=' + id,
       })
 
@@ -142,8 +143,14 @@ Page({
 
     let session = qcloud.Session ? qcloud.Session.get() : null
     let uuid = session != null ? session.userinfo.uuid : ''
+    let that=this
+
+    util.showConsole(that.data.activityInfo)
+    util.showConsole(that.data.activityInfo)
+
     return {
-      title: '分享',
+      imageUrl: that.data.activityInfo.activite_info.playbill,
+      title: that.data.activityInfo.activite_info.title,
       path: '/pages/activity/index?form=avtivityDetail&&id=' + id + "&&uuid=" + uuid,
       success: function(res) {
         util.showConsole(res)
@@ -159,10 +166,35 @@ Page({
     })
 
     id = result.data.res.activite_info.id
+
+
+    let prize_description=result.data.res.activite_info.prize_description
+    for (let item in prize_description){
+      imageList.push(prize_description[item].image)
+    }
+
+
   },
   activiteInfoFail: function(error) {
 
     util.showModel('提示', error.data.msg)
 
+  },
+  onClickImage:function(e){
+    util.showConsole(e)
+
+    var imageUrl = e.currentTarget.dataset.currentimage
+    wx.previewImage({
+      urls: imageList,
+      current: imageUrl
+
+    })
+
+
+
   }
+
+
+
+
 })

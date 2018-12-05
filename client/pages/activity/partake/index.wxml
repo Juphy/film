@@ -1,46 +1,46 @@
 <form bindsubmit='formSubmit' report-submit="true">
-    <view class='partake'>
-        <view class="partake-date-picker">
-            <picker name='date' mode="date" value="{{endDate}}" start="2015-09-01" end="{{endDate}}" bindchange="bindDateChange">
-                <view class="picker">
-                    {{endDate}}
-                </view>
-            </picker>
+  <view class='partake'>
+    <view class="partake-date-picker">
+      <picker name='date' mode="date" value="{{endDate}}" start="2015-09-01" end="{{endDate}}" bindchange="bindDateChange">
+        <view class="picker">
+          {{endDate}}
         </view>
-        <view class='partake-line'></view>
-        <view bindtap="onClickSelectFilm">{{filmName==null?'影院名称':filmName}}</view>
-        <view bindtap="onClickSelectFilm" style='font-size:20rpx;color:#939393'>{{filmStreet}}</view>
-        
-        <view class='partake-line'></view>
-        <view class='partake-demo'>
-            <textarea name='demo' maxlength='200' auto-height='true' placeholder='填写晒票说明'></textarea>
-        </view>
-        <view class='partake-pic'>
-            <block wx:for='{{partakeList}}'>
-                <block wx:if='{{item.dataType==0}}'>
-<view class='partake-item-pic'>
-
-<view data-index='{{index}}' bindtap='onClickDelImage' class='userinfo-red-point'>X</view>
-
-                    <image data-url='{{item.url}}' bindtap='onClickPic' style='width:198rpx;height:198rpx;' src='{{item.url}}'></image>
-</view>
-                </block>
-                <block wx:else>
-<view class='partake-item-pic'>
-                
-                <view data-index='{{index}}' bindtap='onClickDelImage' class='userinfo-red-point'>X</view>
-                    <video id='myVideo' bindplay='onPlayVideoListen' style='width:198rpx;height:198rpx;' src="{{item.url}}" bindended='onEndVideoListen'></video>
-</view>
-                </block>
-            </block>
-            <block wx:if='{{!partakeList || partakeList.length<4}}'>
-                <view bindtap='onClickAdd' class='partake-add'>
-                    <image class='partake-add-icon' src='/images/participation_add_icon@3x.png'></image>
-                </view>
-            </block>
-        </view>
+      </picker>
     </view>
-    <button formType='submit' class='partake-submit'>
-        提交
-    </button>
+    <view class='partake-line'></view>
+    <view bindtap="onClickSelectFilm">{{filmName==null?'影院名称':filmName}}</view>
+    <view bindtap="onClickSelectFilm" style='font-size:20rpx;color:#939393'>{{filmStreet}}</view>
+
+    <view class='partake-line'></view>
+    <view class='partake-demo'>
+      <textarea name='demo' maxlength='200' auto-height='true' placeholder='填写晒票说明'></textarea>
+    </view>
+    <view class='partake-pic'>
+      <block wx:for='{{partakeList}}'>
+        <block wx:if='{{item.dataType==0}}'>
+          <view class='partake-item-pic'>
+
+            <view data-index='{{index}}' bindtap='onClickDelImage' class='userinfo-red-point'>X</view>
+
+            <image data-url='{{item.url}}' bindtap='onClickPic' style='width:198rpx;height:198rpx;' src='{{item.url}}'></image>
+          </view>
+        </block>
+        <block wx:else>
+          <view class='partake-item-pic'>
+
+            <view data-index='{{index}}' bindtap='onClickDelImage' class='userinfo-red-point'>X</view>
+            <video id='myVideo' bindplay='onPlayVideoListen' style='width:198rpx;height:198rpx;' src="{{item.url}}" bindended='onEndVideoListen'></video>
+          </view>
+        </block>
+      </block>
+      <block wx:if='{{!partakeList || partakeList.length<4}}'>
+        <view bindtap='onClickAdd' class='partake-add'>
+          <image class='partake-add-icon' src='/images/participation_add_icon@3x.png'></image>
+        </view>
+      </block>
+    </view>
+  </view>
+  <button formType='submit' class='partake-submit'>
+    提交
+  </button>
 </form>

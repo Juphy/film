@@ -1,29 +1,45 @@
-.publicitylist{
+.publicitylist {
   display: flex;
   flex-direction: column;
-  
 }
-.publicitylist-item{
+
+.publicitylist-item {
   display: flex;
   flex-direction: column;
   margin-right: 30rpx;
   margin-left: 30rpx;
 }
-.publicitylist-item-title{
-  color: #0188FB;
+
+.publicitylist-item-title {
+  color: #333;
   font-size: 28rpx;
   margin-top: 30rpx;
-  text-decoration: underline;
 }
-.publicitylist-item-date{
+
+.publicitylist-item-date {
   color: #939393;
   font-size: 20rpx;
   margin-top: 20rpx;
   margin-bottom: 30rpx;
-   
+  margin-left: 10rpx;
 }
-.publicitylist-item-describe{
+
+.publicitylist-item-describe {
   color: #333;
   font-size: 24rpx;
   margin-bottom: 30rpx;
+}
+
+.publicitylist-item-name {
+  font-size: 30rpx;
+  word-break: break-all; /*允许在单词内换行*/
+  text-align: left;
+  color: #333;
+  line-height: 45rpx;
+  text-overflow: -o-ellipsis-lastline; /*css3中webkit内核提供的一个方法类似ellipsis*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box; /*自适应盒子*/
+  -webkit-line-clamp: 1; /*此处为1行,如果是两行就改成2*/
+  -webkit-box-orient: vertical;
 }

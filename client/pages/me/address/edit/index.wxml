@@ -13,21 +13,21 @@
         <view class='address-manage-item'>
             <text style="margin-right:30rpx">所在地区</text>
             <view class="address-province-picker">
-                <picker mode='selector' bindchange="bindProvinceDateChange" range='{{provinceList}}' range-key="{{'name'}}">
+                <picker value='{{provinceIndex}}' mode='selector' bindchange="bindProvinceDateChange" range='{{provinceList}}' range-key="{{'name'}}">
                     <view class="picker">
                         {{province==null?'所在省':province}}
                     </view>
                 </picker>
             </view>
             <view class="address-province-picker">
-                <picker mode='selector' bindchange="bindCityDateChange" range='{{cityList}}' range-key="{{'name'}}">
+                <picker value='{{cityIndex}}' mode='selector' bindchange="bindCityDateChange" range='{{cityList}}' range-key="{{'name'}}">
                     <view class="picker">
                         {{city==null?'所在市':city}}
                     </view>
                 </picker>
             </view>
             <view class="address-province-picker">
-                <picker mode='selector' bindchange="bindCountyDateChange" range='{{countyList}}' range-key="{{'name'}}">
+                <picker value='{{countyIndex}}' mode='selector' bindchange="bindCountyDateChange" range='{{countyList}}' range-key="{{'name'}}">
                     <view class="picker">
                         {{county==null?'所在区':county}}
                     </view>

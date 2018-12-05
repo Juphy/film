@@ -13,20 +13,62 @@ var isDefault
 var province
 var city
 var county
+var currentProvinceIndex
+var currentCityIndex
+var currentCountyIndex
+var currentProvinceCode
+var currentCityCode
+var currentCountyCode
+
+var isEdit = false
 
 Page({
   data: {
-    isDefault: true
+    isDefault: true,
+    provinceList: []
   },
   onLoad: function(option) {
+    let that = this
 
-    this.initData(option)
-    this.loadProvinceData()
+    wx.getStorage({
+      key: 'provinceData',
+      success: function(res) {
+        that.setData({
+          provinceList: res.data
+        })
+
+
+        that.initData(option)
+
+
+      },
+      fail: function(e) {
+        that.loadProvinceData()
+        that.initData(option)
+
+      }
+    })
 
   },
   initData: function(option) {
+
+    let that = this
+
     utils.showConsole(option)
     if (Object.keys(option).length > 0) {
+
+      isEdit = true
+
+      currentProvinceCode = option.province_code
+      currentCityCode = option.city_code
+      currentCountyCode = option.county_code
+
+      that.loadCityData(currentProvinceCode)
+      that.loadCountyData(currentCityCode)
+
+      that.initProvinceIndex()
+
+
       this.setData({
         id: option.id,
         address: option.address,
@@ -37,38 +79,96 @@ Page({
         province: option.province,
         name: option.userName
       })
+
     }
+  },
+
+  initProvinceIndex: function() {
+    let that = this
+    utils.showConsole(that.data.provinceList)
+    for (let item in that.data.provinceList) {
+
+      if (that.data.provinceList[item].code == currentProvinceCode) {
+        currentProvinceIndex = item
+        that.setData({
+          provinceIndex: item
+        })
+
+        return
+      }
+
+    }
+
+  },
+  initCityIndex: function() {
+    let that = this
+    for (let item in that.data.cityList) {
+      if (that.data.cityList[item].code == currentCityCode) {
+        currentCityIndex = item
+        that.setData({
+          cityIndex: item
+        })
+      }
+
+    }
+
+  },
+  initCountyIndex: function() {
+    let that = this
+    for (let item in that.data.countyList) {
+      if (that.data.countyList[item].code == currentCountyCode) {
+        currentCountyIndex = item
+        that.setData({
+          countyIndex: item
+        })
+      }
+
+    }
+
   },
   bindProvinceDateChange: function(result) {
     utils.showConsole(result)
-    utils.showConsole('=========================')
+    currentProvinceIndex = result.detail.value
+    var provinceData = this.data.provinceList[currentProvinceIndex]
+    utils.showConsole(provinceData)
 
-    utils.showConsole(this.data.provinceList[result.detail.value])
-    var provinceData = this.data.provinceList[result.detail.value]
+    currentProvinceCode = provinceData.code
     this.setData({
       province: provinceData.name,
       city: null,
       county: null,
-      countyList: null
+      countyList: null,
+      provinceIndex: currentProvinceIndex,
+      provinceCode: currentProvinceCode
     })
     this.loadCityData(provinceData.code)
 
   },
   bindCityDateChange: function(result) {
+
     utils.showConsole(this.data.cityList[result.detail.value])
-    var cityData = this.data.cityList[result.detail.value]
+    currentCityIndex = result.detail.value
+    var cityData = this.data.cityList[currentCityIndex]
+    currentCityCode = cityData.code
     this.setData({
       city: cityData.name,
-      county: null
+      county: null,
+      cityIndex: currentCityIndex,
+      cityCode: currentCityCode
     })
     this.loadCountyData(cityData.code, this.addressCountySuccess, this.addressCountyFail)
+
   },
 
   bindCountyDateChange: function(result) {
     utils.showConsole(this.data.countyList[result.detail.value])
-    var countyData = this.data.countyList[result.detail.value]
+    currentCountyIndex = result.detail.value
+    var countyData = this.data.countyList[currentCountyIndex]
+    currentCountyCode = countyData.code
     this.setData({
-      county: countyData.name
+      county: countyData.name,
+      countyIndex: currentCountyIndex,
+      countyCode: currentCountyCode
     })
   },
   formSubmit: function(e) {
@@ -131,6 +231,9 @@ Page({
       isDefault,
       userName,
       userPhone,
+      currentProvinceCode,
+      currentCityCode,
+      currentCountyCode,
       this.addAddressSuccess,
       this.addAddressFail
     )
@@ -146,6 +249,9 @@ Page({
       isDefault,
       userName,
       userPhone,
+      currentProvinceCode,
+      currentCityCode,
+      currentCountyCode,
       this.addAddressSuccess,
       this.addAddressFail
     )
@@ -178,8 +284,12 @@ Page({
 
     utils.showConsole(result.data.res)
     this.setData({
-
       provinceList: result.data.res
+    })
+
+    wx.setStorage({
+      key: 'provinceData',
+      data: result.data.res,
     })
 
   },
@@ -194,6 +304,9 @@ Page({
       cityList: result.data.res
     })
 
+    if (isEdit) {
+      this.initCityIndex()
+    }
 
   },
   addressCityFail: function(e) {
@@ -206,6 +319,11 @@ Page({
     this.setData({
       countyList: result.data.res
     })
+
+    if (isEdit) {
+      this.initCountyIndex()
+    }
+
   },
   addressCountyFail: function(e) {
     utils.showModel('提示', e)
