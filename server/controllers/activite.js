@@ -26,6 +26,10 @@ const Op = Sequelize.Op;
 
 const Redis = require('ioredis');
 const redis = new Redis();
+
+
+
+
 //同步影片数据
 const sync_movie = async(ctx, next) => {
   const {
@@ -110,17 +114,29 @@ const cache_cinema_info = async(ctx, next) => {
 //同步影院信息后刷编码，需多次执行
 const mix_cinema_code = async(ctx, next) => {
 
+
+  let r = []
+
   cinemas = await sequelize.query("select * from applet_cinemas where length(`hash_code`) =8", {
     type: Sequelize.QueryTypes.SELECT
-  }).then(function(res) {
-    res.forEach(function(cinema) {
-      cinema.update({
-        hash_code: require('crypto').createHash('md5').update(cinema.hash_code + 'huayingjuhe', 'utf8').digest('base64')
-      })
-    })
   })
 
-  ctx.body = success('', '加密成功')
+  for (var cinema of cinemas) {
+    console.log('hash_code:', cinema.hash_code)
+    const cipher = require('crypto').createCipher('aes192', 'huayingjuhe');
+    let crypted = cipher.update(cinema.hash_code, 'utf8', 'hex')
+    crypted += cipher.final('hex')
+    await Cinema.update({
+      hash_code: crypted
+    }, {
+      where: {
+        id: cinema.id
+      }
+    })
+  }
+
+
+  ctx.body = success(cinemas, '加密成功')
 }
 
 //获取最近的影院列表
@@ -173,6 +189,36 @@ const search_cineams = async(ctx, next) => {
   })
 
   return ctx.body = success(cinemas, '查询成功')
+}
+
+//获取影院信息
+const cinema_info = async(ctx, next) => {
+  const {
+    code
+  } = ctx.request.params;
+
+  if (!code) {
+    return ctx.body = failed('参数错误')
+  }
+
+  cinemas = await redis.get(code)
+
+  if (!cinemas) {
+    return ctx.body = failed('影院不存在')
+  }
+
+  cinemas = JSON.parse(cinemas)
+
+  console.log(cinemas)
+
+  const decipher = require('crypto').createDecipher('aes192', 'huayingjuhe');
+  var decrypted = decipher.update(cinemas.hash_code, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+
+  cinemas.hash_code = decrypted
+
+  ctx.body = success(cinemas, '查询成功')
+
 }
 
 // 搜索影片
@@ -269,7 +315,7 @@ const app_list = async(ctx, next) => {
     order: [
       ['status', 'ASC'],
       ['start_day', 'DESC'],
-      ['id','DESC']
+      ['id', 'DESC']
     ],
     offset: (page - 1) * page_size,
     limit: page_size * 1
@@ -658,7 +704,8 @@ module.exports = {
     start_end,
     lottery,
     search_movie,
-    image_base64
+    image_base64,
+    cinema_info
   },
   pub: {
     sync_movie,

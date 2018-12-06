@@ -554,6 +554,8 @@ const ending_count = async(ctx, next) => {
   ctx.body = success([b, c, d]);
 }
 
+
+
 module.exports = {
   adm: {
     pending_list,
