@@ -9,7 +9,7 @@ const jwt = require('koa-jwt')
 // 从 sdk 中取出中间件
 // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
 const { auth: { authorizationMiddleware, validationMiddleware } } = require('../qcloud')
-
+const middlewares = require('../middlewares')
 // --- 登录与授权 Demo --- //
 // 登录接口
 router.get('/login', authorizationMiddleware, controllers.login)
@@ -61,7 +61,7 @@ routes.forEach(item => {
       }), service[item.type][item.action]);
     }
     if (item.type === 'app') {
-      router[method](item.path, validationMiddleware, service[item.type][item.action]);
+      router[method](item.path, validationMiddleware, middlewares.accessToken, service[item.type][item.action]);
     }
   });
 });
