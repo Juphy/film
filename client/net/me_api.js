@@ -3,14 +3,13 @@ var manager = require('./http_manager')
 var qcloud = require('../vendor/wafer2-client-sdk/index')
 
 // 小程序端获取用户信息
-function userAppMonitor(userAppMonitorSuccess, userAppMonitorFail){
+function userAppMonitor(userAppMonitorSuccess, userAppMonitorFail) {
 
   const session = qcloud.Session.get()
   if (session) {
     var openId = session.userinfo.openId
     manager.request(
-      config.service.userAppMonitorUrl, {
-      },
+      config.service.userAppMonitorUrl, {},
       userAppMonitorSuccess,
       userAppMonitorFail
     )
@@ -19,7 +18,7 @@ function userAppMonitor(userAppMonitorSuccess, userAppMonitorFail){
 }
 
 // 分享接口
-function userAppShare( m_uuid ,userAppShareSuccess, userAppShareFail) {
+function userAppShare(m_uuid, userAppShareSuccess, userAppShareFail) {
 
   const session = qcloud.Session.get()
   if (session) {
@@ -35,7 +34,21 @@ function userAppShare( m_uuid ,userAppShareSuccess, userAppShareFail) {
 }
 
 
+//获取access_token
+function userAccessToken(userAccessTokenSuccess, userAccessTokenFail) {
+  manager.getRequest(
+    config.service.userAccessTokenUrl,
+    userAccessTokenSuccess,
+    userAccessTokenFail
+  )
+}
+
+
+
+
+
 module.exports = {
+  userAccessToken,
   userAppShare,
   userAppMonitor
 }

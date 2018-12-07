@@ -1,7 +1,7 @@
 <view class='activity-detail'>
 
 
-  <scroll-view scroll-y style="height: 92vh;">
+  <scroll-view scroll-y style="height: 92vh;" scroll-with-animation scroll-into-view='{{locationId}}'>
 
     <view class='activity-detail-content'>
 
@@ -43,7 +43,7 @@
       <block wx:if='{{activityInfo.winners.length>0}}'>
         <image style='width:666rpx;height:40rpx;margin-top:80rpx;margin-bottom:40rpx;' src='/images/huojiangmingdan@2x.png'></image>
 
-        <view style='display:flex; flex-direction: row; margin-bottom:80rpx;'>
+        <view id='winners' style='display:flex; flex-direction: row; margin-bottom:80rpx;'>
 
           <block wx:for='{{activityInfo.winners}}'>
             <view style='display:flex; flex-direction: column;font-size:24rpx;align-items: center;margin-right:85rpx;'>
@@ -67,13 +67,21 @@
         <image class='activity-detail-foot-icon' src='/images/activities_detail_icon@3x.png'></image>
         <text>我要参加</text>
       </view>
-      
+
       <view class='activity-detail-foot-mf-line'></view>
       <view class='activity-detail-foot-share'>
         <image class='activity-detail-foot-icon' src='/images/activities_share_icon@3x.png'></image>
-        <button open-type='share' class='activity-detail-share-btn'>分享</button>
+        <button  bindtap='onClickShare' class='activity-detail-share-btn'>分享</button>
       </view>
     </view>
   </view>
 
 </view>
+
+<action-sheet class='detail-action-sheet' hidden="{{actionSheetHidden}}" bindchange="listenerActionSheet">
+  <action-sheet-item>
+    <button style='background:#fff;height:80rpx;font-size:36rpx;padding:0;color:#333' open-type="share">分享给好友</button>
+    </action-sheet-item>
+  <action-sheet-item id='{{activityInfo.activite_info.id}}' bindtap='onClickCreatSharePic'>生成分享卡片</action-sheet-item>
+  <action-sheet-cancel>取消</action-sheet-cancel>
+</action-sheet>

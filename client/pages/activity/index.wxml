@@ -21,7 +21,7 @@
   <block wx:for="{{activityList}}">
     <view id="{{item.id}}" bindtap='onClickItem' class='activitylist-item'>
 
-      <block wx:if="{{item.end_day >nowDate  && item.status==1}}">
+      <block wx:if="{{item.end_day >=         nowDate  && item.status==1}}">
         <image mode='aspectFit' class='activitylist-item-image' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx' src='{{item.playbill}}'></image>
       </block>
 

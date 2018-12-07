@@ -62,7 +62,7 @@ Page({
     util.showConsole(e.currentTarget.id)
 
     wx.navigateTo({
-      url: '/pages/activity/detail/detail?id=' + e.currentTarget.id,
+      url: '/pages/activity/detail/detail?id=' + e.currentTarget.id +'&locationId=winners',
     })
   },
 

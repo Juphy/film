@@ -5,7 +5,7 @@ var util = require('../../../utils/util.js')
 var qcloud = require('../../../vendor/wafer2-client-sdk/index')
 const app = getApp()
 var id
-var imageList=[]
+let imageList = []
 
 Page({
 
@@ -13,7 +13,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    actionSheetHidden: true
   },
 
   /**
@@ -22,6 +22,19 @@ Page({
   onLoad: function(options) {
 
     id = options.id
+
+    if (options.locationId) {
+      let that = this
+      setTimeout(function(res) {
+          util.showConsole(options.locationId)
+          that.setData({
+            locationId: options.locationId
+          })
+        },
+        500, options.locationId)
+
+    }
+
 
 
   },
@@ -37,22 +50,15 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-
-
     const session = qcloud.Session.get()
     if (session) {
       activityApi.activiteInfo(id, this.activiteInfoSuccess, this.activiteInfoFail)
 
-    }else{
+    } else {
       wx.navigateTo({
         url: '/pages/login/index?id=' + id,
       })
     }
-
-
-
-
-  
   },
 
   /**
@@ -133,17 +139,21 @@ Page({
 
   activityIsOver: function() {
     let endDay = this.data.activityInfo.activite_info.end_day
-    let time=endDay <util.getNowTime() //已结束
-    let stat = this.data.activityInfo.activite_info.status != 1//1进行中2开奖3结束
-    return time||stat 
+    let time = endDay < util.getNowTime() //已结束
+    let stat = this.data.activityInfo.activite_info.status != 1 //1进行中2开奖3结束
+    return time || stat
 
   },
 
   onShareAppMessage: function() {
 
+    this.setData({
+      actionSheetHidden: !this.data.actionSheetHidden
+    })
+
     let session = qcloud.Session ? qcloud.Session.get() : null
     let uuid = session != null ? session.userinfo.uuid : ''
-    let that=this
+    let that = this
 
     util.showConsole(that.data.activityInfo)
     util.showConsole(that.data.activityInfo)
@@ -156,7 +166,39 @@ Page({
         util.showConsole(res)
       }
     };
-    
+
+  },
+
+  onClickShare: function() {
+    this.setData({
+      actionSheetHidden: !this.data.actionSheetHidden
+    })
+
+  },
+
+  listenerActionSheet: function(e) {
+
+
+    this.setData({
+      actionSheetHidden: !this.data.actionSheetHidden
+    })
+
+
+  },
+
+  onClickCreatSharePic: function(e) {
+    util.showConsole(e)
+
+
+    wx.navigateTo({
+      url: '/pages/share/index?activityId=' + e.currentTarget.id,
+    })
+
+    this.setData({
+      actionSheetHidden: !this.data.actionSheetHidden
+    })
+
+
   },
 
   activiteInfoSuccess: function(result) {
@@ -168,8 +210,9 @@ Page({
     id = result.data.res.activite_info.id
 
 
-    let prize_description=result.data.res.activite_info.prize_description
-    for (let item in prize_description){
+    let prize_description = result.data.res.activite_info.prize_description
+    imageList = []
+    for (let item in prize_description) {
       imageList.push(prize_description[item].image)
     }
 
@@ -180,7 +223,7 @@ Page({
     util.showModel('提示', error.data.msg)
 
   },
-  onClickImage:function(e){
+  onClickImage: function(e) {
     util.showConsole(e)
 
     var imageUrl = e.currentTarget.dataset.currentimage

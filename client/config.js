@@ -113,6 +113,12 @@ var config = {
       // 分享接口
       userAppShareUrl: `${host}/weapp/user/app_share`,
 
+      //分享二维码
+      userAppShareCodeUrl: `https://api.weixin.qq.com/wxa/getwxacodeunlimit`,
+
+      //获取access_token
+      userAccessTokenUrl:'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx12f7ee2916dde013&secret=844469ef019128ea533f7d08f1186543'
+
 
     }
 };

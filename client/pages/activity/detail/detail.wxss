@@ -138,3 +138,7 @@
 button::after {
   border: none;
 }
+
+.detail-action-sheetdetail-action-sheet{
+  
+}

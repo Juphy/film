@@ -8,7 +8,7 @@
       </picker>
     </view>
     <view class='partake-line'></view>
-    <view bindtap="onClickSelectFilm">{{filmName==null?'影院名称':filmName}}</view>
+    <view bindtap="onClickSelectFilm" style='color:#939393'>{{filmName==null?'影院名称':filmName}}</view>
     <view bindtap="onClickSelectFilm" style='font-size:20rpx;color:#939393'>{{filmStreet}}</view>
 
     <view class='partake-line'></view>
