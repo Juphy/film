@@ -631,6 +631,57 @@ const cinemas = sequelize.define('applet_cinemas', {
 
 cinemas.sync()
 
+const lotteries = sequelize.define('applet_lotteries', {
+  title: {
+    type: Sequelize.STRING
+  },
+  start_day: {
+    type: Sequelize.DATEONLY,
+  },
+  end_day: {
+    type: Sequelize.DATEONLY,
+  },
+  description: {
+    type: Sequelize.STRING
+  },
+  prize_description: {
+    type: Sequelize.JSON
+  },
+  rule_description: {
+    type: Sequelize.JSON
+  },
+  other_description: {
+    type: Sequelize.JSON
+  },
+  status: {
+    type: Sequelize.INTEGER
+  },
+  manager_id: {
+    type: Sequelize.INTEGER
+  },
+  manager_name: {
+    type: Sequelize.STRING
+  },
+  create_time: {
+    type: Sequelize.DATE,
+    get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+  invalid: {
+    type: Sequelize.INTEGER
+  }
+
+}, {
+    timestamps: false,
+    freezeTableName: true
+  });
+
+lotteries.sync();
+
 reports.belongsTo(activities, {
   foreignKey: 'activite_id',
   targetKey: 'id'
