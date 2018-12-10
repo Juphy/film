@@ -711,5 +711,6 @@ module.exports = {
   'Movie': movie,
   'City': cities,
   'Cinema': cinemas,
-  'Activity': activities
+  'Activity': activities,
+  'Lottery': lotteries
 };

@@ -404,9 +404,9 @@ const edit = async (ctx, next) => {
     end_day,
     description,
     prize_description,
-    other_description = ''
+    other_description = null
   } = p;
-  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description) {
+  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description||!id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Activity.findById(id)
