@@ -16,6 +16,9 @@ const {
 const Redis = require('ioredis');
 const redis = new Redis();
 
+const request = require('request')
+const fs = require('fs')
+
 //判断用户是否绑定手机号
 
 const check_bind_phone = async(ctx, next) => {
@@ -224,10 +227,10 @@ const edit_address = async(ctx, next) => {
     await user_info.update({
       address_id: null
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success(res, '编辑成功')
@@ -279,10 +282,10 @@ const del_address = async(ctx, next) => {
     await user_info.update({
       address_id: null
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success('删除成功')
@@ -497,11 +500,73 @@ const app_share = async(ctx, next) => {
 
 }
 
+//生成二维码
+const createwxaqrcode = async(ctx, next) => {
+
+  let {
+    scene,
+    page = 'pages/index/index',
+    width = 430,
+    auth_color = false
+  } = ctx.request.params
+
+  if (!scene) {
+    return ctx.body = failed('参数错误')
+  }
+
+
+  data = {
+    path: page, //二维码默认打开小程序页面
+    scene: scene, //打开页面时携带的参数
+    width: width,
+    auto_color: auth_color
+  };
+  data = JSON.stringify(data);
+  let http = require('http');
+
+
+  let img = await new Promise((resolve, rejcet) => {
+    var options = {
+      method: "POST",
+      host: "api.weixin.qq.com",
+      path: "/cgi-bin/wxaapp/createwxaqrcode?access_token=" + ctx.state.accessToken,
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": data.length
+      }
+    };
+    var req = http.request(options, function(res) {
+      // res.setEncoding("binary");
+      var chunks = [];
+      var size = 0;
+      res.on('data', function(chunk) {
+        chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+        size += chunk.length;　　 //累加缓冲数据的长度
+      });
+      res.on("end", function() {
+        var data = Buffer.concat(chunks, size);　　　 //可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+        var base64Img = data.toString('base64');　　 //将Buffer对象转换为字符串并以base64编码格式显示
+        resolve(base64Img);
+      });
+    });
+    req.write(data);
+    req.end();
+
+  })
+
+  ctx.body = success('data:image/png;base64,' + img)
+}
+
 
 
 
 
 module.exports = {
+
+  pub: {
+    createwxaqrcode
+  },
+
   adm: {
     list
   },
