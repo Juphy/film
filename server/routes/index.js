@@ -53,7 +53,7 @@ routes.forEach(item => {
   const service = require(`../controllers/${item.service}`);
   methods.forEach(method => {
     if (item.type === 'pub') {
-      router[method](item.path, middlewares.accessToken,service[item.type][item.action]);
+      router[method](item.path,middlewares.accessToken,service[item.type][item.action]);
     }
     if (item.type === 'adm') {
       router[method](item.path, jwt({ secret: secret }).unless({
