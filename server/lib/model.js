@@ -635,6 +635,9 @@ const lotteries = sequelize.define('applet_lotteries', {
   title: {
     type: Sequelize.STRING
   },
+  playbill: {
+    type: Sequelize.STRING
+  },
   start_day: {
     type: Sequelize.DATEONLY,
   },

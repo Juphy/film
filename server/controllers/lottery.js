@@ -7,8 +7,8 @@ const moment = require('moment');
 // 添加活动
 const add = async (ctx, next) => {
     const p = ctx.request.params;
-    const { title, start_day, end_day, description, rule_descrption, prize_descrption, other_descrption = [] } = p;
-    if (!title || !start_day || !end_day || !description || !rule_descrption || !prize_descrption) {
+    const { title, start_day, end_day, description, rule_descrption, playbill, prize_descrption, other_descrption = [] } = p;
+    if (!title || !start_day || !end_day || !description || !rule_descrption || !prize_descrption || !playbill) {
         ctx.body = failed('必填项缺省或者无效')
     } else {
         if (moment().format('YYYY-MM-DD') > moment(start_day).format('YYYY-MM-DD')) {
@@ -71,8 +71,8 @@ const del = async (ctx, next) => {
 // 编辑活动
 const edit = async (ctx, next) => {
     let p = ctx.request.params;
-    let { id, title, start_day, end_day, description, rule_descrption, prize_descrption, other_description = null } = p;
-    if (!title || !id || !start_day || !end_day || !description || !rule_descrption || !prize_descrption) {
+    let { id, title, playbill, start_day, end_day, description, rule_descrption, prize_descrption, other_description = null } = p;
+    if (!title || !id || !start_day || !end_day || !description || !rule_descrption || !prize_descrption || !playbill) {
         ctx.body = failed('必填项缺省或者缺省');
     } else {
         let res = await Lottery.findById('id');
@@ -113,7 +113,7 @@ const start_end = async (ctx, next) => {
             return ctx.body = failed('活动已开始');
         }
         if (status === 2) {
-            return ctx.body = failed('活动已结束')
+            return ctx.body = failed('活动已暂停')
         }
     }
     if (status === 1 && (moment(res.end_day).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD'))) {
@@ -138,7 +138,7 @@ module.exports = {
         list,
         del,
         edit,
-        lottery, 
+        lottery,
         start_end
     }
 }
