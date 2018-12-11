@@ -246,6 +246,15 @@ const info_my_account = async (ctx, next) => {
 //   ctx.body = success('更新数据', '更新成功');
 // }
 
+const add_tags = async(ctx,next)=>{
+
+  let { open_id,tags } = ctx.request.params;
+
+  if(!open_id||!tags){
+    
+  }
+}
+
 module.exports = {
   adm: {
     add,

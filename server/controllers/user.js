@@ -2,7 +2,8 @@ const {
   User,
   Address,
   Winner,
-  Report
+  Report,
+  Option
 } = require('../lib/model');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -556,8 +557,6 @@ const createwxaqrcode = async(ctx, next) => {
 
   ctx.body = success('data:image/png;base64,' + img)
 }
-
-
 
 
 
