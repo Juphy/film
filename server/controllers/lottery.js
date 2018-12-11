@@ -76,7 +76,7 @@ const edit = async (ctx, next) => {
     if (!title || !id || !start_day || !end_day || !description || !rule_description || !prize_description || !playbill) {
         ctx.body = failed('必填项缺省或者缺省');
     } else {
-        let res = await Lottery.findById('id');
+        let res = await Lottery.findById(id);
         if (res) {
             if (res['status'] > 0) {
                 ctx.body = failed('活动已开始，无法编辑');
