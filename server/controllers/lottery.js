@@ -138,6 +138,7 @@ module.exports = {
         list,
         del,
         edit,
-        lottery
+        lottery, 
+        start_end
     }
 }
