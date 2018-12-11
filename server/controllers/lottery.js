@@ -7,19 +7,20 @@ const moment = require('moment');
 // 添加活动
 const add = async (ctx, next) => {
     const p = ctx.request.params;
-    const { title, start_day, end_day, description, rule_descrption, playbill, prize_descrption, other_descrption = [] } = p;
-    if (!title || !start_day || !end_day || !description || !rule_descrption || !prize_descrption || !playbill) {
+    const { title, start_day, end_day, description, rule_description, playbill, prize_description, other_description = [] } = p;
+    console.log(p);
+    if (!title || !start_day || !end_day || !description || !rule_description || !prize_description || !playbill) {
         ctx.body = failed('必填项缺省或者无效')
     } else {
         if (moment().format('YYYY-MM-DD') > moment(start_day).format('YYYY-MM-DD')) {
             ctx.body = failed('活动的开始日期不得小于当前日期')
         } else {
-            p['manager_id'] = ctx.state_managerInfo['data']['id'];
+            p['manager_id'] = ctx.state.managerInfo['data']['id'];
             p['manager_name'] = ctx.state.managerInfo['data']['name'];
             p['status'] = 0;
             p['invalid'] = 0;
             p['create_time'] = new Date();
-            p['other_description'] = other_descrption;
+            p['other_description'] = other_description;
             let res = await Lottery.create(p);
             ctx.body = success(res, '创建成功');
         }
@@ -71,8 +72,8 @@ const del = async (ctx, next) => {
 // 编辑活动
 const edit = async (ctx, next) => {
     let p = ctx.request.params;
-    let { id, title, playbill, start_day, end_day, description, rule_descrption, prize_descrption, other_description = null } = p;
-    if (!title || !id || !start_day || !end_day || !description || !rule_descrption || !prize_descrption || !playbill) {
+    let { id, title, playbill, start_day, end_day, description, rule_description, prize_description, other_description = null } = p;
+    if (!title || !id || !start_day || !end_day || !description || !rule_description || !prize_description || !playbill) {
         ctx.body = failed('必填项缺省或者缺省');
     } else {
         let res = await Lottery.findById('id');
@@ -83,6 +84,7 @@ const edit = async (ctx, next) => {
                 if (moment().format('YYYY-MM-DD') > moment(start_day).format('YYYY-MM-DD')) {
                     ctx.body = failed('活动开始日期不得小于当前日期');
                 } else {
+                    p['other_description'] = other_description;
                     p['manager_id'] = ctx.state.managerInfo['data']['id'];
                     p['manager_name'] = ctx.state.managerInfo['data']['name'];
                     res = res.update(p);
@@ -133,7 +135,7 @@ const lottery = async (ctx, next) => {
 }
 
 module.exports = {
-    pub: {
+    adm: {
         add,
         list,
         del,
