@@ -293,6 +293,16 @@ const app_list = async(ctx, next) => {
     }
   };
 
+  let lot_we = {
+    status: 1,
+    start_day: {
+      $lte: moment().format('YYYY-MM-DD')
+    },
+    end_day: {
+      $gte: moment().format('YYYY-MM-DD')
+    }
+  }
+
   if (name) {
     we[Op.or] = {
       title: {
@@ -301,6 +311,10 @@ const app_list = async(ctx, next) => {
       movie_name: {
         $like: '%' + name + '%'
       }
+    }
+
+    lot_we['title'] = {
+      $like: '%' + name + '%'
     }
   }
 
@@ -316,23 +330,15 @@ const app_list = async(ctx, next) => {
 
 
   let lottey_activite = await Lottery.findAll({
-    where: {
-      status: 1,
-      start_day: {
-        $lte: moment().format('YYYY-MM-DD')
-      },
-      end_day: {
-        $gte: moment().format('YYYY-MM-DD')
-      }
-    },
+    where: lot_we,
     order: [
       ['start_day', 'DESC'],
       ['id', 'DESC']
     ]
   })
 
-  for (var item of lottey_activite){
-    if(item.rule_description.upload){
+  for (var item of lottey_activite) {
+    if (item.rule_description.upload) {
       item.rule_description.upload = '参与记录最少' + item.rule_description.upload + '次'
     }
     if (item.rule_description.share) {

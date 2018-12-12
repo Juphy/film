@@ -3,7 +3,8 @@ const {
   Activity,
   Winner,
   User,
-  Address
+  Address,
+  Lottery
 } = require('../lib/model');
 const {
   success,
@@ -552,6 +553,40 @@ const ending_count = async(ctx, next) => {
     }
   });
   ctx.body = success([b, c, d]);
+}
+
+//参与抽奖活动
+const in_lotties = async(ctx, next) => {
+  let {
+    activite_id,
+    open_id
+  } = ctx.request.params;
+
+  if (!activite_id || !open_id) {
+    return ctx.body = failed('参数错误')
+  }
+
+  activite_info = await Lottery.find({
+    where: {
+      invalid: 0,
+      start_day: {
+        $lte: moment().format('YYYY-MM-DD')
+      },
+      end_day: {
+        $gte: moment().format('YYYY-MM-DD')
+      },
+      status:1
+    }
+  })
+
+  if(!activite_info){
+    return ctx.body = failed('活动不存在或已结束')
+  }
+
+  
+
+
+
 }
 
 
