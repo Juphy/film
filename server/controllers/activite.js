@@ -508,13 +508,19 @@ const app_info = async(ctx, next) => {
     return ctx.body = authFailed()
   }
   let {
-    id
+    id,
+    activite_type
   } = ctx.request.params;
-  if (!id) {
+  if (!id || !activite_type) {
     return ctx.body = failed('参数缺失');
   }
 
-  let activite_info = await Activity.findById(id);
+  if (activite_type == 1) {
+    let activite_info = await Activity.findById(id);
+  } else {
+    let activite_info = await Lottery.findById(id);
+  }
+
 
 
   if (!activite_info) {
@@ -528,7 +534,8 @@ const app_info = async(ctx, next) => {
     winners = await Winner.findAll({
       where: {
         active_id: activite_info.id,
-        invalid: 0
+        invalid: 0,
+        activite_type: activite_type
       }
     })
   }
@@ -559,7 +566,7 @@ const lottery = async(ctx, next) => {
       status: {
         $in: [1, 3]
       },
-      activite_type:1
+      activite_type: 1
     }
   }) //查询活动信息
 

@@ -293,39 +293,12 @@ const lottery = async(ctx, next) => {
   ctx.body = success('', '插入成功')
 }
 
-//抽奖活动详情
-const app_lotties_info = async(ctx, next) => {
-  let {
-    id
-  } = ctx.request.params;
-
-  if (!id) {
-    return ctx.body = failed('参数错误')
-  }
-
-  res = await Lottery.find({
-    where: {
-      id: id,
-      invalid: 0
-    }
-  })
-
-  if (!res) {
-    return ctx.body = failed('活动不存在')
-  }
-
-  ctx.body = success(res, '查询成功')
-
-}
 
 
 
 
 
 module.exports = {
-  app: {
-    app_lotties_info
-  },
   adm: {
     add,
     list,
