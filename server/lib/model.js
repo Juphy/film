@@ -94,9 +94,6 @@ const activities = sequelize.define('applet_activites', {
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
-  activite_type:{
-    type: Sequelize.INTEGER
-  },
   invalid: {
     type: Sequelize.INTEGER
   }
