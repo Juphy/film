@@ -307,6 +307,15 @@ const reports = sequelize.define('applet_reports', {
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
   },
+  activite_end_day: {
+    type: Sequelize.DATEONLY,
+    get() {
+      if (!this.getDataValue('activite_end_day')) {
+        return null
+      }
+      return moment(this.getDataValue('activite_end_day')).format('YYYY-MM-DD');
+    }
+  },
   manager_id: {
     type: Sequelize.INTEGER
   },
@@ -326,6 +335,9 @@ const reports = sequelize.define('applet_reports', {
     type: Sequelize.STRING
   },
   activite_type: {
+    type: Sequelize.INTEGER
+  },
+  activite_status: {
     type: Sequelize.INTEGER
   },
   create_time: {
