@@ -328,6 +328,9 @@ const reports = sequelize.define('applet_reports', {
   activite_type: {
     type: Sequelize.INTEGER
   },
+  activite_status: {
+    type: Sequelize.INTEGER
+  },
   create_time: {
     type: Sequelize.DATE,
     get() {

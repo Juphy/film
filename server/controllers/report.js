@@ -112,6 +112,8 @@ const upload = async(ctx, next) => {
     content: content,
     remark: remark,
     activite_id: activite_id,
+    activite_type: 1,
+    activite_status: 1,
     title: activite_info.title,
     movie_name: activite_info.movie_name,
     movie_id: activite_info.movie_id,
@@ -625,7 +627,7 @@ const in_lotties = async(ctx, next) => {
     })
 
     if (count < rules.upload) {
-      return ctx.body = failed('上传票根未达到'+ rules.upload+'次')
+      return ctx.body = failed('上传票根未达到' + rules.upload + '次')
     }
   }
 
@@ -637,7 +639,7 @@ const in_lotties = async(ctx, next) => {
     })
 
     if (count < rules.share) {
-      return ctx.body = failed('分享回流用户未达到'+rules.share+'个')
+      return ctx.body = failed('分享回流用户未达到' + rules.share + '个')
     }
   }
 
@@ -655,6 +657,7 @@ const in_lotties = async(ctx, next) => {
     cinema_name: '抽奖活动',
     activite_id: activite_id,
     activite_type: 2,
+    activite_status: 1,
     title: activite_info.title,
     create_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })

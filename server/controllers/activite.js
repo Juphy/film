@@ -693,6 +693,15 @@ const lottery = async(ctx, next) => {
     status: 2
   })
 
+  res = await Report.update({
+    where: {
+      activite_id: activite_id,
+      invalid: 0,
+      activite_type: 1
+    },
+    activite_status: 3
+  })
+
   ctx.body = success('', '插入成功')
 
 
@@ -766,7 +775,7 @@ module.exports = {
     cache_cinema_info,
     nearby_cinemas,
     search_cineams,
-    app_list
+    app_list,
   },
   app: {
     app_info
