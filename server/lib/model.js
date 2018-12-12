@@ -94,6 +94,9 @@ const activities = sequelize.define('applet_activites', {
       return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   },
+  activite_type:{
+    type: Sequelize.INTEGER
+  },
   invalid: {
     type: Sequelize.INTEGER
   }
@@ -204,6 +207,9 @@ const msgs = sequelize.define('applet_msgs', {
   },
   phone: {
     type: Sequelize.STRING
+  },
+  activite_type: {
+    type: Sequelize.INTEGER
   },
   invalid: {
     type: Sequelize.INTEGER
@@ -321,6 +327,9 @@ const reports = sequelize.define('applet_reports', {
   },
   phone: {
     type: Sequelize.STRING
+  },
+  activite_type: {
+    type: Sequelize.INTEGER
   },
   create_time: {
     type: Sequelize.DATE,
@@ -507,6 +516,9 @@ const winners = sequelize.define('applet_winners', {
   },
   real_name: {
     type: Sequelize.STRING
+  },
+  activite_type: {
+    type: Sequelize.INTEGER
   }
 }, {
     timestamps: false,
