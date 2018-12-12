@@ -20,7 +20,7 @@ const Op = Sequelize.Op;
 
 
 //上传票根
-const upload = async(ctx, next) => {
+const upload = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -125,7 +125,7 @@ const upload = async(ctx, next) => {
 
 
 //删除上传数据
-const app_del = async(ctx, next) => {
+const app_del = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -164,7 +164,7 @@ const app_del = async(ctx, next) => {
 
 
 //参与记录
-const app_list = async(ctx, next) => {
+const app_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -231,7 +231,7 @@ const app_list = async(ctx, next) => {
 
 
 //上传票根信息
-const app_info = async(ctx, next) => {
+const app_info = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -263,17 +263,17 @@ const app_info = async(ctx, next) => {
 
 
 // 上报数据列表（活动进行中和活动已结束）
-const pending_list = async(ctx, next) => {
+const pending_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-      cinema_name = '',
-      title = '',
-      show_day,
-      status = '',
-      is_winner = '',
-      page = 1,
-      page_size = 10
+    cinema_name = '',
+    title = '',
+    show_day,
+    status = '',
+    is_winner = '',
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -324,17 +324,17 @@ const pending_list = async(ctx, next) => {
   ctx.body = success(res);
 }
 
-const ending_list = async(ctx, next) => {
+const ending_list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-      cinema_name = '',
-      title = '',
-      show_day,
-      status = '',
-      is_winner = '',
-      page = 1,
-      page_size = 10
+    cinema_name = '',
+    title = '',
+    show_day,
+    status = '',
+    is_winner = '',
+    page = 1,
+    page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -379,7 +379,7 @@ const ending_list = async(ctx, next) => {
 }
 
 // 批量审核
-const reviews = async(ctx, next) => {
+const reviews = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -403,12 +403,12 @@ const reviews = async(ctx, next) => {
           manager_id: ctx.state.managerInfo['data']['id'],
           manager_name: ctx.state.managerInfo['data']['name']
         }, {
-          where: {
-            id: {
-              [Op.in]: ids
+            where: {
+              id: {
+                [Op.in]: ids
+              }
             }
-          }
-        });
+          });
         ctx.body = success(_res);
       }
     } else {
@@ -418,7 +418,7 @@ const reviews = async(ctx, next) => {
 }
 
 // 中奖，标记中奖者
-const winning = async(ctx, next) => {
+const winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id,
@@ -464,7 +464,7 @@ const winning = async(ctx, next) => {
 }
 
 // 已标记为中奖的数据
-const report_winning = async(ctx, next) => {
+const report_winning = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -482,7 +482,7 @@ const report_winning = async(ctx, next) => {
   }
 }
 
-const pending_count = async(ctx, next) => {
+const pending_count = async (ctx, next) => {
   let inc = [{
     model: Activity,
     where: {
@@ -523,7 +523,7 @@ const pending_count = async(ctx, next) => {
   ctx.body = success([a, b, c, d]);
 }
 
-const ending_count = async(ctx, next) => {
+const ending_count = async (ctx, next) => {
   let inc = [{
     model: Activity,
     where: {
@@ -556,7 +556,7 @@ const ending_count = async(ctx, next) => {
 }
 
 //参与抽奖活动
-const in_lotties = async(ctx, next) => {
+const in_lotties = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -625,7 +625,7 @@ const in_lotties = async(ctx, next) => {
     })
 
     if (count < rules.upload) {
-      return ctx.body = failed('上传票根未达到'+ rules.upload+'次')
+      return ctx.body = failed('上传票根未达到' + rules.upload + '次')
     }
   }
 
@@ -637,7 +637,7 @@ const in_lotties = async(ctx, next) => {
     })
 
     if (count < rules.share) {
-      return ctx.body = failed('分享回流用户未达到'+rules.share+'个')
+      return ctx.body = failed('分享回流用户未达到' + rules.share + '个')
     }
   }
 
@@ -663,7 +663,18 @@ const in_lotties = async(ctx, next) => {
 
 }
 
+const lottery_report = async (ctx, next) => {
 
+  let { activite_id } = ctx.request.params;
+  let res = await Report.findAll({
+    where: {
+      activite_id: activite_id,
+      activite_type: 2
+    },
+    attributes: ['id', 'nick_name', 'avatar_url']
+  });
+  ctx.body = success(res);
+}
 
 module.exports = {
   adm: {
@@ -674,7 +685,7 @@ module.exports = {
     report_winning,
     pending_count,
     ending_count,
-
+    lottery_report
   },
   app: {
     in_lotties,
