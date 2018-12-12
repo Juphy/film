@@ -64,6 +64,9 @@ const activities = sequelize.define('applet_activites', {
   end_day: {
     type: Sequelize.DATEONLY,
   },
+  lottery_day: {
+    type: Sequelize.DATEONLY,
+  },
   description: {
     type: Sequelize.STRING
   },

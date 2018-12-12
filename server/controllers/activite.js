@@ -4,7 +4,8 @@ const {
   Cinema,
   Winner,
   Report,
-  Msg
+  Msg,
+  Lottery
 } = require('../lib/model');
 const {
   success,
@@ -31,7 +32,7 @@ const redis = new Redis();
 
 
 //同步影片数据
-const sync_movie = async (ctx, next) => {
+const sync_movie = async(ctx, next) => {
   const {
     movie_id,
     movie_name,
@@ -47,7 +48,7 @@ const sync_movie = async (ctx, next) => {
     where: {
       movie_id: movie_id
     }
-  }).then(function (obj) {
+  }).then(function(obj) {
     if (obj) {
       return obj.update({
         movie_id: movie_id,
@@ -71,7 +72,7 @@ const sync_movie = async (ctx, next) => {
 }
 
 //缓存影院数据
-const cache_cinema_info = async (ctx, next) => {
+const cache_cinema_info = async(ctx, next) => {
 
 
   cinemas = await Cinema.findAll({
@@ -94,7 +95,7 @@ const cache_cinema_info = async (ctx, next) => {
   mcinemas = []
   geos = []
 
-  cinemas.forEach(async function (val) {
+  cinemas.forEach(async function(val) {
     mcinemas.push(val.hash_code)
     mcinemas.push(JSON.stringify(val))
 
@@ -112,7 +113,7 @@ const cache_cinema_info = async (ctx, next) => {
 }
 
 //同步影院信息后刷编码，需多次执行
-const mix_cinema_code = async (ctx, next) => {
+const mix_cinema_code = async(ctx, next) => {
 
 
   let r = []
@@ -129,10 +130,10 @@ const mix_cinema_code = async (ctx, next) => {
     await Cinema.update({
       hash_code: crypted
     }, {
-        where: {
-          id: cinema.id
-        }
-      })
+      where: {
+        id: cinema.id
+      }
+    })
   }
 
 
@@ -140,7 +141,7 @@ const mix_cinema_code = async (ctx, next) => {
 }
 
 //获取最近的影院列表
-const nearby_cinemas = async (ctx, next) => {
+const nearby_cinemas = async(ctx, next) => {
   const {
     longitude,
     latitude,
@@ -154,7 +155,7 @@ const nearby_cinemas = async (ctx, next) => {
 
   cinemas = []
 
-  cinema_list.forEach(function (val) {
+  cinema_list.forEach(function(val) {
     cinemas.push(JSON.parse(val))
   })
 
@@ -162,12 +163,12 @@ const nearby_cinemas = async (ctx, next) => {
 }
 
 //搜索影院
-const search_cineams = async (ctx, next) => {
+const search_cineams = async(ctx, next) => {
 
   const {
     city_code = null,
-    name,
-    num = 10
+      name,
+      num = 10
   } = ctx.request.params;
 
   if (!name) {
@@ -192,7 +193,7 @@ const search_cineams = async (ctx, next) => {
 }
 
 //获取影院信息
-const cinema_info = async (ctx, next) => {
+const cinema_info = async(ctx, next) => {
   const {
     code
   } = ctx.request.params;
@@ -222,7 +223,7 @@ const cinema_info = async (ctx, next) => {
 }
 
 // 搜索影片
-const search_movie = async (ctx, next) => {
+const search_movie = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name
@@ -245,7 +246,7 @@ const search_movie = async (ctx, next) => {
 }
 
 // 添加活动
-const add = async (ctx, next) => {
+const add = async(ctx, next) => {
   const p = ctx.request.params;
   const {
     title,
@@ -277,15 +278,11 @@ const add = async (ctx, next) => {
 }
 
 //小程序活动列表
-const app_list = async (ctx, next) => {
-  let p = ctx.request.params;
+const app_list = async(ctx, next) => {
   let {
     name = '',
-    page = 1,
-    page_size = 10
-  } = p;
-  p['page'] = page;
-  p['page_size'] = page_size;
+  } = ctx.request.params;
+
   let we = {
     invalid: 0,
     status: {
@@ -308,27 +305,56 @@ const app_list = async (ctx, next) => {
   }
 
 
-
-
-  let res = await Activity.findAndCountAll({
+  let upload_activite = await Activity.findAll({
     where: we,
     order: [
       ['status', 'ASC'],
       ['start_day', 'DESC'],
       ['id', 'DESC']
-    ],
-    offset: (page - 1) * page_size,
-    limit: page_size * 1
+    ]
   });
-  ctx.body = success(res, '查询成功');
+
+
+  let lottey_activite = await Lottery.findAll({
+    where: {
+      status: 1,
+      start_day: {
+        $lte: moment().format('YYYY-MM-DD')
+      },
+      end_day: {
+        $gte: moment().format('YYYY-MM-DD')
+      }
+    },
+    order: [
+      ['start_day', 'DESC'],
+      ['id', 'DESC']
+    ]
+  })
+
+  for (var item of lottey_activite){
+    if(item.rule_description.upload){
+      item.rule_description.upload = '参与记录最少' + item.rule_description.upload + '次'
+    }
+    if (item.rule_description.share) {
+      item.rule_description.share = '分享回流最少' + item.rule_description.share + '次'
+    }
+    if (item.rule_description.date) {
+      item.rule_description.date = '注册时间在' + item.rule_description.date + '之后'
+    }
+  }
+
+  ctx.body = success({
+    'upload_activite': upload_activite,
+    'lottey_activite': lottey_activite
+  }, '查询成功');
 }
 
 // 后台活动列表
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     status = '',
-    title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
+      title = '', movie_name = '', start_day, end_day, page = 1, page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -365,7 +391,7 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async (ctx, next) => {
+const del = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -392,7 +418,7 @@ const del = async (ctx, next) => {
 }
 
 // 编辑活动
-const edit = async (ctx, next) => {
+const edit = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -406,7 +432,7 @@ const edit = async (ctx, next) => {
     prize_description,
     other_description = null
   } = p;
-  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description||!id) {
+  if (!title || !playbill || !movie_id || !movie_name || !start_day || !end_day || !description || !prize_description || !id) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
     let res = await Activity.findById(id)
@@ -431,7 +457,7 @@ const edit = async (ctx, next) => {
 }
 
 // 发布活动
-const start_end = async (ctx, next) => {
+const start_end = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id,
@@ -470,7 +496,7 @@ const start_end = async (ctx, next) => {
 }
 
 //小程序活动详情
-const app_info = async (ctx, next) => {
+const app_info = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -510,7 +536,7 @@ const app_info = async (ctx, next) => {
 }
 
 //活动开奖
-const lottery = async (ctx, next) => {
+const lottery = async(ctx, next) => {
   let {
     winners,
     activite_id
@@ -647,7 +673,7 @@ const lottery = async (ctx, next) => {
 
 
 // 活动详细
-const info = async (ctx, next) => {
+const info = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -665,24 +691,25 @@ const info = async (ctx, next) => {
 }
 
 // image->base64
-const image_base64 = async (ctx, next) => {
+const image_base64 = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     url
   } = p;
-  let http = require('http'), path = require('path');
+  let http = require('http'),
+    path = require('path');
   if (url.includes('https')) {
     http = require('https');
   }
   let base64 = await new Promise((resolve, reject) => {
-    http.get(url, function (res) {
+    http.get(url, function(res) {
       var chunks = [];
       var size = 0;　　 //保存缓冲数据的总长度
-      res.on('data', function (chunk) {
+      res.on('data', function(chunk) {
         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
         size += chunk.length;　　 //累加缓冲数据的长度
       });
-      res.on('end', function (err) {
+      res.on('end', function(err) {
         var data = Buffer.concat(chunks, size);　　　 //可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
         var base64Img = data.toString('base64');　　 //将Buffer对象转换为字符串并以base64编码格式显示
         resolve(base64Img);
