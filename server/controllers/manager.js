@@ -8,7 +8,7 @@ const {
   failed,
   authFailed
 } = require('./base.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { SALTROUNDS, secret } = require('../config');
 const jsonwebtoken = require('jsonwebtoken');
 //后台登录
