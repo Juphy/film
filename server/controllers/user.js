@@ -397,22 +397,29 @@ const set_default_address = async (ctx, next) => {
 const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
-    nick_name = '', phone, page = 1, page_size = 10
+    nick_name = '', phone, page = 1, page_size = 10, user_tags = ''
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
+  let we = {
+    invalid: 0,
+    nick_name: {
+      [Op.like]: '%' + nick_name + '%'
+    }
+  };
+  if (user_tags !== '') {
+    we['user_tags'] = {
+      [Op.like]: '%' + user_tags + '%'
+    }
+  }
+
   let res = await User.findAndCountAll({
     include: [{
       model: Address,
       as: 'address',
       attributes: ['province', 'city', 'county', 'address', 'contact', 'phone']
     }],
-    where: {
-      invalid: 0,
-      nick_name: {
-        [Op.like]: '%' + nick_name + '%'
-      }
-    },
+    where: we,
     order: [
       ['create_time', 'DESC']
     ],
