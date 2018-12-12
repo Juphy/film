@@ -216,7 +216,7 @@ const app_list = async(ctx, next) => {
 
   console.dir(res)
   for (item of res.rows) {
-    if(cinema_code!=0){
+    if (item.cinema_code!=0){
       addr = await redis.get(item.cinema_code)
       // item.push(addr)
       item.dataValues.address = JSON.parse(addr)
