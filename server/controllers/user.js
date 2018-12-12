@@ -22,7 +22,7 @@ const fs = require('fs')
 
 //判断用户是否绑定手机号
 
-const check_bind_phone = async(ctx, next) => {
+const check_bind_phone = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -37,7 +37,7 @@ const check_bind_phone = async(ctx, next) => {
 
 
 // 绑定手机号
-const bind_phone = async(ctx, next) => {
+const bind_phone = async (ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
@@ -51,7 +51,7 @@ const bind_phone = async(ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  const reply = await redis.get('bindPhoneCode_' + phone, function(err, reply) {
+  const reply = await redis.get('bindPhoneCode_' + phone, function (err, reply) {
     return reply;
   });
 
@@ -88,7 +88,7 @@ const bind_phone = async(ctx, next) => {
 };
 
 //添加地址
-const add_address = async(ctx, next) => {
+const add_address = async (ctx, next) => {
 
   let {
     province,
@@ -131,10 +131,10 @@ const add_address = async(ctx, next) => {
     await User.update({
       address_id: res.id
     }, {
-      where: {
-        open_id: ctx.state.$wxInfo.userinfo.openId
-      }
-    })
+        where: {
+          open_id: ctx.state.$wxInfo.userinfo.openId
+        }
+      })
   }
 
   ctx.body = success(res, '添加成功')
@@ -143,7 +143,7 @@ const add_address = async(ctx, next) => {
 }
 
 //编辑地址
-const edit_address = async(ctx, next) => {
+const edit_address = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
@@ -218,20 +218,20 @@ const edit_address = async(ctx, next) => {
     await user_info.update({
       address_id: res.id
     }, {
-      where: {
-        open_id: ctx.state.$wxInfo.userinfo.openId
-      }
-    })
+        where: {
+          open_id: ctx.state.$wxInfo.userinfo.openId
+        }
+      })
   }
 
   if (is_default == 0 && user_info.address_id == id) {
     await user_info.update({
       address_id: null
     }, {
-      where: {
-        open_id: ctx.state.$wxInfo.userinfo.openId
-      }
-    })
+        where: {
+          open_id: ctx.state.$wxInfo.userinfo.openId
+        }
+      })
   }
 
   ctx.body = success(res, '编辑成功')
@@ -240,7 +240,7 @@ const edit_address = async(ctx, next) => {
 }
 
 //删除地址
-const del_address = async(ctx, next) => {
+const del_address = async (ctx, next) => {
   let {
     address_id
   } = ctx.request.params;
@@ -283,17 +283,17 @@ const del_address = async(ctx, next) => {
     await user_info.update({
       address_id: null
     }, {
-      where: {
-        open_id: ctx.state.$wxInfo.userinfo.openId
-      }
-    })
+        where: {
+          open_id: ctx.state.$wxInfo.userinfo.openId
+        }
+      })
   }
 
   ctx.body = success('删除成功')
 }
 
 //地址列表
-const address_list = async(ctx, next) => {
+const address_list = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -316,7 +316,7 @@ const address_list = async(ctx, next) => {
     return ctx.body = failed('用户信息不存在')
   }
 
-  address_list.forEach(function(item) {
+  address_list.forEach(function (item) {
     if (item.id == user_info.address_id) {
       item.setDataValue('default', 1)
     } else {
@@ -330,7 +330,7 @@ const address_list = async(ctx, next) => {
 
 //获取默认地址
 
-const get_default_address = async(ctx, next) => {
+const get_default_address = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -352,7 +352,7 @@ const get_default_address = async(ctx, next) => {
 }
 
 //设置默认地址
-const set_default_address = async(ctx, next) => {
+const set_default_address = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -384,17 +384,17 @@ const set_default_address = async(ctx, next) => {
   await User.update({
     address_id: address_id
   }, {
-    where: {
-      open_id: ctx.state.$wxInfo.userinfo.openId
-    }
-  });
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    });
 
   ctx.body = success('', '设置默认地址成功')
 
 
 }
 
-const list = async(ctx, next) => {
+const list = async (ctx, next) => {
   let p = ctx.request.params;
   let {
     nick_name = '', phone, page = 1, page_size = 10
@@ -424,7 +424,7 @@ const list = async(ctx, next) => {
 
 
 //小程序端统计参与记录，中奖记录
-const app_monitor = async(ctx, next) => {
+const app_monitor = async (ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -461,7 +461,7 @@ const app_monitor = async(ctx, next) => {
 }
 
 //分享
-const app_share = async(ctx, next) => {
+const app_share = async (ctx, next) => {
 
 
   if (!ctx.state.$wxInfo.loginState) {
@@ -502,7 +502,7 @@ const app_share = async(ctx, next) => {
 }
 
 //生成二维码
-const createwxaqrcode = async(ctx, next) => {
+const createwxaqrcode = async (ctx, next) => {
 
   let {
     scene,
@@ -536,15 +536,15 @@ const createwxaqrcode = async(ctx, next) => {
         "Content-Length": data.length
       }
     };
-    var req = http.request(options, function(res) {
+    var req = http.request(options, function (res) {
       // res.setEncoding("binary");
       var chunks = [];
       var size = 0;
-      res.on('data', function(chunk) {
+      res.on('data', function (chunk) {
         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
         size += chunk.length;　　 //累加缓冲数据的长度
       });
-      res.on("end", function() {
+      res.on("end", function () {
         var data = Buffer.concat(chunks, size);　　　 //可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
         var base64Img = data.toString('base64');　　 //将Buffer对象转换为字符串并以base64编码格式显示
         resolve(base64Img);
@@ -558,12 +558,22 @@ const createwxaqrcode = async(ctx, next) => {
   ctx.body = success('data:image/png;base64,' + img)
 }
 
+const user_tags = async (ctx, next) => {
+  let res = await Option.findAll({
+    where: {
+      type: 'user_tags'
+    },
+    attributes: ['key', 'value']
+  });
+  ctx.body = success(res);
+}
 
 
 module.exports = {
 
   pub: {
-    createwxaqrcode
+    createwxaqrcode,
+    user_tags
   },
 
   adm: {
