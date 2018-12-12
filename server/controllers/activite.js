@@ -515,16 +515,26 @@ const app_info = async(ctx, next) => {
     return ctx.body = failed('参数缺失');
   }
 
+  let activite_info = ''
+
   if (activite_type == 1) {
-    let activite_info = await Activity.findById(id);
+    activite_info = await Activity.find({
+      where: {
+        id: id,
+        invalid: 0
+      }
+    });
   } else {
-    let activite_info = await Lottery.findById(id);
+    activite_info = await Lottery.find({
+      where: {
+        id: id,
+        invalid: 0
+      }
+    });
   }
 
-
-
   if (!activite_info) {
-    return ctx.body = failed('id无效或者缺省');
+    return ctx.body = failed('活动不存在');
   }
 
   let winners = []
