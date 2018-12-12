@@ -568,6 +568,18 @@ const user_tags = async (ctx, next) => {
   ctx.body = success(res);
 }
 
+const edit_tag = async (ctx, next) => {
+  let { id, user_tags = '' } = ctx.request.params;
+  if (!id) {
+    return ctx.body = failed('必填项缺省');
+  }
+  let res = await User.findById(id);
+  if (!res) {
+    return ctx.body = failed('id无效');
+  }
+  res = await res.update({ user_tags: user_tags })
+  ctx.body = success(res, '编辑成功');
+}
 
 module.exports = {
 
@@ -577,7 +589,8 @@ module.exports = {
   },
 
   adm: {
-    list
+    list,
+    edit_tag
   },
   app: {
     check_bind_phone,
