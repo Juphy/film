@@ -114,6 +114,7 @@ const upload = async(ctx, next) => {
     activite_id: activite_id,
     activite_type: 1,
     activite_status: 1,
+    activite_end_day: activite_info.end_day,
     title: activite_info.title,
     movie_name: activite_info.movie_name,
     movie_id: activite_info.movie_id,
@@ -185,18 +186,21 @@ const app_list = async(ctx, next) => {
     return ctx.body = failed('参数错误')
   }
 
-  let we = {}
+  let we = {
+    open_id: ctx.state.$wxInfo.userinfo.openId,
+    invalid: 0
+  }
   if (type == 1) {
-    we['end_day'] = {
+    we['activite_end_day'] = {
       $gte: moment().format('YYYY-MM-DD')
     }
-    we['status'] = 1
+    we['activite_status'] = 1
   } else {
     we['$or'] = {
-      'end_day': {
+      'activite_end_day': {
         $lt: moment().format('YYYY-MM-DD')
       },
-      'status': {
+      'activite_status': {
         $in: [2, 3]
       }
     }
@@ -205,24 +209,18 @@ const app_list = async(ctx, next) => {
 
 
   let res = await Report.findAndCountAll({
-    include: [{
-      model: Activity,
-      attributes: ['status'],
-      where: we,
-    }],
-    where: {
-      open_id: ctx.state.$wxInfo.userinfo.openId,
-      invalid: 0
-    },
+    where: we,
     offset: (page - 1) * page_size,
     limit: page_size * 1
   })
 
   console.dir(res)
   for (item of res.rows) {
-    addr = await redis.get(item.cinema_code)
-    // item.push(addr)
-    item.dataValues.address = JSON.parse(addr)
+    if(cinema_code!=0){
+      addr = await redis.get(item.cinema_code)
+      // item.push(addr)
+      item.dataValues.address = JSON.parse(addr)
+    }
   }
 
   ctx.body = success(res);
@@ -658,6 +656,7 @@ const in_lotties = async(ctx, next) => {
     activite_id: activite_id,
     activite_type: 2,
     activite_status: 1,
+    activite_end_day: activite_info.end_day,
     title: activite_info.title,
     create_time: moment().format('YYYY-MM-DD HH:mm:ss')
   })
