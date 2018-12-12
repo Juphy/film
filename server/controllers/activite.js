@@ -694,12 +694,13 @@ const lottery = async(ctx, next) => {
   })
 
   res = await Report.update({
+    activite_status: 3
+  }, {
     where: {
       activite_id: activite_id,
       invalid: 0,
       activite_type: 1
-    },
-    activite_status: 3
+    }
   })
 
   ctx.body = success('', '插入成功')
