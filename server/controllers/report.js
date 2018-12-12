@@ -216,7 +216,7 @@ const app_list = async (ctx, next) => {
 
   console.dir(res)
   for (item of res.rows) {
-    if (item.cinema_code!=0){
+    if (item.cinema_code != 0) {
       addr = await redis.get(item.cinema_code)
       // item.push(addr)
       item.dataValues.address = JSON.parse(addr)
@@ -279,6 +279,10 @@ const pending_list = async (ctx, next) => {
   p['page_size'] = page_size;
   const we = {
     invalid: 0,
+    activite_type: 1,
+    activite_status: {
+      [Op.in]: [1, 2]
+    },
     movie_name: {
       [Op.like]: '%' + movie_name + '%'
     },
@@ -299,16 +303,6 @@ const pending_list = async (ctx, next) => {
     we['show_day'] = new Date(show_day);
   }
   let res = await Report.findAndCountAll({
-    include: [{
-      model: Activity,
-      where: {
-        status: {
-          [Op.ne]: 2
-        },
-        invalid: 0
-      },
-      attributes: ['status']
-    }],
     where: we,
     order: [
       ['create_time', 'DESC']
@@ -316,11 +310,6 @@ const pending_list = async (ctx, next) => {
     offset: (page - 1) * page_size,
     limit: page_size * 1
   });
-
-
-
-
-
   ctx.body = success(res);
 }
 
@@ -340,6 +329,8 @@ const ending_list = async (ctx, next) => {
   p['page_size'] = page_size;
   const we = {
     invalid: 0,
+    activite_type: 1,
+    activite_status: 3,
     movie_name: {
       [Op.like]: '%' + movie_name + '%'
     },
@@ -360,14 +351,6 @@ const ending_list = async (ctx, next) => {
     we['show_day'] = new Date(show_day);
   }
   let res = await Report.findAndCountAll({
-    include: [{
-      model: Activity,
-      where: {
-        status: 2,
-        invalid: 0
-      },
-      attributes: ['status']
-    }],
     where: we,
     order: [
       ['create_time', 'DESC']
@@ -475,7 +458,8 @@ const report_winning = async (ctx, next) => {
     let res = await Report.findAll({
       where: {
         activite_id: id,
-        is_winner: 1
+        is_winner: 1,
+        activite_type: 1
       }
     });
     ctx.body = success(res, '查询成功');
@@ -483,73 +467,72 @@ const report_winning = async (ctx, next) => {
 }
 
 const pending_count = async (ctx, next) => {
-  let inc = [{
-    model: Activity,
-    where: {
-      status: {
-        [Op.ne]: 2
-      },
-      invalid: 0
-    }
-  }];
   let a = await Report.count({
-    include: inc,
     where: {
       status: 0,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: {
+        [Op.in]: [1, 2]
+      }
     }
   });
   let b = await Report.count({
-    include: inc,
     where: {
       status: 2,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: {
+        [Op.in]: [1, 2]
+      }
     }
   });
   let c = await Report.count({
-    include: inc,
     where: {
       status: 1,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: {
+        [Op.in]: [1, 2]
+      }
     }
   });
   let d = await Report.count({
-    include: inc,
     where: {
       is_winner: 1,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: {
+        [Op.in]: [1, 2]
+      }
     }
   });
   ctx.body = success([a, b, c, d]);
 }
 
 const ending_count = async (ctx, next) => {
-  let inc = [{
-    model: Activity,
-    where: {
-      status: 2,
-      invalid: 0
-    }
-  }];
   let b = await Report.count({
-    include: inc,
     where: {
       status: 2,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: 3
     }
   });
   let c = await Report.count({
-    include: inc,
     where: {
       status: 1,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: 3
     }
   });
   let d = await Report.count({
-    include: inc,
     where: {
       is_winner: 1,
-      invalid: 0
+      invalid: 0,
+      activite_type: 1,
+      activite_status: 3
     }
   });
   ctx.body = success([b, c, d]);

@@ -159,6 +159,13 @@ const start_end = async(ctx, next) => {
   res = res.update({
     status: status
   });
+  await Report.update({ activite_status: status }, {
+    where: {
+      invalid: 0,
+      active_id: id,
+      activite_type: 2
+    }
+  });
   let j = ['', '活动发布成功', '活动结束成功'];
   ctx.body = success(res, j[status]);
 }

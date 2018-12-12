@@ -729,11 +729,6 @@ const lotteries = sequelize.define('applet_lotteries', {
 
 lotteries.sync();
 
-reports.belongsTo(activities, {
-  foreignKey: 'activite_id',
-  targetKey: 'id'
-});
-
 users.belongsTo(address, {
   foreignKey: 'address_id',
   targetKey: 'id',
