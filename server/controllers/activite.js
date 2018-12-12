@@ -558,7 +558,8 @@ const lottery = async(ctx, next) => {
       invalid: 0,
       status: {
         $in: [1, 3]
-      }
+      },
+      activite_type:1
     }
   }) //查询活动信息
 
@@ -570,7 +571,8 @@ const lottery = async(ctx, next) => {
     where: {
       activite_id: activite_id,
       invalid: 0,
-      is_winner: 1
+      is_winner: 1,
+      activite_type: 1
     }
   }) //查询中奖者信息
 
@@ -601,6 +603,7 @@ const lottery = async(ctx, next) => {
       winner['open_id'] = winners[item.id]['open_id']
       winner['type'] = winners[item.id]['type']
       winner['active_id'] = activite_id
+      winner['activite_type'] = 1
       winner['report_id'] = item.id
       winner['manager_id'] = ctx.state.managerInfo['data']['id']
       winner['manager_name'] = ctx.state.managerInfo['data']['name']
@@ -628,6 +631,7 @@ const lottery = async(ctx, next) => {
       msg['status'] = 0 //待发布：0，已发布：1
       msg['open_id'] = item.open_id
       msg['activite_id'] = activite_info.id
+      msg['activite_type'] = 1
       msg['movie_id'] = activite_info.movie_id
       msg['movie_name'] = activite_info.movie_name
       msg['type'] = 2
@@ -659,6 +663,7 @@ const lottery = async(ctx, next) => {
     create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
     status: 1, //待发布：0，已发布：1
     activite_id: activite_info.id,
+    activite_type: 1,
     movie_id: activite_info.movie_id,
     movie_name: activite_info.movie_name,
     type: 1,

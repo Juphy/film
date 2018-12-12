@@ -172,6 +172,125 @@ const lottery = async(ctx, next) => {
   if (!winners || !lottery_id) {
     return ctx.body = failed('参数错误');
   }
+
+  activite_info = await Lottery.find({
+    where: {
+      id: lottery_id,
+      invalid: 0,
+      status: {
+        $in: [1, 2]
+      }
+    }
+  }) //查询活动信息
+
+  if (!activite_info) {
+    return ctx.body = failed('活动不存在或已开奖')
+  }
+
+  winner_list = await Report.findAll({
+    where: {
+      activite_id: activite_id,
+      invalid: 0,
+      is_winner: 1,
+      activite_type: 2
+    }
+  }) //查询中奖者信息
+
+  if (!winner_list) {
+    return ctx.body = failed('中奖者不能为空')
+  }
+
+  let wins = []
+  let msgs = []
+  let nick_names = []
+
+  // winners = JSON.parse(winners)
+
+  if (winners.length == 0) {
+    return ctx.body = failed('奖品不能为空')
+  }
+
+
+  for (let item of Object.values(winner_list)) {
+
+
+    if (Object.keys(winners).includes('' + item.id)) {
+
+      let winner = {}
+      let wi = {}
+
+      winner['prize_name'] = winners[item.id]['prize']
+      winner['open_id'] = winners[item.id]['open_id']
+      winner['type'] = winners[item.id]['type']
+      winner['active_id'] = activite_id
+      winner['activite_type'] = 2
+      winner['report_id'] = item.id
+      winner['manager_id'] = ctx.state.managerInfo['data']['id']
+      winner['manager_name'] = ctx.state.managerInfo['data']['name']
+      winner['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
+      winner['nick_name'] = item.nick_name
+      winner['title'] = activite_info.title
+      winner['avatar_url'] = item.avatar_url
+      winner['phone'] = item.phone
+      winner['expiration_day'] = moment().add(1, 'month').format('YYYY-MM-DD')
+      wins.push(winner)
+
+      wi['nick_name'] = item.nick_name
+      wi['avatar_url'] = item.avatar_url
+      nick_names.push(wi)
+
+      let msg = {}
+      msg['title'] = activite_info['title']
+      msg['description'] = item.nick_name + '恭喜你获得' + winners[item.id]['prize']
+      msg['content'] = JSON.stringify('恭喜您在“' + activite_info.title + '”中，获得“' + winners[item.id]['prize'] + '奖品”，请点击“领奖”按钮填写相关领奖信息。')
+      msg['manager_id'] = ctx.state.managerInfo['data']['id']
+      msg['manager_name'] = ctx.state.managerInfo['data']['name']
+      msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
+      msg['status'] = 0 //待发布：0，已发布：1
+      msg['open_id'] = item.open_id
+      msg['activite_id'] = activite_info.id
+      msg['activite_type'] = 2
+      msg['type'] = 2
+      msg['phone'] = item.phone
+      msgs.push(msg)
+    } else {
+      return ctx.body = failed('存在未分配奖品人员')
+      break
+    }
+  }
+
+  console.dir(wins)
+
+  winner_res = await Winner.bulkCreate(wins) //批量插入winner
+
+
+
+
+
+  msgs.push({
+    title: activite_info['title'],
+    description: activite_info['title'] + '活动开奖通知',
+    content: JSON.stringify({
+      'winners': nick_names,
+      'description': '请以上中奖者收到中奖通知后，于' + moment().add(1, 'month').format('YYYY年MM月DD日') + '前在“我的-中奖记录”中填写相关领奖信息，我们将尽快为您派发奖品，逾期未回复视为放弃本次活动奖品，将不再补发奖品，谢谢您的理解与支持。'
+    }),
+    manager_id: ctx.state.managerInfo['data']['id'],
+    manager_name: ctx.state.managerInfo['data']['name'],
+    create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+    status: 1, //待发布：0，已发布：1
+    activite_id: activite_info.id,
+    activite_type: 2,
+    type: 1,
+  })
+
+  msg_res = await Msg.bulkCreate(msgs) //批量插入msg
+
+
+  await activite_info.update({
+    status: 2
+  })
+
+  ctx.body = success('', '插入成功')
 }
 
 //抽奖活动详情
@@ -195,7 +314,7 @@ const app_lotties_info = async(ctx, next) => {
     return ctx.body = failed('活动不存在')
   }
 
-  ctx.body = success(res)
+  ctx.body = success(res, '查询成功')
 
 }
 
