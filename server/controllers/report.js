@@ -557,13 +557,29 @@ const ending_count = async(ctx, next) => {
 
 //参与抽奖活动
 const in_lotties = async(ctx, next) => {
+
+  if (!ctx.state.$wxInfo.loginState) {
+    return ctx.body = authFailed()
+  }
+
   let {
-    activite_id,
-    open_id
+    activite_id
   } = ctx.request.params;
 
-  if (!activite_id || !open_id) {
+  if (!activite_id) {
     return ctx.body = failed('参数错误')
+  }
+
+  open_id = ctx.state.$wxInfo.userinfo.openId
+
+  userinfo = await User.find({
+    where: {
+      open_id: open_id
+    }
+  })
+
+  if (!userinfo) {
+    return ctx.body = failed('用户信息不存在')
   }
 
   activite_info = await Lottery.find({
@@ -575,17 +591,75 @@ const in_lotties = async(ctx, next) => {
       end_day: {
         $gte: moment().format('YYYY-MM-DD')
       },
-      status:1
+      status: 1,
+      id: activite_id
     }
   })
 
-  if(!activite_info){
+  if (!activite_info) {
     return ctx.body = failed('活动不存在或已结束')
   }
 
-  
+  report_info = await Report.find({
+    where: {
+      open_id: open_id,
+      activite_id: activite_id,
+      activite_type: 2,
+      invalid: 0
+    }
+  })
+
+  if (report_info) {
+    return ctx.body = failed('该用户已参与')
+  }
+
+  rules = activite_info.rule_description
+
+  if (rules.upload) {
+    count = await Report.count({
+      where: {
+        open_id: open_id,
+        invalid: 0,
+        activite_type: 1
+      }
+    })
+
+    if (count < rules.upload) {
+      return ctx.body = failed('上传票根未达到'+ rules.upload+'次')
+    }
+  }
+
+  if (rules.share) {
+    count = await User.count({
+      where: {
+        from_uuid: userinfo.uuid
+      }
+    })
+
+    if (count < rules.share) {
+      return ctx.body = failed('分享回流用户未达到'+rules.share+'个')
+    }
+  }
+
+  if (rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
+    return ctx.body = failed('您不是' + moment(rules.date).format('YYYY年MM月DD日') + '之后注册用户')
+  }
 
 
+  res = await Report.create({
+    open_id: userinfo.open_id,
+    nick_name: userinfo.nick_name,
+    avatar_url: userinfo.avatar_url,
+    phone: userinfo.phone,
+    cinema_code: 0,
+    cinema_name: '抽奖活动',
+    activite_id: activite_id,
+    activite_type: 2,
+    title: activite_info.title,
+    create_time: moment().format('YYYY-MM-DD HH:mm:ss')
+  })
+
+  ctx.body = success(res, '参与活动成功')
 
 }
 
@@ -603,6 +677,7 @@ module.exports = {
 
   },
   app: {
+    in_lotties,
     upload,
     app_list,
     app_info,
