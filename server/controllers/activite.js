@@ -338,13 +338,13 @@ const app_list = async (ctx, next) => {
   })
 
   for (var item of lottey_activite) {
-    if (item.rule_description.upload) {
+    if (item.rule_description.hasOwnProperty('upload')) {
       item.rule_description.upload = '参与记录最少' + item.rule_description.upload + '次'
     }
-    if (item.rule_description.share) {
+    if (item.rule_description.hasOwnProperty(share)) {
       item.rule_description.share = '分享回流最少' + item.rule_description.share + '次'
     }
-    if (item.rule_description.date) {
+    if (item.rule_description.hasOwnProperty(date)) {
       item.rule_description.date = '注册时间在' + item.rule_description.date + '之后'
     }
   }
