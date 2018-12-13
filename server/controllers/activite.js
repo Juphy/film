@@ -774,10 +774,11 @@ module.exports = {
     start_end,
     lottery,
     search_movie,
-    image_base64,
+    
     cinema_info
   },
   pub: {
+    image_base64,
     sync_movie,
     mix_cinema_code,
     cache_cinema_info,
