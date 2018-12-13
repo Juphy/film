@@ -1,5 +1,8 @@
 const {
-  Lottery
+  Lottery,
+  Winner,
+  Msg,
+  Report
 } = require('../lib/model');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -159,7 +162,9 @@ const start_end = async(ctx, next) => {
   res = res.update({
     status: status
   });
-  await Report.update({ activite_status: status }, {
+  await Report.update({
+    activite_status: status
+  }, {
     where: {
       invalid: 0,
       active_id: id,
@@ -194,22 +199,21 @@ const lottery = async(ctx, next) => {
     return ctx.body = failed('活动不存在或已开奖')
   }
 
-  winner_list = await Report.findAll({
-    where: {
-      activite_id: activite_id,
-      invalid: 0,
-      is_winner: 1,
-      activite_type: 2
+  winners = {
+    10: {
+      open_id: "oG4T15Z82inAfF8zT5YwYDmaYje0",
+      prize: "50000000",
+      type: 3,
+      nick_name: "run",
+      avatar_url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ertOVcUNZ1q6CvAYTCZ73Np6TOAYKhjDubOk5D5Oy6a4raIh1e8ABKC5gPsGIZoJtnjJ39Z9vl4pg/132',
+      phone: '18210364952'
     }
-  }) //查询中奖者信息
-
-  if (!winner_list) {
-    return ctx.body = failed('中奖者不能为空')
   }
 
   let wins = []
   let msgs = []
   let nick_names = []
+  let report_ids = []
 
   // winners = JSON.parse(winners)
 
@@ -218,53 +222,51 @@ const lottery = async(ctx, next) => {
   }
 
 
-  for (let item of Object.values(winner_list)) {
+  for (let i in winners) {
+    let id = i
+    let item = winners[i]
 
+    let winner = {}
+    let wi = {}
 
-    if (Object.keys(winners).includes('' + item.id)) {
+    winner['prize_name'] = item.prize
+    winner['open_id'] = item.open_id
+    winner['type'] = item.type
+    winner['active_id'] = lottery_id
+    winner['activite_type'] = 2
+    winner['report_id'] = id
+    winner['manager_id'] = ctx.state.managerInfo['data']['id']
+    winner['manager_name'] = ctx.state.managerInfo['data']['name']
+    winner['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
+    winner['nick_name'] = item.nick_name
+    winner['title'] = activite_info.title
+    winner['avatar_url'] = item.avatar_url
+    winner['phone'] = item.phone
+    winner['expiration_day'] = moment().add(1, 'month').format('YYYY-MM-DD')
+    wins.push(winner)
+    report_ids.push(id)
 
-      let winner = {}
-      let wi = {}
+    wi['nick_name'] = item.nick_name
+    wi['avatar_url'] = item.avatar_url
+    nick_names.push(wi)
 
-      winner['prize_name'] = winners[item.id]['prize']
-      winner['open_id'] = winners[item.id]['open_id']
-      winner['type'] = winners[item.id]['type']
-      winner['active_id'] = activite_id
-      winner['activite_type'] = 2
-      winner['report_id'] = item.id
-      winner['manager_id'] = ctx.state.managerInfo['data']['id']
-      winner['manager_name'] = ctx.state.managerInfo['data']['name']
-      winner['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
-      winner['nick_name'] = item.nick_name
-      winner['title'] = activite_info.title
-      winner['avatar_url'] = item.avatar_url
-      winner['phone'] = item.phone
-      winner['expiration_day'] = moment().add(1, 'month').format('YYYY-MM-DD')
-      wins.push(winner)
+    let msg = {}
+    msg['title'] = activite_info['title']
+    msg['description'] = item.nick_name + '恭喜你获得' + item.prize
+    msg['content'] = JSON.stringify('恭喜您在“' + activite_info.title + '”中，获得“' + item.prize + '奖品”，请点击“领奖”按钮填写相关领奖信息。')
+    msg['manager_id'] = ctx.state.managerInfo['data']['id']
+    msg['manager_name'] = ctx.state.managerInfo['data']['name']
+    msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
+    msg['status'] = 0 //待发布：0，已发布：1
+    msg['open_id'] = item.open_id
+    msg['activite_id'] = lottery_id
+    msg['activite_type'] = 2
+    msg['type'] = 2
+    msg['phone'] = item.phone
+    msgs.push(msg)
 
-      wi['nick_name'] = item.nick_name
-      wi['avatar_url'] = item.avatar_url
-      nick_names.push(wi)
-
-      let msg = {}
-      msg['title'] = activite_info['title']
-      msg['description'] = item.nick_name + '恭喜你获得' + winners[item.id]['prize']
-      msg['content'] = JSON.stringify('恭喜您在“' + activite_info.title + '”中，获得“' + winners[item.id]['prize'] + '奖品”，请点击“领奖”按钮填写相关领奖信息。')
-      msg['manager_id'] = ctx.state.managerInfo['data']['id']
-      msg['manager_name'] = ctx.state.managerInfo['data']['name']
-      msg['create_time'] = moment().format('YYYY-MM-DD HH:mm:ss')
-      msg['status'] = 0 //待发布：0，已发布：1
-      msg['open_id'] = item.open_id
-      msg['activite_id'] = activite_info.id
-      msg['activite_type'] = 2
-      msg['type'] = 2
-      msg['phone'] = item.phone
-      msgs.push(msg)
-    } else {
-      return ctx.body = failed('存在未分配奖品人员')
-      break
-    }
   }
+
 
   console.dir(wins)
 
@@ -294,16 +296,26 @@ const lottery = async(ctx, next) => {
 
 
   await activite_info.update({
-    status: 2
+    status: 3
   })
 
   res = await Report.update({
     activite_status: 3
   }, {
     where: {
-      activite_id: activite_id,
+      activite_id: lottery_id,
       invalid: 0,
       activite_type: 2
+    }
+  })
+
+  res = await Report.update({
+    is_winner: 1
+  }, {
+    where: {
+      id: {
+        $in: report_ids
+      }
     }
   })
 
@@ -317,11 +329,11 @@ const lottery = async(ctx, next) => {
 
 module.exports = {
   adm: {
+    lottery,
     add,
     list,
     del,
     edit,
-    lottery,
     start_end
   }
 }
