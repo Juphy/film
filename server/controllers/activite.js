@@ -741,6 +741,9 @@ const image_base64 = async (ctx, next) => {
   let {
     url
   } = p;
+  if (!url) {
+    return ctx.body = failed('必填项缺省');
+  }
   let http = require('http'),
     path = require('path');
   if (url.includes('https')) {
@@ -774,7 +777,7 @@ module.exports = {
     start_end,
     lottery,
     search_movie,
-    
+
     cinema_info
   },
   pub: {
