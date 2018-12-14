@@ -598,7 +598,7 @@ const in_lotties = async (ctx, next) => {
 
   rules = activite_info.rule_description
 
-  if (rules.upload) {
+  if (rules&&rules.upload) {
     count = await Report.count({
       where: {
         open_id: open_id,
@@ -612,7 +612,7 @@ const in_lotties = async (ctx, next) => {
     }
   }
 
-  if (rules.share) {
+  if (rules&&rules.share) {
     count = await User.count({
       where: {
         from_uuid: userinfo.uuid
@@ -624,7 +624,7 @@ const in_lotties = async (ctx, next) => {
     }
   }
 
-  if (rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
+  if (rules&&rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
     return ctx.body = failed('您不是' + moment(rules.date).format('YYYY年MM月DD日') + '之后注册用户')
   }
 
