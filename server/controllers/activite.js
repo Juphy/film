@@ -540,6 +540,16 @@ const app_info = async(ctx, next) => {
         invalid: 0
       }
     });
+
+    if (activite_info.rule_description && activite_info.rule_description.upload) {
+      activite_info.rule_description.upload = '参与上传最少' + activite_info.rule_description.upload + '次'
+    }
+    if (activite_info.rule_description && activite_info.rule_description.share) {
+      activite_info.rule_description.share = '邀请人数最少' + activite_info.rule_description.share + '人'
+    }
+    if (activite_info.rule_description && activite_info.rule_description.date) {
+      activite_info.rule_description.date = '注册时间在' + activite_info.rule_description.date + '之后'
+    }
   }
 
   if (!activite_info) {
