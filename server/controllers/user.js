@@ -22,7 +22,7 @@ const fs = require('fs')
 
 //判断用户是否绑定手机号
 
-const check_bind_phone = async (ctx, next) => {
+const check_bind_phone = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -37,7 +37,7 @@ const check_bind_phone = async (ctx, next) => {
 
 
 // 绑定手机号
-const bind_phone = async (ctx, next) => {
+const bind_phone = async(ctx, next) => {
   // 通过 Koa 中间件进行登录态校验之后
   // 登录信息会被存储到 ctx.state.$wxInfo
   // 具体查看：
@@ -51,7 +51,7 @@ const bind_phone = async (ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  const reply = await redis.get('bindPhoneCode_' + phone, function (err, reply) {
+  const reply = await redis.get('bindPhoneCode_' + phone, function(err, reply) {
     return reply;
   });
 
@@ -88,7 +88,7 @@ const bind_phone = async (ctx, next) => {
 };
 
 //添加地址
-const add_address = async (ctx, next) => {
+const add_address = async(ctx, next) => {
 
   let {
     province,
@@ -131,10 +131,10 @@ const add_address = async (ctx, next) => {
     await User.update({
       address_id: res.id
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success(res, '添加成功')
@@ -143,7 +143,7 @@ const add_address = async (ctx, next) => {
 }
 
 //编辑地址
-const edit_address = async (ctx, next) => {
+const edit_address = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = failed('登录失败')
@@ -218,20 +218,20 @@ const edit_address = async (ctx, next) => {
     await user_info.update({
       address_id: res.id
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   if (is_default == 0 && user_info.address_id == id) {
     await user_info.update({
       address_id: null
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success(res, '编辑成功')
@@ -240,7 +240,7 @@ const edit_address = async (ctx, next) => {
 }
 
 //删除地址
-const del_address = async (ctx, next) => {
+const del_address = async(ctx, next) => {
   let {
     address_id
   } = ctx.request.params;
@@ -283,17 +283,17 @@ const del_address = async (ctx, next) => {
     await user_info.update({
       address_id: null
     }, {
-        where: {
-          open_id: ctx.state.$wxInfo.userinfo.openId
-        }
-      })
+      where: {
+        open_id: ctx.state.$wxInfo.userinfo.openId
+      }
+    })
   }
 
   ctx.body = success('删除成功')
 }
 
 //地址列表
-const address_list = async (ctx, next) => {
+const address_list = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -316,7 +316,7 @@ const address_list = async (ctx, next) => {
     return ctx.body = failed('用户信息不存在')
   }
 
-  address_list.forEach(function (item) {
+  address_list.forEach(function(item) {
     if (item.id == user_info.address_id) {
       item.setDataValue('default', 1)
     } else {
@@ -330,7 +330,7 @@ const address_list = async (ctx, next) => {
 
 //获取默认地址
 
-const get_default_address = async (ctx, next) => {
+const get_default_address = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -352,7 +352,7 @@ const get_default_address = async (ctx, next) => {
 }
 
 //设置默认地址
-const set_default_address = async (ctx, next) => {
+const set_default_address = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -384,17 +384,17 @@ const set_default_address = async (ctx, next) => {
   await User.update({
     address_id: address_id
   }, {
-      where: {
-        open_id: ctx.state.$wxInfo.userinfo.openId
-      }
-    });
+    where: {
+      open_id: ctx.state.$wxInfo.userinfo.openId
+    }
+  });
 
   ctx.body = success('', '设置默认地址成功')
 
 
 }
 
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     nick_name = '', phone, page = 1, page_size = 10, user_tags = ''
@@ -430,8 +430,84 @@ const list = async (ctx, next) => {
 }
 
 
+//微信用户树
+const wechat_tree = async(ctx, next) => {
+  let {
+    id
+  } = ctx.request.params;
+
+  if (!id) {
+    return ctx.body = failed('参数缺失')
+  }
+
+  let tree = {}
+
+  let user_info = await User.find({
+    where: {
+      id: id,
+      invalid: 0
+    }
+  })
+
+  if (!user_info) {
+    return ctx.body = failed('用户不存在')
+  }
+
+  tree.name = user_info.nick_name
+  tree.parent = 'null'
+  tree.uuid = user_info.uuid
+  tree.from_uuid = user_info.from_uuid
+  tree.avatar_url = user_info.avatar_url
+
+  let level1 = await User.findAll({
+    where: {
+      from_uuid: user_info.uuid
+    }
+  })
+
+  if (level1) {
+    let l0_children = []
+    for (var item1 of level1) {
+      let l1_tree = {}
+      l1_tree.name = item1.nick_name
+      l1_tree.parent = item1.from_uuid
+      l1_tree.uuid = item1.uuid
+      l1_tree.from_uuid = item1.from_uuid
+      l1_tree.avatar_url = item1.avatar_url
+      level2 = await User.findAll({
+        where: {
+          from_uuid: item1.uuid
+        }
+      })
+
+
+      if (level2) {
+        let l1_children = []
+        for (let item2 of level2) {
+          let l2_tree = {}
+          l2_tree.name = item2.nick_name
+          l2_tree.parent = item2.from_uuid
+          l2_tree.uuid = item2.uuid
+          l2_tree.from_uuid = item2.from_uuid
+          l2_tree.avatar_url = item2.avatar_url
+          l1_children.push(l2_tree)
+        }
+
+        l1_tree.children = l1_children
+      }
+
+      l0_children.push(l1_tree)
+    }
+    tree.children = l0_children
+  }
+
+  ctx.body = success(tree,'查询成功')
+
+}
+
+
 //小程序端统计参与记录，中奖记录
-const app_monitor = async (ctx, next) => {
+const app_monitor = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -468,7 +544,7 @@ const app_monitor = async (ctx, next) => {
 }
 
 //分享
-const app_share = async (ctx, next) => {
+const app_share = async(ctx, next) => {
 
 
   if (!ctx.state.$wxInfo.loginState) {
@@ -509,7 +585,7 @@ const app_share = async (ctx, next) => {
 }
 
 //生成二维码
-const createwxaqrcode = async (ctx, next) => {
+const createwxaqrcode = async(ctx, next) => {
 
   let {
     scene,
@@ -543,15 +619,15 @@ const createwxaqrcode = async (ctx, next) => {
         "Content-Length": data.length
       }
     };
-    var req = http.request(options, function (res) {
+    var req = http.request(options, function(res) {
       // res.setEncoding("binary");
       var chunks = [];
       var size = 0;
-      res.on('data', function (chunk) {
+      res.on('data', function(chunk) {
         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
         size += chunk.length;　　 //累加缓冲数据的长度
       });
-      res.on("end", function () {
+      res.on("end", function() {
         var data = Buffer.concat(chunks, size);　　　 //可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
         var base64Img = data.toString('base64');　　 //将Buffer对象转换为字符串并以base64编码格式显示
         resolve(base64Img);
@@ -565,7 +641,7 @@ const createwxaqrcode = async (ctx, next) => {
   ctx.body = success('data:image/png;base64,' + img)
 }
 
-const user_tags = async (ctx, next) => {
+const user_tags = async(ctx, next) => {
   let res = await Option.findAll({
     where: {
       type: 'user_tags'
@@ -575,8 +651,11 @@ const user_tags = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const edit_tag = async (ctx, next) => {
-  let { id, user_tags = '' } = ctx.request.params;
+const edit_tag = async(ctx, next) => {
+  let {
+    id,
+    user_tags = ''
+  } = ctx.request.params;
   if (!id) {
     return ctx.body = failed('必填项缺省');
   }
@@ -584,7 +663,9 @@ const edit_tag = async (ctx, next) => {
   if (!res) {
     return ctx.body = failed('id无效');
   }
-  res = await res.update({ user_tags: user_tags })
+  res = await res.update({
+    user_tags: user_tags
+  })
   ctx.body = success(res, '编辑成功');
 }
 
@@ -592,9 +673,9 @@ module.exports = {
 
   pub: {
     createwxaqrcode,
-    user_tags
+    user_tags,
+    wechat_tree
   },
-
   adm: {
     list,
     edit_tag
