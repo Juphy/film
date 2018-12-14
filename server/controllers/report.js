@@ -656,7 +656,7 @@ const lottery_report = async (ctx, next) => {
       activite_id: activite_id,
       activite_type: 2
     },
-    attributes: ['id', 'nick_name', 'avatar_url', 'open_id']
+    attributes: ['id', 'nick_name', 'avatar_url', 'open_id', 'phone']
   });
   ctx.body = success(res);
 }
