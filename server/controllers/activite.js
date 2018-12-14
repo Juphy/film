@@ -552,7 +552,7 @@ const app_info = async(ctx, next) => {
 
     winners = await Winner.findAll({
       where: {
-        active_id: activite_info.id,
+        activite_id: activite_info.id,
         invalid: 0,
         activite_type: activite_type
       }
@@ -628,7 +628,7 @@ const lottery = async(ctx, next) => {
       winner['prize_name'] = winners[item.id]['prize']
       winner['open_id'] = winners[item.id]['open_id']
       winner['type'] = winners[item.id]['type']
-      winner['active_id'] = activite_id
+      winner['activite_id'] = activite_id
       winner['activite_type'] = 1
       winner['report_id'] = item.id
       winner['manager_id'] = ctx.state.managerInfo['data']['id']

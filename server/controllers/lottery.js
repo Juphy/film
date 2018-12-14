@@ -167,7 +167,7 @@ const start_end = async(ctx, next) => {
   }, {
     where: {
       invalid: 0,
-      active_id: id,
+      activite_id: id,
       activite_type: 2
     }
   });
@@ -232,7 +232,7 @@ const lottery = async(ctx, next) => {
     winner['prize_name'] = item.prize
     winner['open_id'] = item.open_id
     winner['type'] = item.type
-    winner['active_id'] = lottery_id
+    winner['activite_id'] = lottery_id
     winner['activite_type'] = 2
     winner['report_id'] = id
     winner['manager_id'] = ctx.state.managerInfo['data']['id']

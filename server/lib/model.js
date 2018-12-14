@@ -423,7 +423,7 @@ const winners = sequelize.define('applet_winners', {
   open_id: {
     type: Sequelize.STRING
   },
-  active_id: {
+  activite_id: {
     type: Sequelize.INTEGER
   },
   prize_id: {
