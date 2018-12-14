@@ -620,7 +620,7 @@ const in_lotties = async (ctx, next) => {
     })
 
     if (count < rules.share) {
-      return ctx.body = failed('分享回流用户未达到' + rules.share + '个')
+      return ctx.body = failed('邀请人数未达到' + rules.share + '个')
     }
   }
 
