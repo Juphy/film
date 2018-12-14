@@ -593,7 +593,7 @@ const in_lotties = async (ctx, next) => {
   })
 
   if (report_info) {
-    return ctx.body = failed('该用户已参与')
+    return ctx.body = failed('您已参与成功')
   }
 
   rules = activite_info.rule_description
