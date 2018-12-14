@@ -639,6 +639,7 @@ const in_lotties = async (ctx, next) => {
     activite_id: activite_id,
     activite_type: 2,
     activite_status: 1,
+    show_day: moment().format('YYYY-MM-DD'),
     activite_end_day: activite_info.end_day,
     title: activite_info.title,
     create_time: moment().format('YYYY-MM-DD HH:mm:ss')
