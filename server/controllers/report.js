@@ -20,7 +20,7 @@ const Op = Sequelize.Op;
 
 
 //上传票根
-const upload = async (ctx, next) => {
+const upload = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -128,7 +128,7 @@ const upload = async (ctx, next) => {
 
 
 //删除上传数据
-const app_del = async (ctx, next) => {
+const app_del = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -167,7 +167,7 @@ const app_del = async (ctx, next) => {
 
 
 //参与记录
-const app_list = async (ctx, next) => {
+const app_list = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -210,9 +210,11 @@ const app_list = async (ctx, next) => {
 
   let res = await Report.findAndCountAll({
     where: we,
+    order: [
+      ['create_time', 'DESC']
+    ],
     offset: (page - 1) * page_size,
     limit: page_size * 1,
-    order:['create_time','DESC']
   })
 
   console.dir(res)
@@ -232,7 +234,7 @@ const app_list = async (ctx, next) => {
 
 
 //上传票根信息
-const app_info = async (ctx, next) => {
+const app_info = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -264,17 +266,17 @@ const app_info = async (ctx, next) => {
 
 
 // 上报数据列表（活动进行中和活动已结束）
-const pending_list = async (ctx, next) => {
+const pending_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    cinema_name = '',
-    title = '',
-    show_day,
-    status = '',
-    is_winner = '',
-    page = 1,
-    page_size = 10
+      cinema_name = '',
+      title = '',
+      show_day,
+      status = '',
+      is_winner = '',
+      page = 1,
+      page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -314,17 +316,17 @@ const pending_list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const ending_list = async (ctx, next) => {
+const ending_list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     movie_name = '',
-    cinema_name = '',
-    title = '',
-    show_day,
-    status = '',
-    is_winner = '',
-    page = 1,
-    page_size = 10
+      cinema_name = '',
+      title = '',
+      show_day,
+      status = '',
+      is_winner = '',
+      page = 1,
+      page_size = 10
   } = p;
   p['page'] = page;
   p['page_size'] = page_size;
@@ -363,7 +365,7 @@ const ending_list = async (ctx, next) => {
 }
 
 // 批量审核
-const reviews = async (ctx, next) => {
+const reviews = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     ids = [], status
@@ -387,12 +389,12 @@ const reviews = async (ctx, next) => {
           manager_id: ctx.state.managerInfo['data']['id'],
           manager_name: ctx.state.managerInfo['data']['name']
         }, {
-            where: {
-              id: {
-                [Op.in]: ids
-              }
+          where: {
+            id: {
+              [Op.in]: ids
             }
-          });
+          }
+        });
         ctx.body = success(_res);
       }
     } else {
@@ -402,7 +404,7 @@ const reviews = async (ctx, next) => {
 }
 
 // 中奖，标记中奖者
-const winning = async (ctx, next) => {
+const winning = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     report_id,
@@ -448,7 +450,7 @@ const winning = async (ctx, next) => {
 }
 
 // 已标记为中奖的数据
-const report_winning = async (ctx, next) => {
+const report_winning = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -467,7 +469,7 @@ const report_winning = async (ctx, next) => {
   }
 }
 
-const pending_count = async (ctx, next) => {
+const pending_count = async(ctx, next) => {
   let a = await Report.count({
     where: {
       status: 0,
@@ -511,7 +513,7 @@ const pending_count = async (ctx, next) => {
   ctx.body = success([a, b, c, d]);
 }
 
-const ending_count = async (ctx, next) => {
+const ending_count = async(ctx, next) => {
   let b = await Report.count({
     where: {
       status: 2,
@@ -540,7 +542,7 @@ const ending_count = async (ctx, next) => {
 }
 
 //参与抽奖活动
-const in_lotties = async (ctx, next) => {
+const in_lotties = async(ctx, next) => {
 
   if (!ctx.state.$wxInfo.loginState) {
     return ctx.body = authFailed()
@@ -599,7 +601,7 @@ const in_lotties = async (ctx, next) => {
 
   rules = activite_info.rule_description
 
-  if (rules&&rules.upload) {
+  if (rules && rules.upload) {
     count = await Report.count({
       where: {
         open_id: open_id,
@@ -613,7 +615,7 @@ const in_lotties = async (ctx, next) => {
     }
   }
 
-  if (rules&&rules.share) {
+  if (rules && rules.share) {
     count = await User.count({
       where: {
         from_uuid: userinfo.uuid
@@ -625,7 +627,7 @@ const in_lotties = async (ctx, next) => {
     }
   }
 
-  if (rules&&rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
+  if (rules && rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
     return ctx.body = failed('您不是' + moment(rules.date).format('YYYY年MM月DD日') + '之后注册用户')
   }
 
@@ -650,9 +652,11 @@ const in_lotties = async (ctx, next) => {
 
 }
 
-const lottery_report = async (ctx, next) => {
+const lottery_report = async(ctx, next) => {
 
-  let { activite_id } = ctx.request.params;
+  let {
+    activite_id
+  } = ctx.request.params;
   let res = await Report.findAll({
     where: {
       activite_id: activite_id,
