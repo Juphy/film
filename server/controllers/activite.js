@@ -594,8 +594,7 @@ const lottery = async (ctx, next) => {
       invalid: 0,
       status: {
         $in: [1, 3]
-      },
-      activite_type: 1
+      }
     }
   }) //查询活动信息
 
