@@ -199,6 +199,17 @@ const lottery = async(ctx, next) => {
     return ctx.body = failed('活动不存在或已开奖')
   }
 
+  // winners = {
+  //   10: {
+  //     open_id: "oG4T15Z82inAfF8zT5YwYDmaYje0",
+  //     prize: "50000000",
+  //     type: 3,
+  //     nick_name: "run",
+  //     avatar_url: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ertOVcUNZ1q6CvAYTCZ73Np6TOAYKhjDubOk5D5Oy6a4raIh1e8ABKC5gPsGIZoJtnjJ39Z9vl4pg/132',
+  //     phone: '18210364952'
+  //   }
+  // }
+
   let wins = []
   let msgs = []
   let nick_names = []

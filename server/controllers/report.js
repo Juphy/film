@@ -211,7 +211,8 @@ const app_list = async (ctx, next) => {
   let res = await Report.findAndCountAll({
     where: we,
     offset: (page - 1) * page_size,
-    limit: page_size * 1
+    limit: page_size * 1,
+    order:['create_time','DESC']
   })
 
   console.dir(res)
