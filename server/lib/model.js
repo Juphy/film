@@ -346,7 +346,7 @@ const reports = sequelize.define('applet_reports', {
       if (!this.getDataValue('create_time')) {
         return null
       }
-      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   }
 }, {
