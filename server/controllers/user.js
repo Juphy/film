@@ -613,7 +613,7 @@ const createwxaqrcode = async(ctx, next) => {
     var options = {
       method: "POST",
       host: "api.weixin.qq.com",
-      path: "/cgi-bin/wxaapp/createwxaqrcode?access_token=" + ctx.state.accessToken,
+      path: "/wxa/getwxacodeunlimit?access_token=" + ctx.state.accessToken,
       headers: {
         "Content-Type": "application/json",
         "Content-Length": data.length
