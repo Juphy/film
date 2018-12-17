@@ -591,7 +591,22 @@ const coupon_list = async (ctx, next) => {
   ctx.body = success(winners)
 }
 
-
+const lottery_list = async (ctx, next) => {
+  let { id } = ctx.request.params;
+  if (!id) {
+    return ctx.body = failed('id无效');
+  } else {
+    let res = await Winner.findAll({
+      where: {
+        activite_id: id,
+        activite_type: 2,
+        invalid: 0
+      },
+      attributes: ['prize_name', 'avatar_url', 'nick_name', 'type']
+    });
+    ctx.body = success(res);
+  }
+}
 
 module.exports = {
   pub: {
@@ -603,7 +618,8 @@ module.exports = {
     add_sf_order,
     list,
     del,
-    make_prize
+    make_prize,
+    lottery_list
   },
   app: {
     express_winner_list,
