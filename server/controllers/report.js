@@ -659,6 +659,7 @@ const lottery_report = async(ctx, next) => {
   } = ctx.request.params;
   let res = await Report.findAll({
     where: {
+      invalid: 0,
       activite_id: activite_id,
       activite_type: 2
     },
