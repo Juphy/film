@@ -212,7 +212,7 @@ const app_list = async (ctx, next) => {
     where: we,
     offset: (page - 1) * page_size,
     limit: page_size * 1,
-    order:['create_time','DESC']
+    order: ['create_time', 'DESC']
   })
 
   console.dir(res)
@@ -599,7 +599,7 @@ const in_lotties = async (ctx, next) => {
 
   rules = activite_info.rule_description
 
-  if (rules&&rules.upload) {
+  if (rules && rules.upload) {
     count = await Report.count({
       where: {
         open_id: open_id,
@@ -613,7 +613,7 @@ const in_lotties = async (ctx, next) => {
     }
   }
 
-  if (rules&&rules.share) {
+  if (rules && rules.share) {
     count = await User.count({
       where: {
         from_uuid: userinfo.uuid
@@ -625,7 +625,7 @@ const in_lotties = async (ctx, next) => {
     }
   }
 
-  if (rules&&rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
+  if (rules && rules.date && moment(userinfo.create_time).format('YYYY-MM-DD') < moment(rules.date).format('YYYY-MM-DD')) {
     return ctx.body = failed('您不是' + moment(rules.date).format('YYYY年MM月DD日') + '之后注册用户')
   }
 
@@ -655,6 +655,7 @@ const lottery_report = async (ctx, next) => {
   let { activite_id } = ctx.request.params;
   let res = await Report.findAll({
     where: {
+      invalid: 0,
       activite_id: activite_id,
       activite_type: 2
     },
