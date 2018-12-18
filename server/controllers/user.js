@@ -588,15 +588,11 @@ const app_share = async(ctx, next) => {
 const createwxaqrcode = async(ctx, next) => {
 
   let {
-    scene,
+    scene='11111111',
     page = 'pages/index/index',
     width = 430,
     auth_color = false
   } = ctx.request.params
-
-  if (!scene) {
-    return ctx.body = failed('参数错误')
-  }
 
 
   data = {
