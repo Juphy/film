@@ -580,7 +580,7 @@ const coupon_list = async (ctx, next) => {
     return ctx.body = authFailed()
   }
 
-  winners = await Winner.findAll({
+  let winners = await Winner.findAll({
     where: {
       open_id: ctx.state.$wxInfo.userinfo.openId,
       is_sure: 1,
