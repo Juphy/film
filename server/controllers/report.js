@@ -638,7 +638,6 @@ const in_lotties = async (ctx, next) => {
     avatar_url: userinfo.avatar_url,
     phone: userinfo.phone,
     cinema_code: 0,
-    cinema_name: '抽奖活动',
     activite_id: activite_id,
     activite_type: 2,
     activite_status: 1,
