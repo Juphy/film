@@ -8,18 +8,30 @@ var util = require('../../utils/util.js')
 var qcloud = require('../../vendor/wafer2-client-sdk/index')
 var config = require('../../config')
 var hz2py = require('../../utils/hz2py.js')
-var page = 1
-var pageSize = 10
-var totalPage
 var detailActivityId
+var currentTag = 0
+var form
 
 Page({
   data: {
     nowDate: util.getNowTime(),
     activityList: [],
-    inputVal:''
+    inputVal: '',
+    lotteyIsShow: false,
+    uploadIsShow: false
+
+
   },
-  inputValueChange: function(e){
+
+  setTab: function(e) {
+    const edata = e.currentTarget.dataset;
+    currentTag = edata.tabindex
+    this.setData({
+      showtab: edata.tabindex,
+
+    })
+  },
+  inputValueChange: function(e) {
     this.setData({
       inputVal: e.detail.value
     })
@@ -35,25 +47,43 @@ Page({
         });
       }
     });
+    form = options.form
 
+
+
+    util.showConsole('=============home')
+
+    util.showConsole(options)
     if (options.form == 'avtivityDetail') {
-      util.showConsole(options.uuid)
       meApi.userAppShare(options.uuid, this.userAppShareSuccess, this.userAppShareFail)
       detailActivityId = options.id
-    } 
+    } else if (options.form == 'lotteyDetail') {
+      meApi.userAppShare(options.uuid, this.userAppShareSuccess, this.userAppShareFail)
+      detailActivityId = options.id
+    }
 
 
   },
 
-  onShow:function(){
+  onShow: function() {
     this.loadActivityList('')
-    
+
   },
 
   userAppShareSuccess: function(result) {
-    wx.navigateTo({
-      url: '/pages/activity/detail/detail?id=' + detailActivityId,
-    })
+
+    if (form == 'avtivityDetail') {
+      wx.navigateTo({
+        url: '/pages/activity/detail/detail?id=' + detailActivityId,
+      })
+    } else if (form == 'lotteyDetail') {
+      wx.navigateTo({
+        url: '/pages/activity/lottey/index?id=' + detailActivityId,
+      })
+    }
+
+
+
   },
   userAppShareFail: function(e) {
     util.showModel("提示", e)
@@ -65,17 +95,13 @@ Page({
     });
   },
   hideInput: function() {
-    page = 1
-    // this.data.activityList = []
     this.loadActivityList(this.data.inputVal)
-    // this.setData({
-    //   inputVal: "",
-    //   inputShowed: false
-    // });
+    this.setData({
+      inputVal: "",
+      inputShowed: false
+    });
   },
   clearInput: function() {
-
-    this.data.activityList = []
     this.loadActivityList('')
     this.setData({
       inputVal: "",
@@ -83,16 +109,21 @@ Page({
     });
   },
   onClickItem: function(e) {
+    util.showConsole(e)
 
-    util.showConsole(e.currentTarget.id)
+    if (e.currentTarget.dataset.atype == 1) {
+      wx.navigateTo({
+        url: '/pages/activity/detail/detail?id=' + e.currentTarget.id,
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/activity/lottey/index?id=' + e.currentTarget.id,
+      })
+    }
 
-    wx.navigateTo({
-      url: '/pages/activity/detail/detail?id=' + e.currentTarget.id,
-    })
+
   },
   inputTyping: function(e) {
-    page = 1
-    // this.data.activityList = []
     util.showConsole(e.detail.value)
     this.loadActivityList(e.detail.value)
 
@@ -101,23 +132,27 @@ Page({
     wx.showLoading({
       title: '数据加载中...',
     })
-    activityApi.activityList(name, page, pageSize, this.activityListSuccess, this.activityListFail)
+    activityApi.activityList(name, this.activityListSuccess, this.activityListFail)
   },
   activityListSuccess: function(result) {
-    let that = this
-    totalPage = result.data.res.page.total
     wx.hideLoading()
     wx.stopPullDownRefresh()
-    that.data.activityList = []
-    for (var item in result.data.res.data) {
-      this.data.activityList.push(result.data.res.data[item])
+    let lotteyIsShow = false
+    let uploadIsShow = false
+
+    if (result.data.res.lottey_activite.length > 0) {
+      lotteyIsShow = true
+    }
+
+    if (result.data.res.upload_activite.length > 0) {
+      uploadIsShow = true
     }
 
     this.setData({
-      activityList: that.data.activityList
+      activityList: result.data.res,
+      lotteyIsShow: lotteyIsShow,
+      uploadIsShow: uploadIsShow
     })
-
-    util.showConsole(that.data.activityList)
 
 
   },
@@ -130,7 +165,6 @@ Page({
   },
   // 下拉刷新
   onPullDownRefresh: function() {
-    page = 1;
     // 显示顶部刷新图标
     this.data.activityList = []
 
@@ -142,18 +176,7 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function() {
-
-    ++page
-    if (page > totalPage) {
-      wx.showToast({
-        title: '已是最后一页了',
-      })
-      wx.hideLoading()
-      wx.stopPullDownRefresh()
-      return
-    }
-
-    this.loadActivityList('')
+    wx.stopPullDownRefresh()
   },
 
 

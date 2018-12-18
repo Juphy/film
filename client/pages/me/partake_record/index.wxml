@@ -37,40 +37,57 @@
         <block wx:for='{{doingActivityList}}'>
 
 
-          <view class='partake-record-item'>
-            <text class='partake-record-title'>{{item.title}}</text>
+          <block wx:if='{{item.activite_type==1}}'>
+            <view class='partake-record-item' data-atype='1' data-activityid='{{item.activite_id}}' bindtap='onClickDetail'>
+              <text class='partake-record-title'>{{item.title}}</text>
 
-            <view class='partake-record-date-del'>
+              <view class='partake-record-date-del'>
 
-              <text class='partake-record-date'>{{item.show_day}}</text>
-              <image data-id='{{item.id}}' bindtap='onClickDel' class='partake-record-del' src='/images/mine_participation_delete_btn@2x.png'></image>
+                <text class='partake-record-date'>{{item.show_day}}</text>
+                <image data-id='{{item.id}}' bindtap='onClickDel' class='partake-record-del' src='/images/mine_participation_delete_btn@2x.png'></image>
+
+              </view>
+
+              <view class='partake-record-line'></view>
+
+              <text class='partake-record-film-name'>{{item.cinema_name}}</text>
+              <text class='partake-record-film-address'>{{item.address.address}}</text>
+              <view class='partake-record-line'></view>
+
+              <text class='partake-record-film-demo'>{{item.remark}}</text>
+
+
+              <view class='partake-record-images'>
+
+                <block wx:key='imageIndex' wx:for='{{item.content.image}}' wx:for-item='image'>
+                  <image bindtap='onClickPic' data-url='{{image}}' class='partake-record-images-item' src='{{image}}'></image>
+                </block>
+
+
+                <video wx:if='{{item.content.video}}' id='myVideo' bindplay='onPlayVideoListen' class='partake-record-images-item' src="{{item.content.video}}" bindended='onEndVideoListen'></video>
+
+              </view>
+
+
 
             </view>
+          </block>
+          <block wx:else>
+            <view class='partake-record-item' data-atype='2' data-activityid='{{item.activite_id}}' bindtap='onClickDetail'>
+              <text class='partake-record-title'>{{item.title}}</text>
 
-            <view class='partake-record-line'></view>
+              <view class='partake-record-date-del'>
 
-            <text class='partake-record-film-name'>{{item.cinema_name}}</text>
-            <text class='partake-record-film-address'>{{item.address.address}}</text>
-            <view class='partake-record-line'></view>
-
-            <text class='partake-record-film-demo'>{{item.remark}}</text>
-
-
-            <view class='partake-record-images'>
-
-              <block wx:key='imageIndex' wx:for='{{item.content.image}}' wx:for-item='image'>
-                <image bindtap='onClickPic' data-url='{{image}}' class='partake-record-images-item' src='{{image}}'></image>
-              </block>
+                <text class='partake-record-date'>{{item.show_day}}</text>
 
 
-              <video wx:if='{{item.content.video}}' id='myVideo' bindplay='onPlayVideoListen' class='partake-record-images-item' src="{{item.content.video}}" bindended='onEndVideoListen'></video>
+              </view>
 
-            </view>
 
 
 
-          </view>
-
+            </view>
+          </block>
         </block>
 
 
@@ -95,65 +112,105 @@
       <scroll-view scroll-y style="height: 90vh;">
         <block wx:for='{{overActivityList}}'>
 
-          <view class='partake-record-item'>
+          <block wx:if='{{item.activite_type==1}}'>
 
-            <view class='partake-record-title'>
-              <text>{{item.title}}</text>
+            <view class='partake-record-item' data-atype='1'  data-activityid='{{item.activite_id}}' bindtap='onClickDetail'>
 
-              <block wx:if='{{item.applet_activites.status==2}}'>
+              <view class='partake-record-title'>
+                <text>{{item.title}}</text>
 
-                <text>（待开奖）</text>
+                <block wx:if='{{item.activite_status==2}}'>
 
-              </block>
+                  <text>（待开奖）</text>
 
-              <block wx:else>
-
-                <block wx:if='{{item.is_winner==0}}'>
-
-                  <text style='color:#939393'>（未中奖）</text>
                 </block>
+
                 <block wx:else>
-                  <text style='color:#56bdac'>（已中奖）</text>
+
+                  <block wx:if='{{item.is_winner==0}}'>
+
+                    <text style='color:#939393'>（未中奖）</text>
+                  </block>
+                  <block wx:else>
+                    <text style='color:#56bdac'>（已中奖）</text>
+
+                  </block>
 
                 </block>
 
-              </block>
+              </view>
+
+
+              <view class='partake-record-date-del'>
+
+                <text class='partake-record-date'>{{item.show_day}}</text>
+                <view class='partake-record-del'></view>
+
+              </view>
+
+              <view class='partake-record-line'></view>
+
+              <text class='partake-record-film-name'>{{item.cinema_name}}</text>
+              <text class='partake-record-film-address'>{{item.address.address}}</text>
+              <view class='partake-record-line'></view>
+
+              <text class='partake-record-film-demo'>{{item.remark}}</text>
+
+
+              <view class='partake-record-images'>
+
+                <block wx:key='imageIndex' wx:for='{{item.content.image}}' wx:for-item='image'>
+                  <image bindtap='onClickPic' data-url='{{image}}' class='partake-record-images-item' src='{{image}}'></image>
+                </block>
+
+
+                <video wx:if='{{item.content.video}}' id='myVideo' bindplay='onPlayVideoListen' class='partake-record-images-item' src="{{item.content.video}}" bindended='onEndVideoListen'></video>
+
+
+
+              </view>
+
+
+
+            </view>
+          </block>
+          <block wx:else>
+            <view class='partake-record-item' data-atype='2' data-activityid='{{item.activite_id}}' bindtap='onClickDetail'>
+
+              <view class='partake-record-title'>
+                <text>{{item.title}}</text>
+
+                <block wx:if='{{item.activite_status==2}}'>
+
+                  <text>（待开奖）</text>
+
+                </block>
+
+                <block wx:else>
+
+                  <block wx:if='{{item.is_winner==0}}'>
+
+                    <text style='color:#939393'>（未中奖）</text>
+                  </block>
+                  <block wx:else>
+                    <text style='color:#56bdac'>（已中奖）</text>
+
+                  </block>
+
+                </block>
+
+              </view>
+
+              <view class='partake-record-date-del'>
+
+                <text class='partake-record-date'>{{item.show_day}}</text>
+              </view>
 
             </view>
 
 
-            <view class='partake-record-date-del'>
 
-              <text class='partake-record-date'>{{item.show_day}}</text>
-              <view class='partake-record-del'></view>
-
-            </view>
-
-            <view class='partake-record-line'></view>
-
-            <text class='partake-record-film-name'>{{item.cinema_name}}</text>
-            <text class='partake-record-film-address'>{{item.address.address}}</text>
-            <view class='partake-record-line'></view>
-
-            <text class='partake-record-film-demo'>{{item.remark}}</text>
-
-
-            <view class='partake-record-images'>
-
-              <block wx:key='imageIndex' wx:for='{{item.content.image}}' wx:for-item='image'>
-                <image bindtap='onClickPic' data-url='{{image}}' class='partake-record-images-item' src='{{image}}'></image>
-              </block>
-              
-
-              <video wx:if='{{item.content.video}}' id='myVideo' bindplay='onPlayVideoListen' class='partake-record-images-item' src="{{item.content.video}}" bindended='onEndVideoListen'></video>
-
-
-
-            </view>
-
-
-
-          </view>
+          </block>
 
         </block>
       </scroll-view>

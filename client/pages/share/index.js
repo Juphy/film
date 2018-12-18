@@ -2,8 +2,9 @@ var meApi = require('../../net/me_api.js')
 var h2c = require('../../utils/html2canvas.min.js')
 var util = require('../../utils/util.js')
 var qcloud = require('../../vendor/wafer2-client-sdk/index')
-
 var activityId
+
+let phoneType = 1 //1是苹果手机 2是安卓手机
 
 Page({
 
@@ -18,80 +19,35 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-
-
-
-
     util.showConsole(options)
     activityId = options.activityId
-    meApi.userAccessToken(this.userAccessTokenSuccess, this.userAccessTokenFail)
-  },
 
-  userAccessTokenSuccess: function(result) {
-    let that = this
-
-    let session = qcloud.Session ? qcloud.Session.get() : null
+    let session = qcloud.Session.get()
     let uuid = session != null ? session.userinfo.uuid : ''
-
-    wx.request({
-      url: 'https://api.weixin.qq.com/wxa/getwxacode?access_token=' + 
-      result.data.access_token + '',
-      data: {
-        path: '/pages/activity/index?form=avtivityDetail&&id=' + activityId + "&&uuid=" + uuid,
-        scene: "m_scene"
-      },
-      method: "POST",
-      responseType: 'arraybuffer',
-      header: {
-        'content-type': 'application/json',
-      },
-      success(res){
-        that.shardQrcodeSuccess(res)
-      },
-     fail(e){
-       this.shardQrcodeFail(e)
-     },
-
-    })
-
-  },
-  userAccessTokenFail: function(e) {
-    util.showModel('提示',e)
-  },
-
-  shardQrcodeSuccess: function(result) {
-
-    let qrCode = wx.arrayBufferToBase64(result.data)
-    this.setData({
-      imageUrl: qrCode
-    })
+    let skey = session != null ? session.skey : ''
+let that=this
 
 
-    wx.getImageInfo({
-      src: 'http://img0.imgtn.bdimg.com/it/u=3181355797,2341426971&fm=11&gp=0.jpg',
+    wx.getSystemInfo({
       success: function(res) {
 
-        const ctx = wx.createCanvasContext('shareCanvas')
-        ctx.drawImage(res.path, 0, 0, 375, 667)
+        phoneType = res.system.indexOf("iOS") != -1 ? 1 : 2
 
-        ctx.setTextAlign('center')
-        ctx.setFillStyle('#ffffff')
-        ctx.setFontSize(22)
-        ctx.fillText("电影壹壹零电影壹壹零电影壹壹零电影壹壹零电影壹壹零", 375 / 2, 667 / 2,150)
-        
-        const qrImgSize = 100
-        ctx.setStrokeStyle('white')
-        ctx.arc( 375 / 2, 800 / 2, 50, 0, 2 * Math.PI)
-        ctx.clip()
-        ctx.drawImage('data:image/png;base64,' + qrCode, (375 - qrImgSize) / 2, 700 / 2, qrImgSize, qrImgSize)
+        let sharePicUrl = 'https://www.film110.cn/static_file/index.html?activityId=' + activityId + '&uuid=' + uuid + '&skey=' + skey + '&page=' + options.page + '&activityType=' + options.activityType + '&phoneType=' + phoneType
 
-        ctx.stroke()
-        ctx.draw()
+        util.showConsole(sharePicUrl)
+
+        that.setData({
+          sharePicUrl: sharePicUrl
+        })
+
+
       }
-    })
+    });
 
-  },
-  shardQrcodeFail: function(e) {
+
+
+
 
   },
 
@@ -143,53 +99,48 @@ Page({
   onShareAppMessage: function() {
 
   },
+  onWebviewload: function() {
 
-  onClickSavePic:function(){
+  },
 
-    // wx.canvasToTempFilePath({ //生成图片
-    //   x: 0,
-    //   y: 0,
-    //   quality: 1,
-    //   canvasId: 'shareCanvas',
-    //   success: function (res) {
-    //     wx.saveImageToPhotosAlbum({  //保存生成的图片到手机相册里
-    //       filePath: res.tempFilePath,
-    //       success(res) {
-          
-    //           util.showModel("提示",'保存成功')
+  onPageMessage: function(e) {
 
 
-    //       }
-    //     })
-    //   }
-    // })
+    util.showConsole(e)
+    let tcount = 'data:image/png;base64,'
+    let picContent = e.detail.data[0].picBase64
+    let pic = e.detail.data[0].picBase64.substring(tcount.length, picContent.length)
 
-   
-    let b64;
-    h2c(document.getElementById('sharePic'), {
-      useCORS: true
-    }).then(function (canvas) {
-      console.log(canvas)
-      try {
-        b64 = canvas.toDataURL("image/png");
-        // getUrl(name, b64);
-        //console.log(b64);
-      } catch (err) {
-        console.log(err)
+    var picData = wx.base64ToArrayBuffer(pic)
+
+    var fileManager = wx.getFileSystemManager()
+    fileManager.writeFile({
+      filePath: wx.env.USER_DATA_PATH + '/sharePic.png',
+      encoding: 'base64',
+      data: picData,
+      success: function(res) {
+
+        wx.saveImageToPhotosAlbum({
+          filePath: wx.env.USER_DATA_PATH + '/sharePic.png',
+          success: function(data) {
+
+            wx.showToast({
+              title: '保存成功',
+              icon: 'success',
+              duration: 2000
+            })
+          },
+        })
+
+
+      },
+      fail: function(e) {
+        util.showConsole(e)
+
       }
-    }).catch(function onRejected(error) {
-      console.log(error)
-    });
-
-
-
+    })
 
 
   }
-
-
-
-
-
 
 })

@@ -11,7 +11,7 @@
   </block>
 
   <block wx:for="{{publicityList}}">
-    <view class='publicitylist-item' id="{{item.activite_id}}"  bindtap='onClickItem'>
+    <view data-atype='{{item.activite_type}}' class='publicitylist-item' id="{{item.activite_id}}"  bindtap='onClickItem'>
       <text class='publicitylist-item-title'  >【{{item.title}}】中奖名单公布</text>
       <text class='publicitylist-item-date'>{{item.create_time}}</text>
 

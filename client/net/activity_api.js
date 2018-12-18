@@ -25,12 +25,10 @@ function reportUpload(m_show_day, m_cinema_code, m_content, m_remark, m_activite
 }
 
 //活动列表
-function activityList(m_name, m_page, m_page_size, activityListSuccess, activityListFail) {
+function activityList(m_name, activityListSuccess, activityListFail) {
   manager.request(
     config.service.activityListUrl, {
       name: m_name,
-      page: m_page,
-      page_size: m_page_size
     },
     activityListSuccess,
     activityListFail
@@ -38,10 +36,11 @@ function activityList(m_name, m_page, m_page_size, activityListSuccess, activity
 }
 
 //小程序活动详情
-function activiteInfo(m_id, activiteInfoSuccess, activiteInfoFail) {
+function activiteInfo(m_id, m_activite_type, activiteInfoSuccess, activiteInfoFail) {
   manager.request(
     config.service.activityInfoUrl, {
-      id: m_id
+      id: m_id,
+      activite_type: m_activite_type
     },
     activiteInfoSuccess,
     activiteInfoFail
@@ -100,11 +99,27 @@ function reportAppDel(m_report_id, reportAppDelSuccess, reportAppDelFail) {
 
 }
 
+
+    // 参与抽奖活动
+function inLotties(m_activite_id, inLottiesSuccess, inLottiesFaill){
+  const session = qcloud.Session.get()
+  if (session) {
+    manager.request(
+      config.service.inLottiesUrl, {
+        activite_id: m_activite_id,
+      },
+      inLottiesSuccess,
+      inLottiesFaill
+    )
+  }
+}
+
 module.exports = {
   reportAppDel,
   reportAppInfo,
   reportAppList,
   reportUpload,
   activityList,
-  activiteInfo
+  activiteInfo,
+  inLotties
 }

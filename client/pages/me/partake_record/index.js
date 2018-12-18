@@ -112,9 +112,25 @@ Page({
   onClickDetail: function(e) {
 
     utils.showConsole(e)
-    wx.navigateTo({
-      url: '/pages/me/partake_record/detail/index?id=' + e.currentTarget.dataset.activityid,
-    })
+    let activityId = e.currentTarget.dataset.activityid
+    let atype = e.currentTarget.dataset.atype
+    if (atype==1){
+
+      wx.navigateTo({
+        url: '/pages/activity/detail/detail?id=' + activityId,
+      })
+
+    }else{
+
+      wx.navigateTo({
+        url: '/pages/activity/lottey/index?id=' + activityId,
+      })
+
+    }
+
+
+
+    
 
   },
   // 下拉刷新
@@ -184,11 +200,14 @@ Page({
     end_total_page = result.data.res.page.total
 
     let that = this
+
     for (let item in result.data.res.data) {
       result.data.res.data[item].content = JSON.parse(result.data.res.data[item].content)
       
       this.data.overActivityList.push(result.data.res.data[item])
     }
+
+    utils.showConsole(that.data.overActivityList)
 
     this.setData({
       overActivityList: that.data.overActivityList

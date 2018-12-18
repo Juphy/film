@@ -1,11 +1,13 @@
 {
   "pages": [
+
     "pages/activity/index",
     "pages/index/index",
     "pages/activity/detail/detail",
     "pages/activity/partake/index",
     "pages/activity/film/index",
     "pages/activity/city/index",
+    "pages/activity/lottey/index",
     "pages/login/index",
     "pages/addCgi/addCgi",
     "pages/me/index",
@@ -25,8 +27,6 @@
     "pages/me/award/address/index",
     "pages/me/award/money/index",
     "pages/share/index",
-    
-    
     "pages/publicity/index"
   ],
   "window": {
@@ -46,7 +46,7 @@
     "list": [
       {
         "pagePath": "pages/activity/index",
-        "text": "任务",
+        "text": "活动",
         "iconPath": "images/activity2@3x.png",
         "selectedIconPath": "images/activity@3x.png"
       },

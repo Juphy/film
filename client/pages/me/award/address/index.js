@@ -28,7 +28,8 @@ Page({
           addressInfo: res.data
         });
 
-      },fail:function(){
+      },
+      fail: function() {
         that.loadAddressList()
 
       }

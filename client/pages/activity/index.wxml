@@ -1,41 +1,90 @@
-<view style="padding-top: 60px">
+<view >
 
-<view class="weui-search-bar" style="position: fixed;top: 0;left: 0;right:0;height: 60px;z-index:9;background:#fff">
-  <view class="weui-search-bar__form">
-    <view class="weui-search-bar__box">
-      <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-      <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" bindinput='inputValueChange' focus="{{inputShowed}}" bindconfirm="inputTyping" />
-      <view class="weui-icon-clear" wx:if="{{inputVal.length}}" bindtap="clearInput">
-        <icon type="clear" size="14"></icon>
-      </view>
-    </view>
-    <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
-      <icon class="weui-icon-search" type="search" size="14"></icon>
-      <view class="weui-search-bar__text">搜索</view>
-    </label>
-  </view>
-  <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">搜索</view>
-</view>
-
-<scroll-view>
-  <block wx:for="{{activityList}}">
-    <view id="{{item.id}}" bindtap='onClickItem' class='activitylist-item'>
-
-      <block wx:if="{{item.end_day >=         nowDate  && item.status==1}}">
-        <image mode='aspectFit' class='activitylist-item-image' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx' src='{{item.playbill}}'></image>
-      </block>
-
-      <block wx:else>
-        <view class='activitylist-item-over'>
-          <image class='activitylist-item-image-no' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx' src='{{item.playbill}}'></image>
-          <view class='activitylist-item-image-over' style='width: {{pw}}rpx ;height:{{pw*0.6}}rpx;background:#000000;opacity:0.2; border-radius: 18rpx;'></view>
-          <image class='activitylist-item-image-over' src='/images/activity_end@3x.png' />
+  <view class="weui-search-bar" >
+    <view class="weui-search-bar__form">
+      <view class="weui-search-bar__box">
+        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" bindinput='inputValueChange' focus="{{inputShowed}}" bindconfirm="inputTyping" />
+        <view class="weui-icon-clear" wx:if="{{inputVal.length}}" bindtap="clearInput">
+          <icon type="clear" size="14"></icon>
         </view>
-      </block>
-
+      </view>
+      <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+        <icon class="weui-icon-search" type="search" size="14"></icon>
+        <view class="weui-search-bar__text">搜索</view>
+      </label>
     </view>
-    <view class='activitylist-item-name'>{{item.title}} </view>
+    <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">搜索</view>
+  </view>
 
-  </block>
-</scroll-view>
+<block wx:if='{{!lotteyIsShow && !uploadIsShow}}'>
+<view style='margin-left:30rpx;'> 暂无活动 </view>
+</block>
+
+
+<block wx:if='{{lotteyIsShow}}'>
+    <view style='height:10rpx;background:#eaeaea;'></view>
+
+    <view style='margin-top:30rpx;  margin-right: 30rpx;margin-left: 30rpx;font-size:36rpx;font-weight: 700;'>抽奖活动</view>
+    <block wx:for="{{activityList.lottey_activite}}" >
+      <view id="{{item.id}}" data-atype='0' bindtap='onClickItem' class='activitylist-item'>
+
+        <block wx:if="{{item.end_day >=nowDate  && item.status==1}}">
+          <image mode='aspectFit' class='activitylist-item-image' style='width: {{pw}}rpx ;height:{{pw*0.8}}rpx' src='{{item.playbill}}'></image>
+        </block>
+
+        <block wx:else>
+          <view class='activitylist-item-over'>
+            <image class='activitylist-item-image-no' style='width: {{pw}}rpx ;height:{{pw*0.8}}rpx' src='{{item.playbill}}'></image>
+            <view class='activitylist-item-image-over' style='width: {{pw}}rpx ;height:{{pw*0.8}}rpx;background:#000000;opacity:0.2; border-radius: 18rpx;'></view>
+            <image class='activitylist-item-image-over' src='/images/activity_end@3x.png' />
+          </view>
+
+
+        </block>
+
+      </view>
+      <view class='activitylist-item-name'>{{item.title}} </view>
+      <view style='height:2rpx;background:#eaeaea;margin-top:30rpx;'></view>
+
+    </block>
+
+</block>
+
+<block wx:if='{{uploadIsShow}}'>
+
+    <view style='height:10rpx;background:#eaeaea;'></view>
+
+    <view style='margin-top:30rpx;  margin-right: 30rpx;margin-left: 30rpx;font-size:36rpx;font-weight: 700;'>监察活动</view>
+    <block wx:for="{{activityList.upload_activite}}">
+      <view id="{{item.id}}" data-atype='1' bindtap='onClickItem' class='activitylist-item'>
+
+        <block wx:if="{{item.end_day >=nowDate  && item.status==1}}">
+          <image class='activitylist-item-image' style='width: {{pw}}rpx ;height:{{pw*0.8}}rpx' src='{{item.playbill}}'></image>
+        </block>
+
+        <block wx:else>
+          <view class='activitylist-item-over'>
+            <image class='activitylist-item-image-no' style='width: {{pw}}rpx ;height:{{pw*0.8}}rpx' src='{{item.playbill}}'></image>
+            <view class='activitylist-item-image-over' style='width: {{pw}}rpx ;height:{{pw*0.8}}rpx;background:#000000;opacity:0.2; border-radius: 18rpx;'></view>
+            <image class='activitylist-item-image-over' src='/images/activity_end@3x.png' />
+          </view>
+
+
+        </block>
+
+      </view>
+      <view class='activitylist-item-name'>{{item.title}} </view>
+      <view style='height:2rpx;background:#eaeaea;margin-top:30rpx;'></view>
+
+
+
+
+    </block>
+
+</block>
+
+
+
+
 </view>

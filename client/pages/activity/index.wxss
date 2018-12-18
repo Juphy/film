@@ -11,6 +11,7 @@
   border-radius: 18rpx;
   margin-top: 30rpx;
   
+  
 }
 
 .activitylist-item-image-no {
@@ -45,4 +46,44 @@
   font-weight: 700;
   margin-left: 30rpx;
   margin-right: 30rpx;
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-nav {
+  height: 80rpx;
+  background: #fff;
+  border-bottom: 0.5rpx dotted #eaeaea;
+  display: flex;
+  line-height: 80rpx;
+  position: relative;
+}
+
+.tab-line {
+  position: absolute;
+  left: 0;
+  bottom: -1rpx;
+  height: 4rpx;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.swiper-box {
+  background: #eaeaea;
+}
+
+.tab-line-i {
+  height: 4rpx;
+  width: 100rpx;
+  background: #56bdac;
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

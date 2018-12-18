@@ -21,7 +21,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-
+    util.showConsole(options)
     id = options.id
 
     if (options.locationId) {
@@ -35,7 +35,6 @@ Page({
         500, options.locationId)
 
     }
-   
 
 
   },
@@ -53,7 +52,7 @@ Page({
   onShow: function() {
     const session = qcloud.Session.get()
     if (session) {
-      activityApi.activiteInfo(id, '1', this.activiteInfoSuccess, this.activiteInfoFail)
+      activityApi.activiteInfo(id, '2', this.activiteInfoSuccess, this.activiteInfoFail)
 
     } else {
 
@@ -119,7 +118,6 @@ Page({
     //判断是否登录
     const session = qcloud.Session.get()
     if (session) {
-      util.showConsole(session)
 
       //判断是否绑定手机号
       if (!session.userinfo.phone) {
@@ -138,9 +136,10 @@ Page({
           }
         })
       } else {
-        wx.navigateTo({
-          url: '/pages/activity/partake/index?id=' + e.currentTarget.id,
+        wx.showLoading({
+          title: '提交申请中......',
         })
+        activityApi.inLotties(id, this.inLottiesSuccess, this.inLottiesFaill)
 
       }
 
@@ -152,11 +151,19 @@ Page({
     }
 
   },
+  inLottiesSuccess: function(result) {
+    wx.hideLoading()
 
+    util.showSuccess('申请成功')
+  },
+  inLottiesFaill: function(e) {
+    wx.hideLoading()
+    util.showModel('提示', e)
+  },
   activityIsOver: function() {
-    let endDay = this.data.activityInfo.activite_info.end_day
+    let endDay = this.data.activityInfo.end_day
     let time = endDay < util.getNowTime() //已结束
-    let stat = this.data.activityInfo.activite_info.status != 1 //1进行中2开奖3结束
+    let stat = this.data.activityInfo.status != 1 //1进行中2开奖3结束
     return time || stat
 
   },
@@ -170,10 +177,13 @@ Page({
     let session = qcloud.Session ? qcloud.Session.get() : null
     let uuid = session != null ? session.userinfo.uuid : ''
     let that = this
+
+    util.showConsole(that.data.activityInfo)
+
     return {
-      imageUrl: that.data.activityInfo.activite_info.playbill,
-      title: session.userinfo.nickName +'邀请你参与【'+that.data.activityInfo.activite_info.title+'】的活动抽奖',
-      path: '/pages/activity/index?form=avtivityDetail&&id=' + id + "&&uuid=" + uuid,
+      imageUrl: that.data.activityInfo.playbill,
+      title: session.userinfo.nickName + '邀请你参与【' + that.data.activityInfo.title + '】的活动抽奖',
+      path: '/pages/activity/index?form=lotteyDetail&&id=' + id + "&&uuid=" + uuid,
       success: function(res) {
         util.showConsole(res)
       }
@@ -199,9 +209,11 @@ Page({
   },
 
   onClickCreatSharePic: function(e) {
+    util.showConsole(e)
+
 
     wx.navigateTo({
-      url: '/pages/share/index?activityId=' + e.currentTarget.id + '&page=avtivityDetail&activityType=1',
+      url: '/pages/share/index?activityId=' + id + '&page=lotteyDetail&activityType=2',
     })
 
     this.setData({
@@ -214,20 +226,30 @@ Page({
   activiteInfoSuccess: function(result) {
     util.showConsole(result)
     this.setData({
-      activityInfo: result.data.res
+      activityInfo: result.data.res.activite_info
     })
 
     id = result.data.res.activite_info.id
-
     let prize_description = result.data.res.activite_info.prize_description
     imageList = []
     for (let item in prize_description) {
       imageList.push(prize_description[item].image)
     }
 
-    this.setData({
-      winners: result.data.res.winners
-    })
+    let ruleDescription = result.data.res.activite_info.rule_description
+
+    if (Object.values(ruleDescription).length>0) {
+
+      this.setData({
+        ruleDescriptionList: Object.values(ruleDescription)
+      })
+
+    }
+
+this.setData({
+  winners:result.data.res.winners
+})
+
 
   },
   activiteInfoFail: function(error) {

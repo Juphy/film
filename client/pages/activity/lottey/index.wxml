@@ -5,21 +5,23 @@
 
     <view class='activity-detail-content'>
 
-      <text class='activity-detail-title'>{{activityInfo.activite_info.title}}</text>
-      <image class='activity-detail-ad-image' src='{{activityInfo.activite_info.playbill}}'></image>
+      <text class='activity-detail-title'>{{activityInfo.title}}</text>
+      <image class='activity-detail-ad-image' src='{{activityInfo.playbill}}'></image>
 
       <view class='activity-detail-other-icon'>
         <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>活动描述</text>
       </view>
 
-      <view class='activity-detail-text'>{{activityInfo.activite_info.description}}</view>
+      <view class='activity-detail-text'>{{activityInfo.description}}</view>
+
+
 
       <view class='activity-detail-other-icon'>
         <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>奖品描述</text>
       </view>
 
       <view class='activity-detail-award'>
-        <block wx:for='{{activityInfo.activite_info.prize_description}}'>
+        <block wx:for='{{activityInfo.prize_description}}'>
 
           <view class='activity-detail-award-item'>
             <image mode='widthFix' data-currentimage='{{item.image}}' bindtap='onClickImage' class='activity-detail-award-item-pic' src='{{item.image}}'></image>
@@ -30,13 +32,24 @@
         </block>
       </view>
 
-      <block wx:for='{{activityInfo.activite_info.other_description}}'>
+<block wx:if='{{ruleDescriptionList}}'>
+      <view class='activity-detail-other-icon'>
+        <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>活动规则</text>
+      </view>
+
+      <view class='activity-detail-text'>
+        <view wx:for='{{ruleDescriptionList}}'>{{item}}</view>
+      </view>
+
+</block>
+
+      <block wx:for='{{activityInfo.other_description}}'>
 
         <view class='activity-detail-other-icon'>
           <text style='font-size:18rpx;color:#fff;margin-right:10rpx;margin-top:2rpx;'>{{item.title}}</text>
         </view>
 
-        <view class='activity-detail-text'>{{item.description}}</view>
+        <view>{{item.description}}</view>
 
       </block>
 
@@ -69,10 +82,9 @@
       </view>
 
       <view class='activity-detail-foot-mf-line'></view>
-
-      <view class='activity-detail-foot-share'  bindtap='onClickShare' >
+      <view class='activity-detail-foot-share' bindtap='onClickShare'>
         <image class='activity-detail-foot-icon' src='/images/activities_share_icon@3x.png'></image>
-        <view class='activity-detail-share-btn'>分享</view>
+        <button class='activity-detail-share-btn'>分享</button>
       </view>
     </view>
   </view>
@@ -82,7 +94,7 @@
 <action-sheet class='detail-action-sheet' hidden="{{actionSheetHidden}}" bindchange="listenerActionSheet">
   <action-sheet-item>
     <button style='background:#fff;height:80rpx;font-size:36rpx;padding:0;color:#333' open-type="share">分享给好友</button>
-    </action-sheet-item>
+  </action-sheet-item>
   <action-sheet-item id='{{activityInfo.activite_info.id}}' bindtap='onClickCreatSharePic'>生成分享卡片</action-sheet-item>
   <action-sheet-cancel>取消</action-sheet-cancel>
 </action-sheet>

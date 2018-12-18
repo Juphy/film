@@ -1,10 +1,6 @@
-
 <view id='sharePic'> 
-
-<canvas  canvas-id="shareCanvas" style="width:100vw;height:100vh">
-
-</canvas>
-<button bindtap='onClickSavePic' >保存图片</button>
+<web-view  src="{{sharePicUrl}}" bindload='onWebviewload'  bindmessage='onPageMessage'>
+</web-view>
 
 </view>
 

@@ -59,11 +59,21 @@ Page({
 
   onClickItem: function(e) {
 
+util.showConsole(e)
     util.showConsole(e.currentTarget.id)
 
-    wx.navigateTo({
-      url: '/pages/activity/detail/detail?id=' + e.currentTarget.id +'&locationId=winners',
-    })
+
+    if(e.currentTarget.dataset.atype==2){
+      wx.navigateTo({
+        url: '/pages/activity/lottey/index?id=' + e.currentTarget.id + '&locationId=winners',
+      })
+    }else{
+      wx.navigateTo({
+        url: '/pages/activity/detail/detail?id=' + e.currentTarget.id + '&locationId=winners',
+      })
+    }
+
+   
   },
 
 })
