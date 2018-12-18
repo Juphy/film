@@ -4,10 +4,15 @@
 	"miniprogramRoot": "client/",
 	"qcloudRoot": "server/",
 	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
 		"newFeature": true
 	},
-	"appid": "wx12f7ee2916dde013",
+	"appid": "wxdb54e4f46d16856c",
 	"projectname": "film110_05",
+	"libVersion": "2.4.2",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -25,7 +30,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 12,
+			"current": 20,
 			"list": [
 				{
 					"id": -1,
@@ -146,6 +151,11 @@
 					"name": "优惠卷列表",
 					"pathName": "pages/me/coupon/index",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "分享图",
+					"pathName": "pages/share/index"
 				}
 			]
 		}
