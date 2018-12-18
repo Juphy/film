@@ -741,6 +741,12 @@ winners.belongsTo(users, {
   as: 'user'
 })
 
+winners.belongsTo(reports, {
+  foreignKey: 'report_id',
+  targetKey: 'id',
+  as: 'report'
+})
+
 module.exports = {
   'Manager': managers,
   'Address': address,
