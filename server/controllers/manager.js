@@ -8,7 +8,7 @@ const {
   failed,
   authFailed
 } = require('./base.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { SALTROUNDS, secret } = require('../config');
 const jsonwebtoken = require('jsonwebtoken');
 //后台登录
@@ -245,6 +245,15 @@ const info_my_account = async (ctx, next) => {
 //   });
 //   ctx.body = success('更新数据', '更新成功');
 // }
+
+const add_tags = async(ctx,next)=>{
+
+  let { open_id,tags } = ctx.request.params;
+
+  if(!open_id||!tags){
+    
+  }
+}
 
 module.exports = {
   adm: {

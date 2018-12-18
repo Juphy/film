@@ -64,6 +64,9 @@ const activities = sequelize.define('applet_activites', {
   end_day: {
     type: Sequelize.DATEONLY,
   },
+  lottery_day: {
+    type: Sequelize.DATEONLY,
+  },
   description: {
     type: Sequelize.STRING
   },
@@ -202,6 +205,9 @@ const msgs = sequelize.define('applet_msgs', {
   phone: {
     type: Sequelize.STRING
   },
+  activite_type: {
+    type: Sequelize.INTEGER
+  },
   invalid: {
     type: Sequelize.INTEGER
   }
@@ -301,6 +307,15 @@ const reports = sequelize.define('applet_reports', {
       return moment(this.getDataValue('show_day')).format('YYYY-MM-DD');
     }
   },
+  activite_end_day: {
+    type: Sequelize.DATEONLY,
+    get() {
+      if (!this.getDataValue('activite_end_day')) {
+        return null
+      }
+      return moment(this.getDataValue('activite_end_day')).format('YYYY-MM-DD');
+    }
+  },
   manager_id: {
     type: Sequelize.INTEGER
   },
@@ -319,13 +334,19 @@ const reports = sequelize.define('applet_reports', {
   phone: {
     type: Sequelize.STRING
   },
+  activite_type: {
+    type: Sequelize.INTEGER
+  },
+  activite_status: {
+    type: Sequelize.INTEGER
+  },
   create_time: {
     type: Sequelize.DATE,
     get() {
       if (!this.getDataValue('create_time')) {
         return null
       }
-      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD');
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
     }
   }
 }, {
@@ -383,6 +404,9 @@ const users = sequelize.define('cSessionInfo', {
   },
   from_uuid: {
     type: Sequelize.STRING
+  },
+  user_tags: {
+    type: Sequelize.STRING
   }
 
 }, {
@@ -399,7 +423,7 @@ const winners = sequelize.define('applet_winners', {
   open_id: {
     type: Sequelize.STRING
   },
-  active_id: {
+  activite_id: {
     type: Sequelize.INTEGER
   },
   prize_id: {
@@ -501,6 +525,9 @@ const winners = sequelize.define('applet_winners', {
   },
   real_name: {
     type: Sequelize.STRING
+  },
+  activite_type: {
+    type: Sequelize.INTEGER
   }
 }, {
     timestamps: false,
@@ -631,10 +658,76 @@ const cinemas = sequelize.define('applet_cinemas', {
 
 cinemas.sync()
 
-reports.belongsTo(activities, {
-  foreignKey: 'activite_id',
-  targetKey: 'id'
-});
+const options = sequelize.define('applet_options', {
+  type: {
+    type: Sequelize.STRING
+  },
+  key: {
+    type: Sequelize.INTEGER
+  },
+  value: {
+    type: Sequelize.STRING
+  }
+}, {
+    timestamps: false,
+    freezeTableName: true
+  })
+
+options.sync()
+
+const lotteries = sequelize.define('applet_lotteries', {
+  title: {
+    type: Sequelize.STRING
+  },
+  playbill: {
+    type: Sequelize.STRING
+  },
+  start_day: {
+    type: Sequelize.DATEONLY,
+  },
+  end_day: {
+    type: Sequelize.DATEONLY,
+  },
+  description: {
+    type: Sequelize.STRING
+  },
+  prize_description: {
+    type: Sequelize.JSON
+  },
+  rule_description: {
+    type: Sequelize.JSON
+  },
+  other_description: {
+    type: Sequelize.JSON
+  },
+  status: {
+    type: Sequelize.INTEGER
+  },
+  manager_id: {
+    type: Sequelize.INTEGER
+  },
+  manager_name: {
+    type: Sequelize.STRING
+  },
+  create_time: {
+    type: Sequelize.DATE,
+    get() {
+      if (!this.getDataValue('create_time')) {
+        return null
+      }
+      return moment(this.getDataValue('create_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+  invalid: {
+    type: Sequelize.INTEGER
+  }
+
+}, {
+    timestamps: false,
+    freezeTableName: true
+  });
+
+lotteries.sync();
 
 users.belongsTo(address, {
   foreignKey: 'address_id',
@@ -646,6 +739,12 @@ winners.belongsTo(users, {
   foreignKey: 'open_id',
   targetKey: 'open_id',
   as: 'user'
+})
+
+winners.belongsTo(reports, {
+  foreignKey: 'report_id',
+  targetKey: 'id',
+  as: 'report'
 })
 
 module.exports = {
@@ -660,5 +759,7 @@ module.exports = {
   'Movie': movie,
   'City': cities,
   'Cinema': cinemas,
-  'Activity': activities
+  'Activity': activities,
+  'Lottery': lotteries,
+  'Option': options,
 };

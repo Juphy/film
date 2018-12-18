@@ -1,6 +1,7 @@
 const {
   Winner,
-  User
+  User,
+  Report
 } = require('../lib/model');
 const xml2js = require('xml2js');
 const config = require('../config');
@@ -591,7 +592,37 @@ const coupon_list = async (ctx, next) => {
   ctx.body = success(winners)
 }
 
+const lottery_list = async (ctx, next) => {
+  let { id } = ctx.request.params;
+  if (!id) {
+    return ctx.body = failed('id无效');
+  } else {
+    let res = await Winner.findAll({
+      where: {
+        activite_id: id,
+        activite_type: 2,
+        invalid: 0
+      },
+      attributes: ['prize_name', 'avatar_url', 'nick_name', 'type']
+    });
+    ctx.body = success(res);
+  }
+}
 
+const winners = async (ctx, next) => {
+  let res = await Winner.findAll({
+    include: [{
+      model: Report,
+      as: 'report',
+      attributes: ['cinema_name', 'content', 'remark', 'show_day']
+    }],
+    where: {
+      invalid: 0
+    },
+    attributes: ['nick_name', 'phone', 'title', 'movie_name', 'type', 'prize_name', 'address', 'receiver', 'identify_card', 'real_name', 'accept_time', 'manager_name', 'is_sure', 'activite_type', 'bankcard']
+  });
+  ctx.body = success(res);
+}
 
 module.exports = {
   pub: {
@@ -603,7 +634,9 @@ module.exports = {
     add_sf_order,
     list,
     del,
-    make_prize
+    make_prize,
+    lottery_list,
+    winners
   },
   app: {
     express_winner_list,

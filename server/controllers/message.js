@@ -56,7 +56,7 @@ async function post(ctx, next) {
 
 
 //发送验证码
-const send_msg = async (ctx, next) => {
+const send_msg = async(ctx, next) => {
 
   console.log(ctx.request.header)
 
@@ -91,10 +91,10 @@ const send_msg = async (ctx, next) => {
 }
 
 //短信通知中奖者信息
-const send_winner = async (ctx, next) => {
+const send_winner = async(ctx, next) => {
 
 
-  msg = await Msg.find({
+  msgs = await Msg.findAll({
     where: {
       invalid: 0,
       type: 2,
@@ -102,40 +102,47 @@ const send_winner = async (ctx, next) => {
         $ne: null
       },
       status: 0
-    }
+    },
+    limit: 10
   })
 
-  if (msg) {
-    let req = {}
-    req.phone = msg.phone
-    req.template_code = 'SMS_151578868'
-    req.data = {
-      'title': msg.movie_name
+  if (msgs) {
+
+    for (let msg of msgs) {
+      let req = {}
+      req.phone = msg.phone
+      req.template_code = 'SMS_151578868'
+      req.data = {
+        'title': msg.title.substring(0,20)
+      }
+
+      console.log('-----req:',req)
+
+      res = await sendSMS(req)
+
+      if (res) {
+        await msg.update({
+          status: 1,
+          note_status: 1,
+          send_time: moment().format('YYYY-MM-DD HH:mm:ss')
+        })
+        return ctx.body = success('', '发送成功')
+      } else {
+        await msg.update({
+          status: 1,
+          note_status: 0,
+          send_time: moment().format('YYYY-MM-DD HH:mm:ss')
+        })
+        return ctx.body = success('', '发送失败')
+      }
     }
 
-    res = await sendSMS(req)
-
-    if (res) {
-      await msg.update({
-        status: 1,
-        note_status: 1,
-        send_time: moment().format('YYYY-MM-DD HH:mm:ss')
-      })
-      return ctx.body = success('', '发送成功')
-    } else {
-      await msg.update({
-        status: 1,
-        note_status: 0,
-        send_time: moment().format('YYYY-MM-DD HH:mm:ss')
-      })
-      return ctx.body = success('', '发送失败')
-    }
   }
 
 }
 
 //获取用户消息（公告）
-const app_msg = async (ctx, next) => {
+const app_msg = async(ctx, next) => {
 
   msgs = await Msg.findAll({
     where: {
@@ -150,7 +157,7 @@ const app_msg = async (ctx, next) => {
   ctx.body = success(msgs)
 }
 
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     title = '', page = 1, page_size = 10, type = ''
@@ -177,7 +184,7 @@ const list = async (ctx, next) => {
   ctx.body = success(res);
 }
 
-const del = async (ctx, next) => {
+const del = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
