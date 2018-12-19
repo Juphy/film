@@ -420,7 +420,8 @@ const winning = async (ctx, next) => {
           where: {
             open_id: res.open_id,
             is_winner: 1,
-            activite_id: res.activite_id
+            activite_id: res.activite_id,
+            activite_type: 1
           }
         })
         if (reports.length) {
