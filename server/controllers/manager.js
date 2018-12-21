@@ -9,10 +9,13 @@ const {
   authFailed
 } = require('./base.js');
 const bcrypt = require('bcryptjs');
-const { SALTROUNDS, secret } = require('../config');
+const {
+  SALTROUNDS,
+  secret
+} = require('../config');
 const jsonwebtoken = require('jsonwebtoken');
 //后台登录
-const login = async (ctx, next) => {
+const login = async(ctx, next) => {
   let {
     account,
     password
@@ -35,7 +38,12 @@ const login = async (ctx, next) => {
   if (check) {
     ctx.status = 200
     const token = jsonwebtoken.sign({
-      data: user,
+      data: {
+        'account': user['account'],
+        'id': user['id'],
+        'name': user['name'],
+        'nick_name': user['nick_name']
+      },
       // 设置 token 过期时间
       exp: Math.floor(Date.now() / 1000) + (60 * 60), // 60 seconds * 60 minutes = 1 hour
     }, secret)
@@ -52,7 +60,7 @@ const login = async (ctx, next) => {
 }
 
 // 添加管理员
-const add = async (ctx, next) => {
+const add = async(ctx, next) => {
   const {
     name,
     nick_name = '',
@@ -60,7 +68,8 @@ const add = async (ctx, next) => {
     account
   } = ctx.request.params;
   const create_time = new Date(),
-    invalid = 0, password = await bcrypt.hash('12345678', SALTROUNDS);
+    invalid = 0,
+    password = await bcrypt.hash('12345678', SALTROUNDS);
   if (!name || !account) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
@@ -77,7 +86,7 @@ const add = async (ctx, next) => {
   }
 };
 // 管理员列表
-const list = async (ctx, next) => {
+const list = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     name = '', page = 1, page_size = 10
@@ -102,7 +111,7 @@ const list = async (ctx, next) => {
 };
 
 // 删除管理员
-const del = async (ctx, next) => {
+const del = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     id
@@ -127,7 +136,7 @@ const del = async (ctx, next) => {
 };
 
 // 编辑管理员
-const edit = async (ctx, next) => {
+const edit = async(ctx, next) => {
   let p = ctx.request.params;
   let {
     name,
@@ -147,9 +156,11 @@ const edit = async (ctx, next) => {
   }
 };
 
-const reset_password = async (ctx, next) => {
+const reset_password = async(ctx, next) => {
   const p = ctx.request.params;
-  let { id } = p;
+  let {
+    id
+  } = p;
   if (!id) {
     ctx.body = failed('id无效或者缺省');
   } else {
@@ -165,9 +176,12 @@ const reset_password = async (ctx, next) => {
   }
 }
 
-const edit_password = async (ctx, next) => {
+const edit_password = async(ctx, next) => {
   const p = ctx.request.params;
-  let { origin_password, password } = p;
+  let {
+    origin_password,
+    password
+  } = p;
   if (!password || !origin_password) {
     ctx.body = failed('必填项缺省或者无效');
   } else {
@@ -189,8 +203,10 @@ const edit_password = async (ctx, next) => {
   }
 }
 
-const make_super = async (ctx, next) => {
-  let { id } = ctx.request.params;
+const make_super = async(ctx, next) => {
+  let {
+    id
+  } = ctx.request.params;
   if (!id) {
     ctx.body = failed('id无效');
   } else {
@@ -225,7 +241,7 @@ const make_super = async (ctx, next) => {
 // };
 
 // 查询当前登录人信息
-const info_my_account = async (ctx, next) => {
+const info_my_account = async(ctx, next) => {
   ctx.body = success(ctx.state.managerInfo);
 }
 
@@ -246,12 +262,15 @@ const info_my_account = async (ctx, next) => {
 //   ctx.body = success('更新数据', '更新成功');
 // }
 
-const add_tags = async(ctx,next)=>{
+const add_tags = async(ctx, next) => {
 
-  let { open_id,tags } = ctx.request.params;
+  let {
+    open_id,
+    tags
+  } = ctx.request.params;
 
-  if(!open_id||!tags){
-    
+  if (!open_id || !tags) {
+
   }
 }
 
